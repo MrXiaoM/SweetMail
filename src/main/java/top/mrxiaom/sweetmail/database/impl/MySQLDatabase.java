@@ -3,25 +3,21 @@ package top.mrxiaom.sweetmail.database.impl;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.MemoryConfiguration;
-import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.IMailDatabase;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 
-import java.sql.Connection;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySQLDatabase implements IMailDatabase {
     HikariDataSource dataSource = null;
-    String prefix;
-    @Nullable
-    public Connection getConnection() {
-        try {
-            return dataSource.getConnection();
-        } catch (Throwable t) {
-            SweetMail.getInstance().getLogger().warning(Util.stackTraceToString(t));
-            return null;
-        }
-    }
+    String TABLE_BOX, TABLE_STATUS;
     public void reload(MemoryConfiguration config) {
         if (dataSource != null) dataSource.close();
         String type = config.getString("database.type", "file");
@@ -39,15 +35,106 @@ public class MySQLDatabase implements IMailDatabase {
         String user = config.getString("database.user", "root");
         String pass = config.getString("database.pass", "root");
         String database = config.getString("database.database", "minecraft");
-        prefix = config.getString("database.table_prefix", "sweetmail_");
+        String prefix = config.getString("database.table_prefix", "sweetmail_");
+        TABLE_BOX = prefix + "box";
+        TABLE_STATUS = prefix + "status";
         hikariConfig.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&verifyServerCertificate=false&serverTimezone=UTC");
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(pass);
         dataSource = new HikariDataSource(hikariConfig);
+
+        try {
+            Connection conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement(
+                    "CREATE TABLE if NOT EXISTS `" + TABLE_BOX + "`(" +
+                            "`uuid` VARCHAR(32) PRIMARY KEY," +
+                            "`sender` VARCHAR(32)," +
+                            "`data` MEDIUMBLOB," +
+                            "`time` TIMESTAMP" +
+                    ");" +
+                    "CREATE TABLE if NOT EXISTS `" + TABLE_STATUS + "`(" +
+                            "`uuid` VARCHAR(32)," +
+                            "`receiver` VARCHAR(32)," +
+                            "`read` TINYINT(1)," +
+                            "`used` TINYINT(1)," +
+                            "PRIMARY KEY(`uuid`, `receiver`)" +
+                    ");");
+            ps.execute();
+        } catch (SQLException e) {
+            SweetMail.warn(e);
+        }
+    }
+
+    public List<Mail> getOutBox(String player, int page, int perPage) {
+        List<Mail> mailList = new ArrayList<>();
+        try {
+            int offset = (page - 1) * perPage;
+            Connection conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
+                    "(`" + TABLE_STATUS + "` NATURAL JOIN (SELECT * FROM `" + TABLE_BOX + "` WHERE `sender` = ?) as A) " +
+                    "LIMIT " + offset + ", " + perPage + " " +
+                    "ORDER BY `time` DESC;");
+            ps.setString(1, player);
+            try (ResultSet result = ps.executeQuery()) {
+                while (result.next()) {
+                    mailList.add(resolveResult(result));
+                }
+            }
+        } catch (SQLException | IOException e) {
+            SweetMail.warn(e);
+        }
+        return mailList;
+    }
+
+    public List<Mail> getInBox(boolean unread, String player, int page, int perPage) {
+        List<Mail> mailList = new ArrayList<>();
+        try {
+            int offset = (page - 1) * perPage;
+            Connection conn = dataSource.getConnection();
+            String conditions = unread
+                    ? "`receiver` = ? AND unread = 1"
+                    : "`receiver` = ?";
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
+                    "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") as A) " +
+                    "LIMIT " + offset + ", " + perPage + " " +
+                    "ORDER BY `time` DESC;");
+            ps.setString(1, player);
+            try (ResultSet result = ps.executeQuery()) {
+                while (result.next()) {
+                    mailList.add(resolveResult(result));
+                }
+            }
+        } catch (SQLException | IOException e) {
+            SweetMail.warn(e);
+        }
+        return mailList;
+    }
+
+    private Mail resolveResult(ResultSet result) throws IOException, SQLException {
+        String dataJson;
+        try (InputStream in = result.getBinaryStream("data")) {
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                byte[] buffer = new byte[1024 * 10];
+                int len;
+                while ((len = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, len);
+                }
+                dataJson = new String(out.toByteArray(), StandardCharsets.UTF_8);
+            }
+        }
+        Timestamp time = result.getTimestamp("time");
+        Mail mail = Mail.deserialize(dataJson);
+        mail.time = time.toLocalDateTime();
+        mail.read = result.getInt("read") == 1;
+        mail.used = result.getInt("used") == 1;
+        return mail;
     }
 
     @Override
     public void onDisable() {
-
+        if (dataSource != null) {
+            dataSource.close();
+            dataSource = null;
+        }
     }
 }
