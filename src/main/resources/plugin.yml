@@ -1,0 +1,15 @@
+name: SweetMail
+version: '${version}'
+main: top.mrxiaom.sweetmail.SweetMail
+api-version: 1.13
+softdepend:
+  - Vault
+  - PlayerPoints
+  - PlaceholderAPI
+  - MythicMobs
+  - ItemsAdder
+authors: [ MrXiaoM ]
+commands:
+  sweetmail:
+    description: SweetMail main command.
+    aliases: [sm, mail]

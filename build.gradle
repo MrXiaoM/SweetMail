@@ -1,0 +1,89 @@
+plugins {
+    id "java"
+    id "maven-publish"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+
+group = "top.mrxiaom"
+version = "1.0.0"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://maven.fastmirror.net/repositories/minecraft" }
+    maven { url "https://mvn.lumine.io/repository/maven/" }
+    maven { url "https://repo.codemc.io/repository/maven-public/"}
+
+    maven {
+        name = "spigotmc-repo"
+        url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+    }
+    maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
+    maven { url = "https://jitpack.io" }
+    maven { url = "https://repo.rosewooddev.io/repository/public/" }
+
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+}
+
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT")
+    
+    compileOnly("net.milkbowl.vault:VaultAPI:1.7")
+    compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
+
+    compileOnly("me.clip:placeholderapi:2.11.5")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("io.lumine:Mythic-Dist:5.4.1-SNAPSHOT")
+    compileOnly("org.black_ixx:playerpoints:3.2.5")
+    
+    implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("org.jetbrains:annotations:19.0.0")
+}
+tasks {
+    shadowJar {
+        classifier("")
+        def p = "top.mrxiaom.sweetmail.utils"
+        relocate("org.intellij.lang.annotations", "${p}.annotations.intellij")
+        relocate("org.jetbrains.annotations", "${p}.annotations.jetbrains")
+        relocate("com.zaxxer.hikari", "${p}.hikari")
+    }
+    build.dependsOn(shadowJar)
+}
+def targetJavaVersion = 8
+java {
+
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    from(sourceSets.main.resources.srcDirs) {
+        expand(
+                "version": version,
+        )
+        include "plugin.yml"
+    }
+}
+publishing {
+    publications {
+        mavenRelease(MavenPublication) {
+            from components.java
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+        }
+    }
+}

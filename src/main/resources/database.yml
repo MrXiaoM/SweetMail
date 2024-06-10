@@ -1,0 +1,12 @@
+# 数据库配置
+database:
+  # 数据库类型:
+  # file - 使用 yaml 配置文件，不支持跨服，不推荐
+  # mysql - 使用 MySQL 数据库
+  type: file
+  host: localhost
+  port: 3306
+  user: root
+  pass: root
+  database: minecraft
+  table_prefix: sweetmail_
