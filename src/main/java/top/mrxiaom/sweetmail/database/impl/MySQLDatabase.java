@@ -2,11 +2,13 @@ package top.mrxiaom.sweetmail.database.impl;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jdk.internal.util.xml.impl.Input;
 import org.bukkit.configuration.MemoryConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.IMailDatabase;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,6 +67,34 @@ public class MySQLDatabase implements IMailDatabase {
         }
     }
 
+    @Override
+    public void sendMail(Mail mail) {
+        try {
+            Connection conn = dataSource.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, NOW());")) {
+                ps.setString(1, mail.uuid);
+                ps.setString(2, mail.sender);
+                byte[] bytes = mail.serialize().getBytes(StandardCharsets.UTF_8);
+                try (InputStream in = new ByteArrayInputStream(bytes)) {
+                    ps.setBinaryStream(3, in);
+                    ps.execute();
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0);")) {
+                for (String receiver : mail.receivers) {
+                    ps.setString(1, mail.uuid);
+                    ps.setString(2, receiver);
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
+            mail.noticeSent();
+        } catch (SQLException | IOException e) {
+            SweetMail.warn(e);
+        }
+    }
+
+    @Override
     public List<Mail> getOutBox(String player, int page, int perPage) {
         List<Mail> mailList = new ArrayList<>();
         try {
@@ -86,6 +116,7 @@ public class MySQLDatabase implements IMailDatabase {
         return mailList;
     }
 
+    @Override
     public List<Mail> getInBox(boolean unread, String player, int page, int perPage) {
         List<Mail> mailList = new ArrayList<>();
         try {
@@ -128,6 +159,36 @@ public class MySQLDatabase implements IMailDatabase {
         mail.read = result.getInt("read") == 1;
         mail.used = result.getInt("used") == 1;
         return mail;
+    }
+
+    @Override
+    public void markRead(String uuid, String receiver) {
+        try {
+            Connection conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
+                    "SET `read` = 1" +
+                    "WHERE `uuid` = ? AND `receiver` = ?;");
+            ps.setString(1, uuid);
+            ps.setString(2, receiver);
+            ps.execute();
+        } catch (SQLException e) {
+            SweetMail.warn(e);
+        }
+    }
+
+    @Override
+    public void markUsed(String uuid, String receiver) {
+        try {
+            Connection conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
+                    "SET `used` = 1" +
+                    "WHERE `uuid` = ? AND `receiver` = ?;");
+            ps.setString(1, uuid);
+            ps.setString(2, receiver);
+            ps.execute();
+        } catch (SQLException e) {
+            SweetMail.warn(e);
+        }
     }
 
     @Override

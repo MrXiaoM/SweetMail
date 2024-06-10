@@ -37,6 +37,11 @@ public class Mail {
         return ItemStackUtil.getItem(icon);
     }
 
+    public void noticeSent() {
+        // TODO: 提醒本服接收者查看邮件
+        // TODO: 通过BC提醒其它服区的接收者查看邮件
+    }
+
     public String serialize() {
         JsonObject json = new JsonObject();
 

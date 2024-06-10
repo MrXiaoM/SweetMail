@@ -6,6 +6,11 @@ import top.mrxiaom.sweetmail.database.entry.Mail;
 import java.util.List;
 
 public interface IMailDatabase {
+    /**
+     * 发送邮件
+     * @param mail 邮件实例
+     */
+    void sendMail(Mail mail);
 
     /**
      * 拉取发件箱
@@ -25,6 +30,21 @@ public interface IMailDatabase {
      * @return 邮件列表
      */
     List<Mail> getInBox(boolean unread, String player, int page, int perPage);
+
+    /**
+     * 将邮件标记为已读
+     * @param uuid 邮件 UUID
+     * @param receiver 接收邮件的玩家
+     */
+    void markRead(String uuid, String receiver);
+
+    /**
+     * 将邮件标记为已接收附件
+     * @param uuid 邮件 UUID
+     * @param receiver 接收邮件的玩家
+     */
+    void markUsed(String uuid, String receiver);
+
     void reload(MemoryConfiguration config);
     void onDisable();
 }
