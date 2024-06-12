@@ -1,7 +1,5 @@
 package top.mrxiaom.sweetmail.database;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -26,6 +24,13 @@ public class MailDatabase extends AbstractPluginHolder {
     }
 
     /**
+     * @see IMailDatabase#sendMail(Mail)
+     */
+    public void sendMail(Mail mail) {
+        database.sendMail(mail);
+    }
+
+    /**
      * @see IMailDatabase#getOutBox(String, int, int)
      */
     public List<Mail> getOutBox(String player, int page, int perPage) {
@@ -37,6 +42,20 @@ public class MailDatabase extends AbstractPluginHolder {
      */
     public List<Mail> getInBox(boolean unread, String player, int page, int perPage) {
         return database.getInBox(unread, player, page, perPage);
+    }
+
+    /**
+     * @see IMailDatabase#markRead(String, String)
+     */
+    public void markRead(String uuid, String receiver) {
+        database.markRead(uuid, receiver);
+    }
+
+    /**
+     * @see IMailDatabase#markUsed(String, String)
+     */
+    public void markUsed(String uuid, String receiver) {
+        database.markUsed(uuid, receiver);
     }
 
     @Override
@@ -59,6 +78,9 @@ public class MailDatabase extends AbstractPluginHolder {
 
     @Override
     public void onDisable() {
-        if (database != null) database.onDisable();
+        if (database != null) {
+            database.onDisable();
+            database = null;
+        }
     }
 }
