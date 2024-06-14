@@ -6,6 +6,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.IMailDatabase;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,8 +96,8 @@ public class MySQLDatabase implements IMailDatabase {
     }
 
     @Override
-    public List<Mail> getOutBox(String player, int page, int perPage) {
-        List<Mail> mailList = new ArrayList<>();
+    public List<MailWithStatus> getOutBox(String player, int page, int perPage) {
+        List<MailWithStatus> mailList = new ArrayList<>();
         try {
             int offset = (page - 1) * perPage;
             Connection conn = dataSource.getConnection();
@@ -116,8 +118,8 @@ public class MySQLDatabase implements IMailDatabase {
     }
 
     @Override
-    public List<Mail> getInBox(boolean unread, String player, int page, int perPage) {
-        List<Mail> mailList = new ArrayList<>();
+    public List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
+        List<MailWithStatus> mailList = new ArrayList<>();
         try {
             int offset = (page - 1) * perPage;
             Connection conn = dataSource.getConnection();
@@ -140,7 +142,7 @@ public class MySQLDatabase implements IMailDatabase {
         return mailList;
     }
 
-    private Mail resolveResult(ResultSet result) throws IOException, SQLException {
+    private MailWithStatus resolveResult(ResultSet result) throws IOException, SQLException {
         String dataJson;
         try (InputStream in = result.getBinaryStream("data")) {
             try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -152,12 +154,10 @@ public class MySQLDatabase implements IMailDatabase {
                 dataJson = new String(out.toByteArray(), StandardCharsets.UTF_8);
             }
         }
-        Timestamp time = result.getTimestamp("time");
-        Mail mail = Mail.deserialize(dataJson);
-        mail.time = time.toLocalDateTime();
-        mail.read = result.getInt("read") == 1;
-        mail.used = result.getInt("used") == 1;
-        return mail;
+        LocalDateTime time = result.getTimestamp("time").toLocalDateTime();
+        boolean read = result.getInt("read") == 1;
+        boolean used = result.getInt("used") == 1;
+        return Mail.deserialize(dataJson, time, read, used);
     }
 
     @Override

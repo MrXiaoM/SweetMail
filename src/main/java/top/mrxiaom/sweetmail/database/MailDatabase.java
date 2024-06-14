@@ -4,6 +4,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.database.impl.FileDatabase;
 import top.mrxiaom.sweetmail.database.impl.MySQLDatabase;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
@@ -39,14 +40,14 @@ public class MailDatabase extends AbstractPluginHolder {
     /**
      * @see IMailDatabase#getOutBox(String, int, int)
      */
-    public List<Mail> getOutBox(String player, int page, int perPage) {
+    public List<MailWithStatus> getOutBox(String player, int page, int perPage) {
         return database.getOutBox(player, page, perPage);
     }
 
     /**
      * @see IMailDatabase#getInBox(boolean, String, int, int)
      */
-    public List<Mail> getInBox(boolean unread, String player, int page, int perPage) {
+    public List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
         return database.getInBox(unread, player, page, perPage);
     }
 

@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.database.entry;
 
 import com.google.gson.*;
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.utils.Func8;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 
 import java.time.LocalDateTime;
@@ -19,9 +20,6 @@ public class Mail {
     public final String title;
     public final List<String> content;
     public final List<IAttachment> attachments;
-    public LocalDateTime time;
-    public boolean read = false;
-    public boolean used = false;
     public Mail(String uuid, String sender, String senderDisplay, String icon, List<String> receivers, String title, List<String> content, List<IAttachment> attachments) {
         this.uuid = uuid;
         this.sender = sender;
@@ -72,7 +70,7 @@ public class Mail {
         return json.toString();
     }
 
-    public static Mail deserialize(String s) {
+    private static <T> T deserialize(String s, Func8<String, String, String, String, List<String>, String, List<String>, List<IAttachment>, T> func) {
         JsonObject json = JsonParser.parseString(s).getAsJsonObject();
 
         String uuid = getString(json, "uuid");
@@ -84,7 +82,19 @@ public class Mail {
         List<String> receivers = getList(json, "receivers");
         List<String> content = getList(json, "content");
         List<IAttachment> attachments = getList(json, "attachments", IAttachment::deserialize);
-        return new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
+        return func.apply(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
+    }
+
+    public static Mail deserialize(String s) {
+        return deserialize(s, Mail::new);
+    }
+
+    public static MailWithStatus deserialize(String s, LocalDateTime time, boolean read, boolean used) {
+        MailWithStatus mail = deserialize(s, MailWithStatus::new);
+        mail.time = time;
+        mail.read = read;
+        mail.used = used;
+        return mail;
     }
 
     private static String getString(JsonObject json, String key) {
