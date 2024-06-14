@@ -59,7 +59,8 @@ public class GuiDraft extends AbstractDraftGui {
                 }
                 case "图": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
-                        // TODO: 打开图标编辑菜单
+                        String title = player.hasPermission("sweetmail.icon.custom") ? config.iconIconTitleCustom : config.iconIconTitle
+                        plugin.getGuiManager().openGui(new GuiIcon(plugin, player, title));
                     }
                     return;
                 }

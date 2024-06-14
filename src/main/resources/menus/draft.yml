@@ -31,6 +31,8 @@ items:
       - '  &f当前: &e%icon%  '
       - ''
       - '&a左键&7 | &f编辑'
+    title: '选择图标'
+    title-custom: '选择图标 (可在物品栏选择)'
   题:
     material: BOOK
     display: '&e&l标题'

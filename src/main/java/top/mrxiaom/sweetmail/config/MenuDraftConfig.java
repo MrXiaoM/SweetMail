@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.config;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -16,6 +17,8 @@ public class MenuDraftConfig extends AbstractMenuConfig {
     public String iconReceiverPromptTips;
     public String iconReceiverPromptCancel;
     Icon iconIcon;
+    public String iconIconTitle;
+    public String iconIconTitleCustom;
     Icon iconTitle;
     public String iconTitlePromptTips;
     public String iconTitlePromptCancel;
@@ -25,14 +28,24 @@ public class MenuDraftConfig extends AbstractMenuConfig {
     Icon iconReset;
     Icon iconSend;
     Icon iconAttachment;
+
     public MenuDraftConfig(SweetMail plugin) {
         super(plugin, "menus/draft.yml");
     }
 
     @Override
+    public void reloadConfig(MemoryConfiguration cfg) {
+        super.reloadConfig(cfg);
+
+    }
+
+    @Override
     protected void clearMainIcons() {
         iconReceiver = iconIcon = iconTitle = iconContent = iconAdvanced = iconReset = iconSend = iconAttachment = null;
-        iconReceiverUnset = iconAdvancedRedirectKey = null;
+        iconReceiverUnset = iconAdvancedRedirectKey
+                = iconReceiverPromptTips = iconReceiverPromptCancel
+                = iconTitlePromptTips = iconTitlePromptCancel
+                = iconIconTitle = iconIconTitleCustom = null;
     }
 
     @Override
@@ -47,6 +60,8 @@ public class MenuDraftConfig extends AbstractMenuConfig {
             }
             case "图": {
                 iconIcon = loadedIcon;
+                iconIconTitle = section.getString(key + ".title", "选择图标");
+                iconIconTitleCustom = section.getString(key + ".title-custom", "选择图标 (可在物品栏选择)");
                 break;
             }
             case "题": {

@@ -122,8 +122,13 @@ public class DraftManager extends AbstractPluginHolder {
     }
 
     public String getMailIcon(String key) {
+        if (key.startsWith("!")) return key.substring(1);
         String s = mailIcons.get(key);
         return s == null ? mailIcons.getOrDefault("default", "PAPER") : s;
+    }
+
+    public Map<String, String> getMailIcons() {
+        return mailIcons;
     }
 
     public static DraftManager inst() {

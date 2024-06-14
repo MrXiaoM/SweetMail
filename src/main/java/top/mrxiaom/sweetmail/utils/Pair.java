@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Pair<K, V> {
     K key;
@@ -30,6 +31,10 @@ public class Pair<K, V> {
 
     public static <K, V> Pair<K, V> of(K key, V value) {
         return new Pair<>(key, value);
+    }
+
+    public static <K, V> Pair<K, V> of(Map.Entry<K, V> entry) {
+        return new Pair<>(entry.getKey(), entry.getValue());
     }
 
     @SafeVarargs
