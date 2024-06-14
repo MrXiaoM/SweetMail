@@ -146,6 +146,7 @@ public class GuiDraft extends AbstractDraftGui {
                         } else if (!draft.receiver.isEmpty()) {
                             receivers.add(draft.receiver);
                         }
+                        receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
                         if (receivers.isEmpty()) {
                             // TODO: 警告玩家未设置接收者
                             return;

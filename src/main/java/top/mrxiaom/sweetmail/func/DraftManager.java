@@ -8,10 +8,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class DraftManager extends AbstractPluginHolder {
     public static class Draft {
@@ -88,6 +85,7 @@ public class DraftManager extends AbstractPluginHolder {
     private final Map<String, Draft> draftMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, String> mailIcons = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private String defaultTitle;
+    private final Set<String> advReceiversBlackList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     public DraftManager(SweetMail plugin) {
         super(plugin);
@@ -109,6 +107,8 @@ public class DraftManager extends AbstractPluginHolder {
         if (mailIcons.containsKey("default")) {
             warn("[config.yml] preset-icons 缺少 default");
         }
+        advReceiversBlackList.clear();
+        advReceiversBlackList.addAll(config.getStringList("blacklist-players"));
         defaultTitle = config.getString("default.title", "未命名邮件");
     }
 
@@ -129,6 +129,10 @@ public class DraftManager extends AbstractPluginHolder {
 
     public Map<String, String> getMailIcons() {
         return mailIcons;
+    }
+
+    public boolean isInAdvanceReceiversBlackList(String player) {
+        return advReceiversBlackList.contains(player);
     }
 
     public static DraftManager inst() {
