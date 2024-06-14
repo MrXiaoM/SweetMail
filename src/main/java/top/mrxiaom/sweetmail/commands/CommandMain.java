@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,9 +22,18 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public static final String PERM_DRAFT = "sweetmail.draft";
     public static final String PERM_BOX = "sweetmail.box";
     public static final String PERM_BOX_OTHER = "sweetmail.box.other";
+    private List<String> helpPlayer;
+    private List<String> helpAdmin;
     public CommandMain(SweetMail plugin) {
         super(plugin);
         registerCommand("sweetmail", this);
+        register();
+    }
+
+    @Override
+    public void reloadConfig(MemoryConfiguration config) {
+        helpPlayer = config.getStringList("help.player");
+        helpAdmin = config.getStringList("help.admin");
     }
 
     @Override
@@ -98,9 +108,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             }
         }
         // TODO: 显示帮助命令
-        sender.sendMessage("玩家帮助命令");
+        t(sender, helpPlayer);
         if (admin) {
-            sender.sendMessage("管理员帮助命令");
+            t(sender, helpAdmin);
         }
         return true;
     }

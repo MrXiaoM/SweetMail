@@ -167,4 +167,9 @@ public abstract class AbstractPluginHolder {
         sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
         return true;
     }
+
+    public static boolean t(CommandSender sender, List<String> msg) {
+        sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
+        return true;
+    }
 }
