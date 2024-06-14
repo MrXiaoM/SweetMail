@@ -10,6 +10,7 @@ import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 public class MailDatabase extends AbstractPluginHolder {
     File configFile;
@@ -21,6 +22,11 @@ public class MailDatabase extends AbstractPluginHolder {
         super(plugin);
         this.configFile = new File(plugin.getDataFolder(), "database.yml");
         register();
+    }
+
+    public String generateMailUUID() {
+        // TODO: 增加检查，确保唯一性
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     /**

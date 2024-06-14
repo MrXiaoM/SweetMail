@@ -10,16 +10,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
+import top.mrxiaom.sweetmail.gui.GuiDraft;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandMain extends AbstractPluginHolder implements CommandExecutor, TabCompleter {
-    String PERM_ADMIN = "sweetmail.admin";
-    String PERM_DRAFT = "sweetmail.draft";
-    String PERM_BOX = "sweetmail.box";
-    String PERM_BOX_OTHER = "sweetmail.box.other";
+    public static final String PERM_ADMIN = "sweetmail.admin";
+    public static final String PERM_DRAFT = "sweetmail.draft";
+    public static final String PERM_BOX = "sweetmail.box";
+    public static final String PERM_BOX_OTHER = "sweetmail.box.other";
     public CommandMain(SweetMail plugin) {
         super(plugin);
         registerCommand("sweetmail", this);
@@ -51,7 +52,11 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
-                // TODO: 打开草稿界面
+                if (!(sender instanceof Player)) {
+                    return true;
+                }
+                Player player = (Player) sender;
+                plugin.getGuiManager().openGui(new GuiDraft(plugin, player));
                 return true;
             }
             if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
