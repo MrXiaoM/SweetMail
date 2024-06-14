@@ -62,7 +62,7 @@ public class GuiDraft extends AbstractDraftGui {
                 }
                 case "图": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
-                        String title = player.hasPermission("sweetmail.icon.custom") ? config.iconIconTitleCustom : config.iconIconTitle
+                        String title = player.hasPermission("sweetmail.icon.custom") ? config.iconIconTitleCustom : config.iconIconTitle;
                         plugin.getGuiManager().openGui(new GuiIcon(plugin, player, title));
                     }
                     return;

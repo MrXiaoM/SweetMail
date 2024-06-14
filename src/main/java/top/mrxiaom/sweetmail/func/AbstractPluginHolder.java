@@ -10,6 +10,9 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.commands.CommandMain;
+import top.mrxiaom.sweetmail.config.MainConfig;
+import top.mrxiaom.sweetmail.config.MenuDraftConfig;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 
 import java.io.ByteArrayInputStream;
@@ -34,7 +37,8 @@ public abstract class AbstractPluginHolder {
 
     public static void loadModules(SweetMail plugin) {
         List<Class<?>> classes = Lists.newArrayList(
-            // TODO: add modules
+                CommandMain.class, MainConfig.class, MenuDraftConfig.class,
+                DraftManager.class
         );
         for (Class<?> clazz : classes) {
             try {
