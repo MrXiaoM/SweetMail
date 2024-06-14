@@ -15,12 +15,15 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
+import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public abstract class AbstractMenuConfig extends AbstractPluginHolder {
     public static class Icon {
@@ -37,12 +40,23 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
         private Icon() {
         }
 
-        public ItemStack generateIcon(OfflinePlayer target) {
-            ItemStack item = ItemStackUtil.getItem(material);
-            if (display != null) ItemStackUtil.setItemDisplayName(item, PlaceholderAPI.setPlaceholders(target, display));
-            if (!lore.isEmpty()) ItemStackUtil.setItemLore(item, PlaceholderAPI.setPlaceholders(target, lore));
-            if (glow) ItemStackUtil.setGlow(item);
+        @SafeVarargs
+        public final ItemStack generateIcon(OfflinePlayer target, ItemStack item, Pair<String, Object>... replacements) {
+            if (display != null) {
+                ItemStackUtil.setItemDisplayName(item, PlaceholderAPI.setPlaceholders(target, replace(display, replacements)));
+            }
+            if (!lore.isEmpty()) {
+                ItemStackUtil.setItemLore(item, PlaceholderAPI.setPlaceholders(target, replace(lore, replacements)));
+            }
+            if (glow) {
+                ItemStackUtil.setGlow(item);
+            }
             return item;
+        }
+        @SafeVarargs
+        public final ItemStack generateIcon(OfflinePlayer target, Pair<String, Object>... replacements) {
+            ItemStack item = ItemStackUtil.getItem(material);
+            return generateIcon(target, item, replacements);
         }
 
         public void click(Player player, ClickType type) {
@@ -97,18 +111,36 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
     }
     File configFile;
     String file;
-    Map<String, Icon> otherIcon = new HashMap<>();
+    public Map<String, Icon> otherIcon = new HashMap<>();
     String title;
-    char[] inventory;
+    public char[] inventory;
     public AbstractMenuConfig(SweetMail plugin, String file) {
         super(plugin);
         this.configFile = new File(plugin.getDataFolder(), this.file = file);
         this.register();
     }
 
+    /**
+     * 清空主图标列表
+     */
     protected abstract void clearMainIcons();
+
+    /**
+     * 加载主图标
+     * @param section items:
+     * @param key 键
+     * @param loadedIcon 已加载的基本图标信息
+     */
     protected abstract void loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon);
-    protected abstract ItemStack tryApplyMainIcon(String key);
+
+    /**
+     * 生成界面图标
+     * @param key 键
+     * @param target 玩家
+     * @param iconIndex 该键在界面配置中第几次出现，从0数起
+     * @return 图标物品
+     */
+    protected abstract ItemStack tryApplyMainIcon(String key, Player target, int iconIndex);
     public Inventory createInventory(Player target) {
         return Bukkit.createInventory(null, inventory.length, PlaceholderAPI.setPlaceholders(target, title));
     }
@@ -130,12 +162,15 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
         applyIcon(inv::setItem, target, i);
     }
     public void applyIcon(BiConsumer<Integer, ItemStack> setItem, Player target, int i) {
-        String key = String.valueOf(this.inventory[i]);
+        if (i >= this.inventory.length) return;
+        char c = this.inventory[i];
+        String key = String.valueOf(c);
         if (key.equals(" ") || key.equals("　")) {
             setItem.accept(i, null);
             return;
         }
-        ItemStack item = tryApplyMainIcon(key);
+        int index = getKeyIndex(c, i);
+        ItemStack item = tryApplyMainIcon(key, target, index);
         if (item != null) {
             setItem.accept(i, item);
             return;
@@ -146,6 +181,15 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
         } else {
             setItem.accept(i, null);
         }
+    }
+    public int getKeyIndex(char key, int i) {
+        int index = 0;
+        for (int j = 0; j < i; j++) {
+            if (this.inventory[j] == key) {
+                index++;
+            }
+        }
+        return index;
     }
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {

@@ -1,0 +1,30 @@
+# 高级设置的泛匹配中，不接收邮件的玩家名
+blacklist-players: []
+
+default:
+  title: '未命名邮件'
+# 预设图标，不能写 custom
+preset-icons:
+  default: PAPER
+  # 使用 MythicMobs 物品作为图标 (草稿菜单显示mm物品名，收件箱发件箱中仅使用物品、CustomModelData、附魔、染色数据，不使用名字和 Lore)
+  example: mythic-示例
+  # 使用 ItemsAdder 物品作为图标，显示策略同 MythicMobs 图标
+  example1: itemsadder-示例
+
+# 帮助命令
+help:
+  player:
+    - '&e&l邮件系统 &8<必选参数> [可选参数]'
+    - '  &f/mail draft &8-- &3创建或编辑一个草稿'
+    - '  &f/mail outbox &8-- &3打开发件箱'
+    - '  &f/mail inbox &7[&fall&7/&funread&7] &8-- &3打开收件箱&7(默认打开未读)'
+  admin:
+    - '&c管理员命令'
+    - '  &f/mail outbox <玩家> &8-- &e为某人打开发件箱'
+    - '  &f/mail inbox <all/unread> <玩家> &8-- &e为某人打开收件箱'
+    - '  &f/mail admin outbox <玩家> &8-- &e打开某玩家的发件箱'
+    - '  &f/mail admin inbox <all/unread> <玩家> &8-- &e打开某玩家的收件箱'
+    - '  &f/mail reload &8-- &3重载配置文件'
+
+# 提示消息 (待定)
+messages: {}

@@ -1,5 +1,8 @@
 package top.mrxiaom.sweetmail.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Pair<K, V> {
     K key;
     V value;
@@ -27,5 +30,27 @@ public class Pair<K, V> {
 
     public static <K, V> Pair<K, V> of(K key, V value) {
         return new Pair<>(key, value);
+    }
+
+    @SafeVarargs
+    public static List<String> replace(List<String> list, Pair<String, Object>... replacements) {
+        if (replacements.length == 0) return new ArrayList<>(list);
+        List<String> newList = new ArrayList<>();
+        for (String s : list) {
+            newList.add(replace(s, replacements));
+        }
+        return newList;
+    }
+
+    @SafeVarargs
+    public static String replace(String s, Pair<String, Object>... replacements) {
+        if (replacements.length == 0) return s;
+        String str = s;
+        for (Pair<String, Object> pair : replacements) {
+            if (str.contains(pair.key)) {
+                str = str.replace(pair.key, String.valueOf(pair.value));
+            }
+        }
+        return str;
     }
 }

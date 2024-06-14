@@ -1,0 +1,128 @@
+# 界面标题，支持 PAPI
+title: '&0草稿'
+# 界面布局，每行9个图标，不能超过6行
+inventory:
+  - '黑黑黑黑黑黑黑黑黑'
+  - '黑接图题文高重发黑'
+  - '黑黑黑黑黑黑黑黑黑'
+  - '黑附附附附附附附黑'
+  - '黑黑黑黑黑黑黑黑黑'
+# 必选物品
+items:
+  接:
+    material: PLAYER_HEAD
+    display: '&e&l接收者'
+    lore:
+      - ''
+      - '  &f该邮件的接收者  '
+      - ''
+      - '  &f当前: &e%receiver%  '
+      - ''
+      - '&a左键&7 | &f编辑'
+    unset: '&7未设置'
+    prompt-tips: '&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件接收者”&b的值 &7(输入 &ccancel &7取消设置)'
+    prompt-cancel: 'cancel'
+  图:
+    display: '&e&l图标'
+    lore:
+      - ''
+      - '  &f这封邮件的显示图标  '
+      - ''
+      - '  &f当前: &e%icon%  '
+      - ''
+      - '&a左键&7 | &f编辑'
+  题:
+    material: BOOK
+    display: '&e&l标题'
+    lore:
+      - ''
+      - '  &f该邮件的标题  '
+      - ''
+      - '  &f当前: &e%title%  '
+      - ''
+      - '&a左键&7 | &f编辑'
+    prompt-tips: '&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件标题”&b的值 &7(输入 &ccancel &7取消设置)'
+    prompt-cancel: 'cancel'
+  文:
+    material: BOOK
+    display: '&e&l正文内容'
+    lore:
+      - ''
+      - '  &f这封邮件的正文内容  '
+      - ''
+      - '  &f当前 &e%content_size% &f字  '
+      - ''
+      - '&a左键 拖入书与笔&7 | &f设置内容'
+      - '&b右键&7 | &f查看'
+  高:
+    material: COMMAND_BLOCK
+    redirect: 黑
+    display: '&e&l高级设置'
+    lore:
+      - ''
+      - '  &f仅管理员可修改的设置  '
+      - ''
+      - '&a左键&7 | &f进入高级设置'
+  重:
+    material: LAVA_BUCKET
+    display: '&c&l重置草稿'
+    lore:
+      - ''
+      - '  &f将草稿恢复到默认状态，  '
+      - '  &f并取出所有附件  '
+      - ''
+      - '&a左键&7 | &f执行操作'
+  发:
+    material: LAVA_BUCKET
+    display: '&a&l发送邮件'
+    lore:
+      - ''
+      - '  &f确认发送这封邮件  '
+      - '  &f并删除这个草稿  '
+      - ''
+      - '&a左键&7 | &f执行操作'
+  附:
+    material: LAVA_BUCKET
+    display: '&a&l附件槽'
+    lore:
+      - ''
+      - '  &f这是一个空的附件槽，  '
+      - '  &f我们可以在这里放置一些附件  '
+      - ''
+      - '&a左键&7 | &f添加附件'
+      - '&a左键 拖入物品&7 | &f快速添加物品附件'
+# 非必选物品
+other-items:
+  黑:
+    material: BLACK_STAINED_GLASS_PANE
+    custom-model: 10000
+    display: '&0'
+  例:
+    # 必选，物品材质，可以用原版，也可以
+    # 原版物品ID#CustomModelData 增加CMD
+    # mythic- 开头使用 MythicMobs 物品
+    # itemsadder- 开头使用 ItemsAdder 物品
+    material: 'STONE#10000'
+    # 可选，添加一个耐久1附魔与隐藏附魔flag，使得物品具有附魔光泽
+    glow: true
+    # 可选，物品名
+    display: '例子'
+    # 可选，物品Lore
+    lore:
+      - '这是一个完整例子，我们将在这里'
+      - '展示非必选物品的所有特性'
+      - '除了点击动作以外，必选物品也能用这里的特性'
+    # 可选，物品点击动作，以下分别是左键点击、右键点击、Shift+左键点击、Shfit+右键点击、鼠标悬停按Q键
+    # 格式为 [类型]参数。有以下类型，写法与 DeluxeMenus 类似，但没有它那么丰富
+    # [console] 控制台命令
+    # [player] 玩家命令
+    # [message] 聊天栏消息
+    # 均支持使用 PAPI
+    left-click-commands: []
+    right-click-commands: []
+    shift-left-click-commands: []
+    shift-right-click-commands: []
+    drop-commands:
+      - '[console]dm open cd_main %player_name%'
+      - '[player]spawn'
+      - '[message]Ciallo～(∠・ω< )⌒★'
