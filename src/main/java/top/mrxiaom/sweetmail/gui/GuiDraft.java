@@ -12,34 +12,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
-import top.mrxiaom.sweetmail.config.MenuDraftConfig;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
-import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
-import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GuiDraft extends AbstractPluginHolder implements IGui {
-    MenuDraftConfig config;
-    Player player;
-    DraftManager.Draft draft;
+public class GuiDraft extends AbstractDraftGui {
     Runnable reopen = () -> {
         plugin.getGuiManager().openGui(this);
     };
     public GuiDraft(SweetMail plugin, Player player) {
-        super(plugin);
-        this.config = MenuDraftConfig.inst();
-        this.player = player;
-        this.draft = DraftManager.inst().getDraft(player);
+        super(plugin, player);
     }
 
-    @Override
-    public Player getPlayer() {
-        return player;
-    }
 
     @Override
     public Inventory newInventory() {
@@ -204,15 +191,5 @@ public class GuiDraft extends AbstractPluginHolder implements IGui {
                 player.updateInventory();
             }
         }
-    }
-
-    @Override
-    public void onDrag(InventoryView view, InventoryDragEvent event) {
-        event.setCancelled(true);
-    }
-
-    @Override
-    public void onClose(InventoryView view) {
-
     }
 }
