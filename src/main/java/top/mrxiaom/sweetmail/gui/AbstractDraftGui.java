@@ -1,7 +1,7 @@
 package top.mrxiaom.sweetmail.gui;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.InventoryView;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.MenuDraftConfig;

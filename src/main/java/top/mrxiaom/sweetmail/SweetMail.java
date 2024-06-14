@@ -3,8 +3,6 @@ package top.mrxiaom.sweetmail;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
@@ -17,13 +15,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.database.MailDatabase;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.utils.Util;
-
-import java.sql.Connection;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
 

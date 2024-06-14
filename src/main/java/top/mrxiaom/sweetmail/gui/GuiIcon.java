@@ -3,7 +3,10 @@ package top.mrxiaom.sweetmail.gui;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +15,10 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GuiIcon extends AbstractDraftGui {
     String title;

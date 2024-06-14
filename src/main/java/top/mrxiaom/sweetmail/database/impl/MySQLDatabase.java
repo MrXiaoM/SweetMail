@@ -2,7 +2,6 @@ package top.mrxiaom.sweetmail.database.impl;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import jdk.internal.util.xml.impl.Input;
 import org.bukkit.configuration.MemoryConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.IMailDatabase;
