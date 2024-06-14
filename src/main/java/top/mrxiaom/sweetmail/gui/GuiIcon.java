@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.gui;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -13,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.PAPI;
 import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class GuiIcon extends AbstractDraftGui {
             }
         }
         size = Math.min(54, ((pairs.size() / 9) + 1) * 9);
-        Inventory inv = Bukkit.createInventory(null, size, PlaceholderAPI.setPlaceholders(player, title));
+        Inventory inv = Bukkit.createInventory(null, size, PAPI.setPlaceholders(player, title));
         for (int i = 0; i < pairs.size(); i++) {
             Pair<String, String> pair = pairs.get(i);
             ItemStack item = ItemStackUtil.getItem(pair.getValue());

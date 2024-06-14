@@ -2,7 +2,6 @@ package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.HumanEntity;
@@ -21,6 +20,8 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static top.mrxiaom.sweetmail.utils.Pair.replace;
+
 @SuppressWarnings({"unused"})
 public class Util {
     public static Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -38,6 +39,7 @@ public class Util {
                 players.put(e.getPlayer().getName(), e.getPlayer());
             }
         }, plugin);
+        PAPI.init();
         IA.init();
         Mythic.load();
     }
@@ -52,10 +54,7 @@ public class Util {
 
     @SafeVarargs
     public static void runCommands(Player player, List<String> list, Pair<String, Object>... replacements) {
-        for (String s : ColorHelper.parseColor(PlaceholderAPI.setPlaceholders(player, list))) {
-            for (Pair<String, Object> pair : replacements) {
-                s = s.replace(pair.getKey(), String.valueOf(pair.getValue()));
-            }
+        for (String s : ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(list, replacements)))) {
             if (s.startsWith("[console]")) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.substring(9));
             }

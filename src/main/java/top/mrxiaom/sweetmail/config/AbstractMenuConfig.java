@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.config;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,6 +14,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.PAPI;
 import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.io.File;
@@ -43,10 +43,10 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
         @SafeVarargs
         public final ItemStack generateIcon(OfflinePlayer target, ItemStack item, Pair<String, Object>... replacements) {
             if (display != null) {
-                ItemStackUtil.setItemDisplayName(item, PlaceholderAPI.setPlaceholders(target, replace(display, replacements)));
+                ItemStackUtil.setItemDisplayName(item, PAPI.setPlaceholders(target, replace(display, replacements)));
             }
             if (!lore.isEmpty()) {
-                ItemStackUtil.setItemLore(item, PlaceholderAPI.setPlaceholders(target, replace(lore, replacements)));
+                ItemStackUtil.setItemLore(item, PAPI.setPlaceholders(target, replace(lore, replacements)));
             }
             if (glow) {
                 ItemStackUtil.setGlow(item);
@@ -79,7 +79,7 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
                     break;
             }
             if (commands == null || commands.isEmpty()) return;
-            commands = PlaceholderAPI.setPlaceholders(player, commands);
+            commands = PAPI.setPlaceholders(player, commands);
             for (String s : commands) {
                 if (s.startsWith("[console]")) {
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.substring(9).trim());
@@ -142,7 +142,7 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
      */
     protected abstract ItemStack tryApplyMainIcon(String key, Player target, int iconIndex);
     public Inventory createInventory(Player target) {
-        return Bukkit.createInventory(null, inventory.length, PlaceholderAPI.setPlaceholders(target, title));
+        return Bukkit.createInventory(null, inventory.length, PAPI.setPlaceholders(target, title));
     }
     public void applyIcons(Inventory inv, Player target) {
         applyIcons(inv::setItem, target);
