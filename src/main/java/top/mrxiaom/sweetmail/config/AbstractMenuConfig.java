@@ -114,6 +114,7 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
     public Map<String, Icon> otherIcon = new HashMap<>();
     String title;
     public char[] inventory;
+    protected YamlConfiguration config;
     public AbstractMenuConfig(SweetMail plugin, String file) {
         super(plugin);
         this.configFile = new File(plugin.getDataFolder(), this.file = file);
@@ -197,7 +198,7 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
             plugin.saveResource(file, true);
         }
 
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+        config = YamlConfiguration.loadConfiguration(configFile);
         ConfigurationSection section;
         title = ColorHelper.parseColor(config.getString("title", "菜单标题"));
         inventory = String.join("", config.getStringList("inventory")).toCharArray();

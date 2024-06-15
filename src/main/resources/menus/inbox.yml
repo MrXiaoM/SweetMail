@@ -1,0 +1,53 @@
+# 界面标题，支持 PAPI
+title-all: '&0收件箱 全部 %page%/%max_page%'
+title-all-other: '&0%target% 的收件箱 全部 %page%/%max_page%'
+title-unread: '&0收件箱 未读 %page%/%max_page%'
+title-unread-other: '&0%target% 的收件箱 未读 %page%/%max_page%'
+# 界面布局，每行9个图标，不能超过6行
+inventory:
+  - '全黑黑黑黑黑黑黑黑'
+  - '读黑格格格格格格黑'
+  - '　黑格格格格格格黑'
+  - '上黑格格格格格格黑'
+  - '下黑黑黑黑黑黑黑领'
+# 必选物品
+items:
+  全:
+    material: ITEM_FRAME
+    display: '&e&l收件箱 全部邮件'
+    lore:
+      - ''
+      - '  &f查看收件箱的全部邮件  '
+      - ''
+      - '&a左键&7 | &f查看该分类'
+  读:
+    material: PAINTING
+    display: '&e&l收件箱 未读邮件'
+    lore:
+      - ''
+      - '  &f查看收件箱的未读邮件  '
+      - ''
+      - '&a左键&7 | &f查看该分类'
+      - '&b右键&7 | &f全部标为已读'
+  上:
+    material: PAPER
+    display: '&e&l上一页'
+  下:
+    material: PAPER
+    display: '&e&l下一页'
+  领:
+    material: CHEST
+    display: '&e&l领取附件'
+    redirect: 黑
+    lore:
+      - ''
+      - '  &f领取所有未领取附件  '
+      - ''
+      - '&a左键&7 | &f领取附件'
+# 非必选物品
+other-items:
+  黑:
+    material: BLACK_STAINED_GLASS_PANE
+    custom-model: 10000
+    display: '&0'
+
