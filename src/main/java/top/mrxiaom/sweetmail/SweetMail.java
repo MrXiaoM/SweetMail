@@ -16,9 +16,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.database.MailDatabase;
+import top.mrxiaom.sweetmail.database.entry.IAttachment;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.utils.Util;
+
+import java.util.List;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
 
@@ -62,7 +66,8 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
-        getLogger().info("SweetRiceBase 加载完毕");
+        IMail.instance = new MailAPI();
+        getLogger().info("SweetMail 加载完毕");
     }
 
     public void loadFunctions() {
@@ -128,5 +133,30 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         FileConfiguration config = getConfig();
 
         reloadAllConfig(config);
+    }
+
+    private class MailAPI extends IMail {
+        private MailAPI() {
+        }
+        @Override
+        protected boolean send(MailDraft draft) {
+            List<String> receivers = draft.getReceivers();
+            if (receivers.isEmpty()) {
+                return false;
+            }
+            MailDatabase db = getDatabase();
+
+            String uuid = db.generateMailUUID();
+            String sender = draft.getSender();
+            String senderDisplay = draft.getSenderDisplay();
+            String icon = draft.getIcon();
+            String title = draft.getTitle();
+            List<String> content = draft.getContent();
+            List<IAttachment> attachments = draft.getAttachments();
+
+            Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
+            db.sendMail(mail);
+            return true;
+        }
     }
 }
