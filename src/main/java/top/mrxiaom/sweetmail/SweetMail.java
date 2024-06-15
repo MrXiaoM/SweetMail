@@ -29,7 +29,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return instance;
     }
     public static void warn(Throwable t) {
-        getInstance().getLogger().warning(Util.stackTraceToString(t));
+        warn(Util.stackTraceToString(t));
+    }
+    public static void warn(String s) {
+        getInstance().getLogger().warning(s);
     }
     private GuiManager guiManager = null;
     private MailDatabase database = null;

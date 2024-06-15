@@ -27,7 +27,6 @@ dependencies {
     // API
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
-    compileOnly("org.xerial:sqlite-jdbc:3.41.2.2")
 
     // Dependency Plugins
     compileOnly("me.clip:placeholderapi:2.11.5")

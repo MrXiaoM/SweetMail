@@ -5,8 +5,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
-import top.mrxiaom.sweetmail.database.impl.FileDatabase;
 import top.mrxiaom.sweetmail.database.impl.MySQLDatabase;
+import top.mrxiaom.sweetmail.database.impl.SQLiteDatabase;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 
 import java.io.File;
@@ -17,7 +17,7 @@ public class MailDatabase extends AbstractPluginHolder {
     File configFile;
     YamlConfiguration config;
     MySQLDatabase mysql = new MySQLDatabase();
-    FileDatabase file = new FileDatabase();
+    SQLiteDatabase sqlite = new SQLiteDatabase();
     IMailDatabase database = null;
     public MailDatabase(SweetMail plugin) {
         super(plugin);
@@ -75,10 +75,10 @@ public class MailDatabase extends AbstractPluginHolder {
         if (database != null) database.onDisable();
         if (type.equalsIgnoreCase("mysql")) {
             database = mysql;
-        } else if (type.equalsIgnoreCase("file")) {
-            database = file;
+        } else if (type.equalsIgnoreCase("sqlite")) {
+            database = sqlite;
         } else {
-            database = file;
+            database = sqlite;
         }
         database.reload(config);
     }

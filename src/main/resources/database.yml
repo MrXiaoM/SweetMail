@@ -1,9 +1,9 @@
 # 数据库配置
 database:
   # 数据库类型:
-  # file - 使用 yaml 配置文件，不支持跨服，不推荐
+  # sqlite - 使用 SQLite 数据库 (mail.db)，不支持跨服
   # mysql - 使用 MySQL 数据库
-  type: file
+  type: sqlite
   host: localhost
   port: 3306
   user: root
