@@ -58,8 +58,8 @@ public class MySQLDatabase implements IMailDatabase {
                     "CREATE TABLE if NOT EXISTS `" + TABLE_STATUS + "`(" +
                             "`uuid` VARCHAR(32)," +
                             "`receiver` VARCHAR(32)," +
-                            "`read` TINYINT(1)," +
-                            "`used` TINYINT(1)," +
+                            "`read` TINYINT(1) DEFAULT 0," +
+                            "`used` TINYINT(1) DEFAULT 0," +
                             "PRIMARY KEY(`uuid`, `receiver`)" +
                     ");");
             ps.execute();
@@ -128,7 +128,27 @@ public class MySQLDatabase implements IMailDatabase {
                     : "`receiver` = ?";
             PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
                     "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") as A) " +
-                    "LIMIT " + offset + ", " + perPage + " " +
+                    "ORDER BY `used` DESC, `time` DESC " +
+                    "LIMIT " + offset + ", " + perPage + ";");
+            ps.setString(1, player);
+            try (ResultSet result = ps.executeQuery()) {
+                while (result.next()) {
+                    mailList.add(resolveResult(result));
+                }
+            }
+        } catch (SQLException | IOException e) {
+            SweetMail.warn(e);
+        }
+        return mailList;
+    }
+
+    @Override
+    public List<MailWithStatus> getInBoxUnused(String player) {
+        List<MailWithStatus> mailList = new ArrayList<>();
+        try {
+            Connection conn = dataSource.getConnection();
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
+                    "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE `receiver` = ? AND `used` = 1) as A) " +
                     "ORDER BY `time` DESC;");
             ps.setString(1, player);
             try (ResultSet result = ps.executeQuery()) {
@@ -176,15 +196,33 @@ public class MySQLDatabase implements IMailDatabase {
     }
 
     @Override
-    public void markUsed(String uuid, String receiver) {
+    public void markAllRead(String receiver) {
         try {
             Connection conn = dataSource.getConnection();
             PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
-                    "SET `used` = 1" +
-                    "WHERE `uuid` = ? AND `receiver` = ?;");
-            ps.setString(1, uuid);
-            ps.setString(2, receiver);
+                    "SET `read` = 1" +
+                    "WHERE `receiver` = ?;");
+            ps.setString(1, receiver);
             ps.execute();
+        } catch (SQLException e) {
+            SweetMail.warn(e);
+        }
+    }
+
+    @Override
+    public void markUsed(List<String> uuidList, String receiver) {
+        try {
+            Connection conn = dataSource.getConnection();
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
+                    "SET `used` = 1" +
+                    "WHERE `uuid` = ? AND `receiver` = ?;")) {
+                for (String uuid : uuidList) {
+                    ps.setString(1, uuid);
+                    ps.setString(2, receiver);
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            }
         } catch (SQLException e) {
             SweetMail.warn(e);
         }

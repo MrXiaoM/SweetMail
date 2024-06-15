@@ -24,12 +24,22 @@ public class FileDatabase implements IMailDatabase {
     }
 
     @Override
+    public List<MailWithStatus> getInBoxUnused(String player) {
+        return null;
+    }
+
+    @Override
     public void markRead(String uuid, String receiver) {
 
     }
 
     @Override
-    public void markUsed(String uuid, String receiver) {
+    public void markAllRead(String receiver) {
+
+    }
+
+    @Override
+    public void markUsed(List<String> uuidList, String receiver) {
 
     }
 
