@@ -27,6 +27,7 @@ dependencies {
     // API
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
+    compileOnly("org.xerial:sqlite-jdbc:3.41.2.2")
 
     // Dependency Plugins
     compileOnly("me.clip:placeholderapi:2.11.5")
@@ -37,7 +38,6 @@ dependencies {
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
     compileOnly("io.lumine:Mythic:5.4.1")
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
-    compileOnly("org.xerial:sqlite-jdbc:3.41.2.2")
 
     // Shadow Dependency
     implementation("com.zaxxer:HikariCP:4.0.3")
