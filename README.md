@@ -52,3 +52,28 @@ other-items:
     material: 'BLACK_STAINED_GLASS_PANE#10000'
     display: '&0'
 ```
+
+# 开发者
+
+```kotlin
+repositories {
+    maven("https://jitpack.io")
+}
+dependencies {
+    compileOnly("com.github.MrXiaoM:SweetMail:$VERSION")
+}
+```
+
+```java
+import top.mrxiaom.sweetmail.IMail;
+// 使用示例
+void foo() {
+    boolean success = IMail.api()
+            .createSystemMail("系统消息")
+            .setIcon("BOOK") // 设置图标，详见源码注释
+            .setTitle("标题")
+            .addContent("邮件内容")
+            .addAttachments() // 添加附件
+            .send();
+}
+```
