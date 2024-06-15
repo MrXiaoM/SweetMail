@@ -22,8 +22,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public static final String PERM_DRAFT = "sweetmail.draft";
     public static final String PERM_BOX = "sweetmail.box";
     public static final String PERM_BOX_OTHER = "sweetmail.box.other";
+    private static String prefix;
+    public static String prefix() {
+        return prefix;
+    }
     private List<String> helpPlayer;
     private List<String> helpAdmin;
+    private String cmdReload;
+    private String cmdReloadDatabase;
     public CommandMain(SweetMail plugin) {
         super(plugin);
         registerCommand("sweetmail", this);
@@ -34,6 +40,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public void reloadConfig(MemoryConfiguration config) {
         helpPlayer = config.getStringList("help.player");
         helpAdmin = config.getStringList("help.admin");
+        prefix = config.getString("messages.prefix");
+        cmdReload = config.getString("messages.command.reload");
+        cmdReloadDatabase = config.getString("messages.command.reload-database");
     }
 
     @Override
@@ -103,11 +112,16 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 return true;
             }
             if ("reload".equalsIgnoreCase(args[0]) && admin) {
-                // TODO: 重载配置文件
+                if (args.length > 1 && "database".equalsIgnoreCase(args[1])) {
+                    plugin.getDatabase().reload();
+                    t(sender, prefix + cmdReloadDatabase);
+                    return true;
+                }
+                plugin.reloadConfig();
+                t(sender, prefix + cmdReload);
                 return true;
             }
         }
-        // TODO: 显示帮助命令
         t(sender, helpPlayer);
         if (admin) {
             t(sender, helpAdmin);

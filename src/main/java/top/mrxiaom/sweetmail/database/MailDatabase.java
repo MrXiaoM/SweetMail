@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.database;
 
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
@@ -18,6 +17,9 @@ public class MailDatabase extends AbstractPluginHolder {
     YamlConfiguration config;
     MySQLDatabase mysql = new MySQLDatabase();
     SQLiteDatabase sqlite = new SQLiteDatabase();
+    IMailDatabase[] databases = new IMailDatabase[] {
+            mysql, sqlite
+    };
     IMailDatabase database = null;
     public MailDatabase(SweetMail plugin) {
         super(plugin);
@@ -59,28 +61,31 @@ public class MailDatabase extends AbstractPluginHolder {
     }
 
     /**
-     * @see IMailDatabase#markUsed(String, String)
+     * @see IMailDatabase#markUsed(List, String)
      */
-    public void markUsed(String uuid, String receiver) {
-        database.markUsed(uuid, receiver);
+    public void markUsed(List<String> uuidList, String receiver) {
+        database.markUsed(uuidList, receiver);
     }
 
-    @Override
-    public void reloadConfig(MemoryConfiguration cfg) {
+    public MailDatabase reload() {
         if (!configFile.exists()) {
             plugin.saveResource("database.yml", true);
         }
         config = YamlConfiguration.loadConfiguration(configFile);
-        String type = config.getString("database.type", "file");
-        if (database != null) database.onDisable();
-        if (type.equalsIgnoreCase("mysql")) {
-            database = mysql;
-        } else if (type.equalsIgnoreCase("sqlite")) {
-            database = sqlite;
-        } else {
-            database = sqlite;
+        String type = config.getString("database.type", "sqlite").toLowerCase();
+
+        for (IMailDatabase db : databases) db.onDisable();
+        switch (type) {
+            case "mysql":
+                database = mysql;
+                break;
+            case "sqlite":
+            default:
+                database = sqlite;
+                break;
         }
         database.reload(config);
+        return this;
     }
 
     @Override

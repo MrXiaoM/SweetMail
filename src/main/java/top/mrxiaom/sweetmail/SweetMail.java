@@ -68,7 +68,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public void loadFunctions() {
         AbstractPluginHolder.loadModules(this);
         guiManager = new GuiManager(this);
-        database = new MailDatabase(this);
+        database = new MailDatabase(this).reload();
     }
 
     public void loadHooks() {

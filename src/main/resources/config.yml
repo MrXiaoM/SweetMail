@@ -24,7 +24,12 @@ help:
     - '  &f/mail inbox <all/unread> <玩家> &8-- &e为某人打开收件箱'
     - '  &f/mail admin outbox <玩家> &8-- &e打开某玩家的发件箱'
     - '  &f/mail admin inbox <all/unread> <玩家> &8-- &e打开某玩家的收件箱'
+    - '  &f/mail reload database &8-- &3重载数据库'
     - '  &f/mail reload &8-- &3重载配置文件'
 
 # 提示消息 (待定)
-messages: {}
+messages:
+  prefix: '&7[&e&l邮件&7] &a'
+  command:
+    reload: '配置文件已重载 &7(如需重载数据库，请使用 &f/mail reload database&7)'
+    reload-database: '数据库配置已重载，已重新连接数据库'
