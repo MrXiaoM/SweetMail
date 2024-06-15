@@ -23,9 +23,8 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
     protected abstract Connection getConnection() throws SQLException;
 
     protected void createTables() {
-        try {
-            Connection conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement(
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(
                     "CREATE TABLE if NOT EXISTS `" + TABLE_BOX + "`(" +
                             "`uuid` VARCHAR(32) PRIMARY KEY," +
                             "`sender` VARCHAR(32)," +
@@ -38,8 +37,9 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
                             "`read` TINYINT(1) DEFAULT 0," +
                             "`used` TINYINT(1) DEFAULT 0," +
                             "PRIMARY KEY(`uuid`, `receiver`)" +
-                    ");");
-            ps.execute();
+                    ");")) {
+                ps.execute();
+            }
         } catch (SQLException e) {
             SweetMail.warn(e);
         }
@@ -47,8 +47,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
 
     @Override
     public void sendMail(Mail mail) {
-        try {
-            Connection conn = getConnection();
+        try (Connection conn = getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, NOW());")) {
                 ps.setString(1, mail.uuid);
                 ps.setString(2, mail.sender);
@@ -75,17 +74,17 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
     @Override
     public List<MailWithStatus> getOutBox(String player, int page, int perPage) {
         List<MailWithStatus> mailList = new ArrayList<>();
-        try {
+        try (Connection conn = getConnection()) {
             int offset = (page - 1) * perPage;
-            Connection conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
                     "(`" + TABLE_STATUS + "` NATURAL JOIN (SELECT * FROM `" + TABLE_BOX + "` WHERE `sender` = ?) as A) " +
                     "LIMIT " + offset + ", " + perPage + " " +
-                    "ORDER BY `time` DESC;");
-            ps.setString(1, player);
-            try (ResultSet result = ps.executeQuery()) {
-                while (result.next()) {
-                    mailList.add(resolveResult(result));
+                    "ORDER BY `time` DESC;")) {
+                ps.setString(1, player);
+                try (ResultSet result = ps.executeQuery()) {
+                    while (result.next()) {
+                        mailList.add(resolveResult(result));
+                    }
                 }
             }
         } catch (SQLException | IOException e) {
@@ -97,20 +96,20 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
     @Override
     public List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
         List<MailWithStatus> mailList = new ArrayList<>();
-        try {
+        try (Connection conn = getConnection()) {
             int offset = (page - 1) * perPage;
-            Connection conn = getConnection();
             String conditions = unread
                     ? "`receiver` = ? AND unread = 1"
                     : "`receiver` = ?";
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
                     "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") as A) " +
                     "ORDER BY `used` DESC, `time` DESC " +
-                    "LIMIT " + offset + ", " + perPage + ";");
-            ps.setString(1, player);
-            try (ResultSet result = ps.executeQuery()) {
-                while (result.next()) {
-                    mailList.add(resolveResult(result));
+                    "LIMIT " + offset + ", " + perPage + ";")) {
+                ps.setString(1, player);
+                try (ResultSet result = ps.executeQuery()) {
+                    while (result.next()) {
+                        mailList.add(resolveResult(result));
+                    }
                 }
             }
         } catch (SQLException | IOException e) {
@@ -122,15 +121,15 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
     @Override
     public List<MailWithStatus> getInBoxUnused(String player) {
         List<MailWithStatus> mailList = new ArrayList<>();
-        try {
-            Connection conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
                     "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE `receiver` = ? AND `used` = 1) as A) " +
-                    "ORDER BY `time` DESC;");
-            ps.setString(1, player);
-            try (ResultSet result = ps.executeQuery()) {
-                while (result.next()) {
-                    mailList.add(resolveResult(result));
+                    "ORDER BY `time` DESC;")) {
+                ps.setString(1, player);
+                try (ResultSet result = ps.executeQuery()) {
+                    while (result.next()) {
+                        mailList.add(resolveResult(result));
+                    }
                 }
             }
         } catch (SQLException | IOException e) {
@@ -159,14 +158,14 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
 
     @Override
     public void markRead(String uuid, String receiver) {
-        try {
-            Connection conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
                     "SET `read` = 1" +
-                    "WHERE `uuid` = ? AND `receiver` = ?;");
-            ps.setString(1, uuid);
-            ps.setString(2, receiver);
-            ps.execute();
+                    "WHERE `uuid` = ? AND `receiver` = ?;")) {
+                ps.setString(1, uuid);
+                ps.setString(2, receiver);
+                ps.execute();
+            }
         } catch (SQLException e) {
             SweetMail.warn(e);
         }
@@ -174,13 +173,13 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
 
     @Override
     public void markAllRead(String receiver) {
-        try {
-            Connection conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
                     "SET `read` = 1" +
-                    "WHERE `receiver` = ?;");
-            ps.setString(1, receiver);
-            ps.execute();
+                    "WHERE `receiver` = ?;")) {
+                ps.setString(1, receiver);
+                ps.execute();
+            }
         } catch (SQLException e) {
             SweetMail.warn(e);
         }
@@ -188,8 +187,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabase {
 
     @Override
     public void markUsed(List<String> uuidList, String receiver) {
-        try {
-            Connection conn = getConnection();
+        try (Connection conn = getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
                     "SET `used` = 1" +
                     "WHERE `uuid` = ? AND `receiver` = ?;")) {
