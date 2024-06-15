@@ -18,9 +18,18 @@ public abstract class IMail {
 
     protected abstract boolean send(MailDraft draft);
 
+    /**
+     * 创建邮件草稿，不会覆盖发件人创建的草稿
+     * @param sender 发件人
+     */
     public MailDraft createMail(String sender) {
         return new MailDraft(sender);
     }
+
+    /**
+     * 创建系统邮件草稿
+     * @param senderDisplay 系统邮件发件人显示名称
+     */
     public MailDraft createSystemMail(String senderDisplay) {
         return new MailDraft(SERVER_SENDER).setSenderDisplay(senderDisplay);
     }
@@ -28,7 +37,7 @@ public abstract class IMail {
     public class MailDraft {
         private final String sender;
         private String senderDisplay;
-        private String icon = "default";
+        private String icon = "PAPER";
         private List<String> receivers = new ArrayList<>();
         private String title = "";
         private List<String> content = new ArrayList<>();
