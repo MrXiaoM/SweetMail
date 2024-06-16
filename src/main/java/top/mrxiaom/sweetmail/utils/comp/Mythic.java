@@ -1,6 +1,7 @@
-package top.mrxiaom.sweetmail.utils;
+package top.mrxiaom.sweetmail.utils.comp;
 
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.mythic.Mythic4;
 import top.mrxiaom.sweetmail.utils.mythic.Mythic5;
 
@@ -11,7 +12,7 @@ public class Mythic {
         Optional<ItemStack> getItem(String name);
     }
     private static IMythic proxy = null;
-    protected static void load() {
+    public static void load() {
         proxy = null;
         if (Util.isPresent("io.lumine.mythic.bukkit.MythicBukkit")) {
             proxy = new Mythic5();

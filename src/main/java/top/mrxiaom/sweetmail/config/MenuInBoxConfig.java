@@ -1,14 +1,13 @@
 package top.mrxiaom.sweetmail.config;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.utils.PAPI;
+import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 public class MenuInBoxConfig extends AbstractMenuConfig {
     String titleAll, titleAllOther, titleUnread, titleUnreadOther;

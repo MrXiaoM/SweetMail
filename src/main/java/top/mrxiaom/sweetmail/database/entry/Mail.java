@@ -2,7 +2,6 @@ package top.mrxiaom.sweetmail.database.entry;
 
 import com.google.gson.*;
 import org.bukkit.inventory.ItemStack;
-import top.mrxiaom.sweetmail.utils.Func8;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 
 import java.time.LocalDateTime;
@@ -118,5 +117,10 @@ public class Mail {
             }
         }
         return Collections.unmodifiableList(list);
+    }
+
+    @FunctionalInterface
+    public interface Func8<T1, T2, T3, T4, T5, T6, T7, T8, R> {
+        R apply(T1 var1, T2 var2, T3 var3, T4 var4, T5 var5, T6 var6, T7 var7, T8 var8);
     }
 }

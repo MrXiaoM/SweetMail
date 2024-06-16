@@ -11,6 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.sweetmail.utils.comp.IA;
+import top.mrxiaom.sweetmail.utils.comp.Mythic;
+import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.io.*;
 import java.util.*;

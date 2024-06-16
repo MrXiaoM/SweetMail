@@ -14,7 +14,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.PAPI;
+import top.mrxiaom.sweetmail.utils.comp.PAPI;
 import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.io.File;

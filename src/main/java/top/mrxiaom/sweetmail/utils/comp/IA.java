@@ -1,7 +1,8 @@
-package top.mrxiaom.sweetmail.utils;
+package top.mrxiaom.sweetmail.utils.comp;
 
 import dev.lone.itemsadder.api.CustomStack;
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.Map;
 import java.util.Optional;
@@ -10,7 +11,7 @@ import java.util.TreeMap;
 public class IA {
     private static final Map<String, ItemStack> cache = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private static boolean isEnabled = false;
-    protected static void init() {
+    public static void init() {
         isEnabled = Util.isPresent("dev.lone.itemsadder.api.CustomStack");
     }
     public static Optional<ItemStack> get(String id) {

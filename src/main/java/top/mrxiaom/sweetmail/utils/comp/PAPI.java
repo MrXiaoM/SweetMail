@@ -1,14 +1,15 @@
-package top.mrxiaom.sweetmail.utils;
+package top.mrxiaom.sweetmail.utils.comp;
 
 import com.google.common.collect.Lists;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.OfflinePlayer;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
 
 public class PAPI {
     private static boolean isEnabled = false;
-    protected static void init() {
+    public static void init() {
         isEnabled = Util.isPresent("me.clip.placeholderapi.PlaceholderAPI");
     }
     public static String setPlaceholders(OfflinePlayer player, String s) {

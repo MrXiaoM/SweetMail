@@ -12,6 +12,8 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
+import top.mrxiaom.sweetmail.utils.comp.IA;
+import top.mrxiaom.sweetmail.utils.comp.Mythic;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

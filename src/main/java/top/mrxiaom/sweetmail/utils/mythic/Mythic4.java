@@ -3,7 +3,7 @@ package top.mrxiaom.sweetmail.utils.mythic;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
 import org.bukkit.inventory.ItemStack;
-import top.mrxiaom.sweetmail.utils.Mythic;
+import top.mrxiaom.sweetmail.utils.comp.Mythic;
 
 import java.util.Optional;
 
