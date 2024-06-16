@@ -103,7 +103,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                     : "`receiver` = ?";
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
                     "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") as A) " +
-                    "ORDER BY `used` DESC, `time` DESC " +
+                    "ORDER BY `used` ASC, `time` DESC " +
                     "LIMIT " + offset + ", " + perPage + ";")) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
@@ -123,7 +123,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
         List<MailWithStatus> mailList = new ArrayList<>();
         try (Connection conn = getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
-                    "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE `receiver` = ? AND `used` = 1) as A) " +
+                    "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE `receiver` = ? AND `used` = 0) as A) " +
                     "ORDER BY `time` DESC;")) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
