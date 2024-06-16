@@ -30,7 +30,6 @@ dependencies {
 
     // Dependency Plugins
     compileOnly("me.clip:placeholderapi:2.11.5")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("org.black_ixx:playerpoints:3.2.5")
 
     // MythicMobs 4 and 5
