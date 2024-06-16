@@ -8,10 +8,11 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.gui.GuiDraft;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 
-public class MenuDraftConfig extends AbstractMenuConfig {
+public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
     Icon iconReceiver;
     String iconReceiverUnset;
     public String iconReceiverPromptTips;
@@ -95,7 +96,7 @@ public class MenuDraftConfig extends AbstractMenuConfig {
     }
 
     @Override
-    protected ItemStack tryApplyMainIcon(String key, Player target, int iconIndex) {
+    protected ItemStack tryApplyMainIcon(GuiDraft gui, String key, Player target, int iconIndex) {
         DraftManager manager = DraftManager.inst();
         DraftManager.Draft draft = manager.getDraft(target);
         switch (key) {

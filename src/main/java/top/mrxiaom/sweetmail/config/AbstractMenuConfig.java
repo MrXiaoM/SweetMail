@@ -12,6 +12,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
+import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
@@ -25,7 +26,7 @@ import java.util.function.BiConsumer;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
-public abstract class AbstractMenuConfig extends AbstractPluginHolder {
+public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginHolder {
     public static class Icon {
         String material;
         boolean glow;
@@ -141,28 +142,28 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
      * @param iconIndex 该键在界面配置中第几次出现，从0数起
      * @return 图标物品
      */
-    protected abstract ItemStack tryApplyMainIcon(String key, Player target, int iconIndex);
-    public Inventory createInventory(Player target) {
+    protected abstract ItemStack tryApplyMainIcon(T gui, String key, Player target, int iconIndex);
+    public Inventory createInventory(T gui, Player target) {
         return Bukkit.createInventory(null, inventory.length, PAPI.setPlaceholders(target, title));
     }
-    public void applyIcons(Inventory inv, Player target) {
-        applyIcons(inv::setItem, target);
+    public void applyIcons(T gui, Inventory inv, Player target) {
+        applyIcons(gui, inv::setItem, target);
     }
-    public void applyIcons(InventoryView inv, Player target) {
-        applyIcons(inv::setItem, target);
+    public void applyIcons(T gui, InventoryView inv, Player target) {
+        applyIcons(gui, inv::setItem, target);
     }
-    public void applyIcons(BiConsumer<Integer, ItemStack> setItem, Player target) {
+    public void applyIcons(T gui, BiConsumer<Integer, ItemStack> setItem, Player target) {
         for (int i = 0; i < this.inventory.length; i++) {
-            applyIcon(setItem, target, i);
+            applyIcon(gui, setItem, target, i);
         }
     }
-    public void applyIcon(Inventory inv, Player target, int i) {
-        applyIcon(inv::setItem, target, i);
+    public void applyIcon(T gui, Inventory inv, Player target, int i) {
+        applyIcon(gui, inv::setItem, target, i);
     }
-    public void applyIcon(InventoryView inv, Player target, int i) {
-        applyIcon(inv::setItem, target, i);
+    public void applyIcon(T gui, InventoryView inv, Player target, int i) {
+        applyIcon(gui, inv::setItem, target, i);
     }
-    public void applyIcon(BiConsumer<Integer, ItemStack> setItem, Player target, int i) {
+    public void applyIcon(T gui, BiConsumer<Integer, ItemStack> setItem, Player target, int i) {
         if (i >= this.inventory.length) return;
         char c = this.inventory[i];
         String key = String.valueOf(c);
@@ -171,7 +172,7 @@ public abstract class AbstractMenuConfig extends AbstractPluginHolder {
             return;
         }
         int index = getKeyIndex(c, i);
-        ItemStack item = tryApplyMainIcon(key, target, index);
+        ItemStack item = tryApplyMainIcon(gui, key, target, index);
         if (item != null) {
             setItem.accept(i, item);
             return;

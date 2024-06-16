@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.database;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
@@ -9,8 +10,7 @@ import top.mrxiaom.sweetmail.database.impl.SQLiteDatabase;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 
 import java.io.File;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class MailDatabase extends AbstractPluginHolder implements IMailDatabase {
     File configFile;
@@ -21,10 +21,15 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
             mysql, sqlite
     };
     IMailDatabaseReloadable database = null;
+    Set<String> canUsePlayers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     public MailDatabase(SweetMail plugin) {
         super(plugin);
         this.configFile = new File(plugin.getDataFolder(), "database.yml");
         register();
+    }
+
+    public boolean hasUnUsed(String player) {
+        return canUsePlayers.contains(player);
     }
 
     public String generateMailUUID() {
@@ -44,12 +49,32 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
 
     @Override
     public List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
-        return database.getInBox(unread, player, page, perPage);
+        List<MailWithStatus> inBox = database.getInBox(unread, player, page, perPage);
+        boolean flag = false;
+        for (MailWithStatus mail : inBox) {
+            if (!mail.used) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            canUsePlayers.add(player);
+        }
+        else {
+            canUsePlayers.remove(player);
+        }
+        return inBox;
     }
 
     @Override
     public List<MailWithStatus> getInBoxUnused(String player) {
-        return database.getInBoxUnused(player);
+        List<MailWithStatus> inBox = database.getInBoxUnused(player);
+        if (!inBox.isEmpty()) {
+            canUsePlayers.add(player);
+        } else {
+            canUsePlayers.remove(player);
+        }
+        return inBox;
     }
 
     @Override

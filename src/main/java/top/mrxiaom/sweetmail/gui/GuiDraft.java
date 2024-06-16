@@ -33,8 +33,8 @@ public class GuiDraft extends AbstractDraftGui {
 
     @Override
     public Inventory newInventory() {
-        Inventory inv = config.createInventory(player);
-        config.applyIcons(inv, player);
+        Inventory inv = config.createInventory(this, player);
+        config.applyIcons(this, inv, player);
         return inv;
     }
 
@@ -90,7 +90,7 @@ public class GuiDraft extends AbstractDraftGui {
                                 BookMeta meta = (BookMeta) rawMeta;
                                 draft.content = meta.getPages();
                                 draft.save();
-                                config.applyIcon(view, player, slot);
+                                config.applyIcon(this, view, player, slot);
                                 player.updateInventory();
                             }
                         }
@@ -192,7 +192,7 @@ public class GuiDraft extends AbstractDraftGui {
     private void updateAttachmentSlots(InventoryView view) {
         for (int k = 0; k < config.inventory.length; k++) {
             if (config.inventory[k] == '附') {
-                config.applyIcon(view, player, k);
+                config.applyIcon(this, view, player, k);
                 player.updateInventory();
             }
         }
