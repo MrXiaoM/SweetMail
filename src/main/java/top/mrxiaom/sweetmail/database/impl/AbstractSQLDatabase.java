@@ -1,7 +1,7 @@
 package top.mrxiaom.sweetmail.database.impl;
 
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.database.IMailDatabase;
+import top.mrxiaom.sweetmail.database.IMailDatabaseReloadable;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractSQLDatabase implements IMailDatabase {
+public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     protected String TABLE_BOX, TABLE_STATUS;
     protected abstract Connection getConnection() throws SQLException;
 

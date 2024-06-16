@@ -53,7 +53,4 @@ public interface IMailDatabase {
      * @param receiver 接收邮件的玩家
      */
     void markUsed(List<String> uuidList, String receiver);
-
-    void reload(MemoryConfiguration config);
-    void onDisable();
 }

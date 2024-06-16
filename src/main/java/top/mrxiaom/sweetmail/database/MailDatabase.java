@@ -12,15 +12,15 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-public class MailDatabase extends AbstractPluginHolder {
+public class MailDatabase extends AbstractPluginHolder implements IMailDatabase {
     File configFile;
     YamlConfiguration config;
     MySQLDatabase mysql = new MySQLDatabase();
     SQLiteDatabase sqlite = new SQLiteDatabase();
-    IMailDatabase[] databases = new IMailDatabase[] {
+    IMailDatabaseReloadable[] databases = new IMailDatabaseReloadable[] {
             mysql, sqlite
     };
-    IMailDatabase database = null;
+    IMailDatabaseReloadable database = null;
     public MailDatabase(SweetMail plugin) {
         super(plugin);
         this.configFile = new File(plugin.getDataFolder(), "database.yml");
@@ -32,37 +32,37 @@ public class MailDatabase extends AbstractPluginHolder {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    /**
-     * @see IMailDatabase#sendMail(Mail)
-     */
+    @Override
     public void sendMail(Mail mail) {
         database.sendMail(mail);
     }
 
-    /**
-     * @see IMailDatabase#getOutBox(String, int, int)
-     */
+    @Override
     public List<MailWithStatus> getOutBox(String player, int page, int perPage) {
         return database.getOutBox(player, page, perPage);
     }
 
-    /**
-     * @see IMailDatabase#getInBox(boolean, String, int, int)
-     */
+    @Override
     public List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
         return database.getInBox(unread, player, page, perPage);
     }
 
-    /**
-     * @see IMailDatabase#markRead(String, String)
-     */
+    @Override
+    public List<MailWithStatus> getInBoxUnused(String player) {
+        return database.getInBoxUnused(player);
+    }
+
+    @Override
     public void markRead(String uuid, String receiver) {
         database.markRead(uuid, receiver);
     }
 
-    /**
-     * @see IMailDatabase#markUsed(List, String)
-     */
+    @Override
+    public void markAllRead(String receiver) {
+        database.markAllRead(receiver);
+    }
+
+    @Override
     public void markUsed(List<String> uuidList, String receiver) {
         database.markUsed(uuidList, receiver);
     }
@@ -74,7 +74,7 @@ public class MailDatabase extends AbstractPluginHolder {
         config = YamlConfiguration.loadConfiguration(configFile);
         String type = config.getString("database.type", "sqlite").toLowerCase();
 
-        for (IMailDatabase db : databases) db.onDisable();
+        for (IMailDatabaseReloadable db : databases) db.onDisable();
         switch (type) {
             case "mysql":
                 database = mysql;
