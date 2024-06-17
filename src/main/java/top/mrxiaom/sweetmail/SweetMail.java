@@ -20,6 +20,7 @@ import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
+import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
@@ -38,9 +39,14 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public static void warn(String s) {
         getInstance().getLogger().warning(s);
     }
+    private TextHelper textHelper = null;
     private GuiManager guiManager = null;
     private MailDatabase database = null;
     private Economy economy;
+
+    public TextHelper text() {
+        return textHelper;
+    }
 
     public GuiManager getGuiManager() {
         return guiManager;
@@ -72,6 +78,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
     public void loadFunctions() {
         AbstractPluginHolder.loadModules(this);
+        textHelper = new TextHelper(this);
         guiManager = new GuiManager(this);
         database = new MailDatabase(this).reload();
     }

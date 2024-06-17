@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.GuiDraft;
+import top.mrxiaom.sweetmail.gui.GuiInBox;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.ArrayList;
@@ -57,7 +58,10 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     Player player = (Player) sender;
                     String type = args[2];
                     String target = args[3];
-                    // TODO: 打开别人的收件箱
+                    if (!type.equals("unread") && !type.equals("all")) {
+                        return true;
+                    }
+                    plugin.getGuiManager().openGui(new GuiInBox(plugin, player, target, type.equals("unread")));
                     return true;
                 }
                 if (args.length >= 3 && "outbox".equalsIgnoreCase(args[1])) {
@@ -80,19 +84,22 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             }
             if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
                 String type = args.length >= 2 ? args[1] : "unread";
+                if (!type.equals("unread") && !type.equals("all")) {
+                    return true;
+                }
                 if (args.length >= 3 && sender.hasPermission(PERM_BOX_OTHER)) {
                     Player target = Util.getOnlinePlayer(args[2]).orElse(null);
                     if (target == null) {
                         return true;
                     }
-                    // TODO: 为别人打开收件箱
+                    plugin.getGuiManager().openGui(new GuiInBox(plugin, target, target.getName(), type.equals("unread")));
                     return true;
                 }
                 if (!(sender instanceof Player)) {
                     return true;
                 }
                 Player player = (Player) sender;
-                // TODO: 为自己打开收件箱
+                plugin.getGuiManager().openGui(new GuiInBox(plugin, player, player.getName(), type.equals("unread")));
                 return true;
             }
             if ("outbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {

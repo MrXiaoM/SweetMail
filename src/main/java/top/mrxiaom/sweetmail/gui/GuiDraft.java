@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
-import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
@@ -40,151 +39,149 @@ public class GuiDraft extends AbstractDraftGui {
 
     @Override
     public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
-        if (slot >= 0 && slot < config.inventory.length) {
-            event.setCancelled(true);
-            char c = config.inventory[slot];
-            String key = String.valueOf(c);
-            switch (key) {
-                case "接": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
-                        ChatPrompter.prompt(
-                                plugin, player,
-                                config.iconReceiverPromptTips,
-                                config.iconReceiverPromptCancel,
-                                receiver -> {
-                                    draft.receiver = receiver;
-                                    draft.save();
-                                    reopen.run();
-                                }, reopen
-                        );
-                    }
-                    return;
-                }
-                case "图": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
-                        String title = player.hasPermission("sweetmail.icon.custom") ? config.iconIconTitleCustom : config.iconIconTitle;
-                        plugin.getGuiManager().openGui(new GuiIcon(plugin, player, title));
-                    }
-                    return;
-                }
-                case "题": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
-                        ChatPrompter.prompt(
-                                plugin, player,
-                                config.iconTitlePromptTips,
-                                config.iconTitlePromptCancel,
-                                title -> {
-                                    draft.title = title;
-                                    draft.save();
-                                    reopen.run();
-                                }, reopen
-                        );
-                    }
-                    return;
-                }
-                case "文": {
-                    if (!click.isShiftClick()) {
-                        if (click.isLeftClick()) {
-                            ItemMeta rawMeta = cursor != null ? cursor.getItemMeta() : null;
-                            if (rawMeta instanceof BookMeta) {
-                                BookMeta meta = (BookMeta) rawMeta;
-                                draft.content = meta.getPages();
+        Character c = config.getSlotKey(slot);
+        if (c == null) return;
+        event.setCancelled(true);
+
+        switch (String.valueOf(c)) {
+            case "接": {
+                if (click.isLeftClick() && !click.isShiftClick()) {
+                    ChatPrompter.prompt(
+                            plugin, player,
+                            config.iconReceiverPromptTips,
+                            config.iconReceiverPromptCancel,
+                            receiver -> {
+                                draft.receiver = receiver;
                                 draft.save();
-                                config.applyIcon(this, view, player, slot);
-                                player.updateInventory();
-                            }
-                        }
-                        if (click.isRightClick()) {
-                            player.closeInventory();
-                            ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
-                            ItemMeta rawMeta = item.getItemMeta();
-                            if (rawMeta instanceof BookMeta) {
-                                BookMeta meta = (BookMeta) rawMeta;
-                                meta.setTitle(draft.title);
-                                meta.setPages(draft.content);
-                                meta.setAuthor(player.getName());
-                                item.setItemMeta(meta);
-                                player.openBook(item);
-                            }
+                                reopen.run();
+                            }, reopen
+                    );
+                }
+                return;
+            }
+            case "图": {
+                if (click.isLeftClick() && !click.isShiftClick()) {
+                    String title = player.hasPermission("sweetmail.icon.custom") ? config.iconIconTitleCustom : config.iconIconTitle;
+                    plugin.getGuiManager().openGui(new GuiIcon(plugin, player, title));
+                }
+                return;
+            }
+            case "题": {
+                if (click.isLeftClick() && !click.isShiftClick()) {
+                    ChatPrompter.prompt(
+                            plugin, player,
+                            config.iconTitlePromptTips,
+                            config.iconTitlePromptCancel,
+                            title -> {
+                                draft.title = title;
+                                draft.save();
+                                reopen.run();
+                            }, reopen
+                    );
+                }
+                return;
+            }
+            case "文": {
+                if (!click.isShiftClick()) {
+                    if (click.isLeftClick()) {
+                        ItemMeta rawMeta = cursor != null ? cursor.getItemMeta() : null;
+                        if (rawMeta instanceof BookMeta) {
+                            BookMeta meta = (BookMeta) rawMeta;
+                            draft.content = meta.getPages();
+                            draft.save();
+                            config.applyIcon(this, view, player, slot);
+                            player.updateInventory();
                         }
                     }
-                    return;
-                }
-                case "高": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
-                        if (player.hasPermission(CommandMain.PERM_ADMIN)) {
-                            // TODO: 打开高级设置菜单
+                    if (click.isRightClick()) {
+                        player.closeInventory();
+                        ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
+                        ItemMeta rawMeta = item.getItemMeta();
+                        if (rawMeta instanceof BookMeta) {
+                            BookMeta meta = (BookMeta) rawMeta;
+                            meta.setTitle(draft.title);
+                            meta.setPages(draft.content);
+                            meta.setAuthor(player.getName());
+                            item.setItemMeta(meta);
+                            player.openBook(item);
                         }
                     }
-                    return;
                 }
-                case "重": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
-                        draft.reset();
+                return;
+            }
+            case "高": {
+                if (click.isLeftClick() && !click.isShiftClick()) {
+                    if (player.hasPermission(CommandMain.PERM_ADMIN)) {
+                        // TODO: 打开高级设置菜单
+                    }
+                }
+                return;
+            }
+            case "重": {
+                if (click.isLeftClick() && !click.isShiftClick()) {
+                    draft.reset();
+                    draft.save();
+                    reopen.run();
+                }
+                return;
+            }
+            case "发": {
+                if (click.isLeftClick() && !click.isShiftClick()) {
+                    String uuid = plugin.getDatabase().generateMailUUID();
+                    String sender = draft.sender;
+                    String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
+                    String icon = draft.iconKey;
+                    String title = draft.title;
+                    List<String> content = draft.content;
+                    List<IAttachment> attachments = draft.attachments;
+                    List<String> receivers = new ArrayList<>();
+                    if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
+                        // TODO: 解析 advance receivers
+                        if (draft.advReceivers.equalsIgnoreCase("current online")) {
+                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                                receivers.add(onlinePlayer.getName());
+                            }
+                        }
+                    } else if (!draft.receiver.isEmpty()) {
+                        receivers.add(draft.receiver);
+                    }
+                    receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
+                    if (receivers.isEmpty()) {
+                        // TODO: 警告玩家未设置接收者
+                        return;
+                    }
+                    Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
+                    plugin.getDatabase().sendMail(mail);
+                    draft.reset();
+                    draft.save();
+                }
+                return;
+            }
+            case "附": {
+                if (click.isLeftClick() && !click.isShiftClick()) {
+                    int i = config.getKeyIndex(c, slot);
+                    if (i < draft.attachments.size()) {
+                        IAttachment attachment = draft.attachments.remove(i);
                         draft.save();
-                        reopen.run();
-                    }
-                    return;
-                }
-                case "发": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
-                        String uuid = plugin.getDatabase().generateMailUUID();
-                        String sender = draft.sender;
-                        String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
-                        String icon = draft.iconKey;
-                        String title = draft.title;
-                        List<String> content = draft.content;
-                        List<IAttachment> attachments = draft.attachments;
-                        List<String> receivers = new ArrayList<>();
-                        if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
-                            // TODO: 解析 advance receivers
-                            if (draft.advReceivers.equalsIgnoreCase("current online")) {
-                                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                                    receivers.add(onlinePlayer.getName());
-                                }
-                            }
-                        } else if (!draft.receiver.isEmpty()) {
-                            receivers.add(draft.receiver);
+                        updateAttachmentSlots(view);
+                        if (attachment != null) {
+                            attachment.use(player);
                         }
-                        receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
-                        if (receivers.isEmpty()) {
-                            // TODO: 警告玩家未设置接收者
-                            return;
-                        }
-                        Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
-                        plugin.getDatabase().sendMail(mail);
-                        draft.reset();
-                        draft.save();
-                    }
-                    return;
-                }
-                case "附": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
-                        int i = config.getKeyIndex(c, slot);
-                        if (i < draft.attachments.size()) {
-                            IAttachment attachment = draft.attachments.remove(i);
+                    } else {
+                        if (cursor != null && !cursor.getType().isAir()) {
+                            event.setCursor(null);
+                            // TODO: 添加物品附件
                             draft.save();
                             updateAttachmentSlots(view);
-                            if (attachment != null) {
-                                attachment.use(player);
-                            }
-                        } else {
-                            if (cursor != null && !cursor.getType().isAir()) {
-                                event.setCursor(null);
-                                // TODO: 添加物品附件
-                                draft.save();
-                                updateAttachmentSlots(view);
-                                return;
-                            }
-                            // TODO: 打开附件添加菜单
+                            return;
                         }
+                        // TODO: 打开附件添加菜单
                     }
-                    return;
                 }
+                return;
             }
-            AbstractMenuConfig.Icon icon = config.otherIcon.get(key);
-            if (icon != null) {
-                icon.click(player, event.getClick());
+            default: {
+                config.handleClick(player, click, c);
             }
         }
     }

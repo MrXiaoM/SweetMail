@@ -44,10 +44,31 @@ items:
       - '  &f领取所有未领取附件  '
       - ''
       - '&a左键&7 | &f领取附件'
+  格:
+    redirect: 无
+    display: '&e&l%title%'
+    lore-parts:
+      part1:
+      - '&f发件人: &e%sender%'
+      - '&f收件人: &e%receiver%'
+      - '&f发送时间: &e%time%'
+      - '&f正文: &e%count% 字'
+      - '&f附件: '
+      part2:
+      - ''
+      - '&a左键&7 | &f查看邮件内容'
+    lore-content:
+      - part1
+      - attachments
+      - part2
+    lore-format:
+      attachment-item:
+          - '  &8● &e%attachment%'
 # 非必选物品
 other-items:
   黑:
     material: BLACK_STAINED_GLASS_PANE
     custom-model: 10000
     display: '&0'
+  无:
 

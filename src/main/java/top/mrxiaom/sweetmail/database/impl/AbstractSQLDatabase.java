@@ -4,6 +4,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.IMailDatabaseReloadable;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
+import top.mrxiaom.sweetmail.utils.ListX;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -94,21 +95,26 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     }
 
     @Override
-    public List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
-        List<MailWithStatus> mailList = new ArrayList<>();
+    public ListX<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
+        ListX<MailWithStatus> mailList = new ListX<>();
         try (Connection conn = getConnection()) {
             int offset = (page - 1) * perPage;
             String conditions = unread
                     ? "`receiver` = ? AND unread = 1"
                     : "`receiver` = ?";
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
-                    "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") as A) " +
+            try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS(" +
+                    "  SELECT * FROM (`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") as A) " +
+                    ")" +
+                    "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
                     "ORDER BY `used` ASC, `time` DESC " +
                     "LIMIT " + offset + ", " + perPage + ";")) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
                     while (result.next()) {
                         mailList.add(resolveResult(result));
+                        if (mailList.getMaxCount() == 0) {
+                            mailList.setMaxCount(result.getInt("mail_count"));
+                        }
                     }
                 }
             }

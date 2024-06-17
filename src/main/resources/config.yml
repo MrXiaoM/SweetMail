@@ -33,3 +33,4 @@ messages:
   command:
     reload: '配置文件已重载 &7(如需重载数据库，请使用 &f/mail reload database&7)'
     reload-database: '数据库配置已重载，已重新连接数据库'
+  date-time: 'yyyy年MM月dd日 HH:mm:ss'

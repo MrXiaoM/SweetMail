@@ -122,6 +122,11 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         this.register();
     }
 
+    public Character getSlotKey(int slot) {
+        if (slot < 0 || slot >= inventory.length) return null;
+        return inventory[slot];
+    }
+
     /**
      * 清空主图标列表
      */
@@ -193,6 +198,14 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         }
         return index;
     }
+
+    public void handleClick(Player player, ClickType click, char key) {
+        AbstractMenuConfig.Icon icon = otherIcon.get(String.valueOf(key));
+        if (icon != null) {
+            icon.click(player, click);
+        }
+    }
+
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         if (!configFile.exists()) {

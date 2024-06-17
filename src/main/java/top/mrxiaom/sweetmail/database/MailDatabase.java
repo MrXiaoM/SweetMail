@@ -8,6 +8,7 @@ import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.database.impl.MySQLDatabase;
 import top.mrxiaom.sweetmail.database.impl.SQLiteDatabase;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
+import top.mrxiaom.sweetmail.utils.ListX;
 
 import java.io.File;
 import java.util.*;
@@ -48,8 +49,8 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
     }
 
     @Override
-    public List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
-        List<MailWithStatus> inBox = database.getInBox(unread, player, page, perPage);
+    public ListX<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
+        ListX<MailWithStatus> inBox = database.getInBox(unread, player, page, perPage);
         boolean flag = false;
         for (MailWithStatus mail : inBox) {
             if (!mail.used) {

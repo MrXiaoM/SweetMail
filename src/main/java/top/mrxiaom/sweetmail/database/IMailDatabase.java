@@ -3,6 +3,7 @@ package top.mrxiaom.sweetmail.database;
 import org.bukkit.configuration.MemoryConfiguration;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
+import top.mrxiaom.sweetmail.utils.ListX;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface IMailDatabase {
      * @param perPage 每页数量
      * @return 邮件列表
      */
-    List<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage);
+    ListX<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage);
 
     List<MailWithStatus> getInBoxUnused(String player);
 
