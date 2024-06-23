@@ -26,6 +26,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
         List<String> loreContent;
         List<String> attachmentFormat;
         String redirect;
+        String receiverAndSoOn;
         private IconSlot(Icon base) {
             this.base = base;
         }
@@ -151,6 +152,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
         icon.loreContent = section.getStringList(key + ".lore-content");
         icon.attachmentFormat = section.getStringList(key + ".lore-format.attachment-item");
         icon.redirect = section.getString(key + ".redirect");
+        icon.receiverAndSoOn = section.getString(key + ".lore-format.and-so-on");
         return icon;
     }
 
@@ -182,10 +184,15 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
                     ItemStack icon = mail.generateIcon();
                     String sender = mail.senderDisplay.trim().isEmpty()
                             ? mail.sender : mail.senderDisplay;
+                    String receiver = mail.receivers.size() == 1
+                            ? mail.receivers.get(0)
+                            : iconSlot.receiverAndSoOn
+                            .replace("%player%", gui.getTarget())
+                            .replace("%count%", String.valueOf(mail.receivers.size()));
                     return iconSlot.generateIcon(target, mail, icon,
                             Pair.of("%title%", mail.title),
                             Pair.of("%sender%", sender),
-                            Pair.of("%receiver%", gui.getTarget()),
+                            Pair.of("%receiver%", receiver),
                             Pair.of("%receiver%", mail),
                             Pair.of("%time%", plugin.text().toString(mail.time))
                     );

@@ -64,6 +64,7 @@ items:
     lore-format:
       attachment-item:
         - '  &8● &e%attachment%'
+      and-so-on: '%player% 等 %count% 名玩家'
 # 非必选物品
 other-items:
   黑:
