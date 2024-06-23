@@ -14,7 +14,6 @@ import top.mrxiaom.sweetmail.utils.ListX;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class GuiInBox extends AbstractPluginHolder implements IGui {
     Player player;
@@ -58,53 +57,68 @@ public class GuiInBox extends AbstractPluginHolder implements IGui {
         Character c = config.getSlotKey(slot);
         if (c != null) switch (String.valueOf(c)) {
             case "全": {
-                if (!unread) return;
-                unread = false;
-                plugin.getGuiManager().openGui(this);
+                if (!click.isShiftClick() && click.isLeftClick()) {
+                    if (!unread) return;
+                    unread = false;
+                    plugin.getGuiManager().openGui(this);
+                }
                 return;
             }
             case "读": {
-                if (unread) return;
-                unread = true;
-                plugin.getGuiManager().openGui(this);
+                if (!click.isShiftClick() && click.isLeftClick()) {
+                    if (unread) return;
+                    unread = true;
+                    plugin.getGuiManager().openGui(this);
+                }
                 return;
             }
             case "上": {
-                if (page <= 1) return;
-                page--;
-                plugin.getGuiManager().openGui(this);
+                if (!click.isShiftClick() && click.isLeftClick()) {
+                    if (page <= 1) return;
+                    page--;
+                    plugin.getGuiManager().openGui(this);
+                }
+                return;
             }
             case "下": {
-                if (page >= inBox.getMaxPage(config.getSlotsCount())) return;
-                page++;
-                plugin.getGuiManager().openGui(this);
+                if (!click.isShiftClick() && click.isLeftClick()) {
+                    if (page >= inBox.getMaxPage(config.getSlotsCount())) return;
+                    page++;
+                    plugin.getGuiManager().openGui(this);
+                }
+                return;
             }
             case "领": {
-                if (!player.getName().equals(target)) return; // 不可代领
-                if (inBox.isEmpty() || inBox.get(0).used) return;
-                List<MailWithStatus> unused = plugin.getDatabase().getInBoxUnused(target);
-                if (unused.isEmpty()) return;
-                List<String> dismiss = new ArrayList<>();
-                for (MailWithStatus mail : unused) {
-                    if (mail.used) continue;
-                    dismiss.add(mail.uuid);
-                    try {
-                        for (IAttachment attachment : mail.attachments) {
-                            attachment.use(player);
+                if (!click.isShiftClick() && click.isLeftClick()) {
+                    if (!player.getName().equals(target)) return; // 不可代领
+                    if (inBox.isEmpty() || inBox.get(0).used) return;
+                    List<MailWithStatus> unused = plugin.getDatabase().getInBoxUnused(target);
+                    if (unused.isEmpty()) return;
+                    List<String> dismiss = new ArrayList<>();
+                    for (MailWithStatus mail : unused) {
+                        if (mail.used) continue;
+                        dismiss.add(mail.uuid);
+                        try {
+                            for (IAttachment attachment : mail.attachments) {
+                                attachment.use(player);
+                            }
+                        } catch (Throwable t) {
+                            warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
+                            // TODO: 提示玩家有邮件的附件领取失败 请联系管理员
+                            // t(player, "");
                         }
-                    } catch (Throwable t) {
-                        warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                        // TODO: 提示玩家有邮件的附件领取失败 请联系管理员
-                        // t(player, "");
                     }
+                    plugin.getDatabase().markUsed(dismiss, target);
                 }
-                plugin.getDatabase().markUsed(dismiss, target);
                 return;
             }
             case "格": {
-                int i = config.getKeyIndex(c, slot);
-                if (i < 0 || i >= inBox.size()) return;
-                MailWithStatus mail = inBox.get(i);
+                if (!click.isShiftClick() && click.isLeftClick()) {
+                    int i = config.getKeyIndex(c, slot);
+                    if (i < 0 || i >= inBox.size()) return;
+                    MailWithStatus mail = inBox.get(i);
+                    // TODO: 打开邮件预览菜单
+                }
                 return;
             }
         }
