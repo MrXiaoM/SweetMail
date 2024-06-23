@@ -21,8 +21,8 @@ repositories {
 
 dependencies {
     // Minecraft
-    val mcVersion = "1.19.4"
-    compileOnly("org.spigotmc:spigot-api:$mcVersion-R0.1-SNAPSHOT")
+    val mcVersion = "1.16.5"
+    compileOnly("com.destroystokyo.paper:paper-api:$mcVersion-R0.1-SNAPSHOT")
 
     // API
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")

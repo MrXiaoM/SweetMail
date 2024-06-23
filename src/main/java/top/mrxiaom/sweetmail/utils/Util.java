@@ -45,6 +45,7 @@ public class Util {
         PAPI.init();
         IA.init();
         Mythic.load();
+        ItemStackUtil.init();
     }
 
     public static String stackTraceToString(Throwable t) {

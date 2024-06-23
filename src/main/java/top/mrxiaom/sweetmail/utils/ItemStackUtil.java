@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class ItemStackUtil {
+    static boolean isPaper;
+    protected static void init() {
+        isPaper = Util.isPresent("io.papermc.paper.event.player.AsyncChatEvent");
+    }
 
     public static String itemStackArrayToBase64(ItemStack[] var1) {
         return itemStackArrayToBase64(var1, false);
@@ -90,6 +94,10 @@ public class ItemStackUtil {
         ItemMeta im = item.getItemMeta() == null ? getItemMeta(item.getType()) : item.getItemMeta();
         if (im == null)
             return;
+        if (isPaper) {
+            ItemStackPaper.setItemDisplayName(item, name);
+            return;
+        }
         im.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
         item.setItemMeta(im);
     }
@@ -104,6 +112,10 @@ public class ItemStackUtil {
         ItemMeta im = item.getItemMeta() == null ? getItemMeta(item.getType()) : item.getItemMeta();
         if (im == null)
             return;
+        if (isPaper) {
+            ItemStackPaper.setItemLore(item, lore);
+            return;
+        }
         List<String> newLore = new ArrayList<>();
         lore.forEach(s -> {
             if (s != null) newLore.add(ColorHelper.parseColor(s));
