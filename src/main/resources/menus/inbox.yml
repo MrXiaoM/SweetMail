@@ -63,7 +63,7 @@ items:
       - part2
     lore-format:
       attachment-item:
-          - '  &8● &e%attachment%'
+        - '  &8● &e%attachment%'
 # 非必选物品
 other-items:
   黑:
