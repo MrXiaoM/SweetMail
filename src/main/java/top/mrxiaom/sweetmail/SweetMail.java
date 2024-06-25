@@ -16,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.database.MailDatabase;
+import top.mrxiaom.sweetmail.database.entry.AttachmentCommand;
+import top.mrxiaom.sweetmail.database.entry.AttachmentItem;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
@@ -24,6 +26,7 @@ import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
 
@@ -67,6 +70,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
         loadHooks();
         loadFunctions();
+        loadBuiltInAttachments();
         reloadConfig();
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -88,6 +92,11 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
         }
+    }
+
+    private void loadBuiltInAttachments() {
+        IAttachment.deserializers.add(AttachmentItem::deserialize);
+        IAttachment.deserializers.add(AttachmentCommand::deserialize);
     }
 
     @Override

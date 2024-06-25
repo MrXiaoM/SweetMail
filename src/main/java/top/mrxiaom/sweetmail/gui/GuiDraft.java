@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
+import top.mrxiaom.sweetmail.database.entry.AttachmentItem;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
@@ -169,8 +170,9 @@ public class GuiDraft extends AbstractDraftGui {
                         }
                     } else {
                         if (cursor != null && !cursor.getType().isAir()) {
+                            IAttachment attachment = new AttachmentItem(cursor);
                             event.setCursor(null);
-                            // TODO: 添加物品附件
+                            draft.attachments.add(attachment);
                             draft.save();
                             updateAttachmentSlots(view);
                             return;

@@ -27,51 +27,28 @@ public class ItemStackUtil {
         isPaper = Util.isPresent("io.papermc.paper.event.player.AsyncChatEvent");
     }
 
-    public static String itemStackArrayToBase64(ItemStack[] var1) {
-        return itemStackArrayToBase64(var1, false);
-    }
-
-    public static String itemStackArrayToBase64(ItemStack[] var1, boolean ignoreException) {
-        try {
-            ByteArrayOutputStream var2 = new ByteArrayOutputStream();
-            BukkitObjectOutputStream var3 = new BukkitObjectOutputStream(var2);
-            var3.writeInt(var1.length);
-
-            for (ItemStack var7 : var1) {
-                var3.writeObject(var7);
+    public static String itemStackToBase64(ItemStack item) {
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+            try (BukkitObjectOutputStream out = new BukkitObjectOutputStream(output)) {
+                out.writeObject(item);
+                return Base64Coder.encodeLines(output.toByteArray());
             }
-
-            var3.close();
-            return Base64Coder.encodeLines(var2.toByteArray());
         } catch (Throwable t) {
-            if (!ignoreException)
-                t.printStackTrace();
+            t.printStackTrace();
             return "";
         }
     }
 
-    public static ItemStack[] itemStackArrayFromBase64(String var1) {
-        return itemStackArrayFromBase64(var1, false);
-    }
-
-    public static ItemStack[] itemStackArrayFromBase64(String var1, boolean ignoreException) {
-        if (var1.isEmpty() || var1.trim().equalsIgnoreCase(""))
-            return new ItemStack[0];
-        try {
-            ByteArrayInputStream var2 = new ByteArrayInputStream(Base64Coder.decodeLines(var1));
-            BukkitObjectInputStream var3 = new BukkitObjectInputStream(var2);
-            ItemStack[] var4 = new ItemStack[var3.readInt()];
-
-            for (int var5 = 0; var5 < var4.length; ++var5) {
-                var4[var5] = (ItemStack) var3.readObject();
+    public static ItemStack itemStackFromBase64(String s) {
+        if (s.trim().isEmpty())
+            return null;
+        try (ByteArrayInputStream in = new ByteArrayInputStream(Base64Coder.decodeLines(s))) {
+            try (BukkitObjectInputStream out = new BukkitObjectInputStream(in)) {
+                return (ItemStack) out.readObject();
             }
-
-            var3.close();
-            return var4;
         } catch (Throwable t) {
-            if (!ignoreException)
-                t.printStackTrace();
-            return new ItemStack[0];
+            t.printStackTrace();
+            return null;
         }
     }
 
