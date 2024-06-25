@@ -63,7 +63,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public Economy getEconomy() {
         return economy;
     }
-
+    private String prefix;
+    public String prefix() {
+        return prefix;
+    }
     @Override
     public void onEnable() {
         Util.init(instance = this);
@@ -147,7 +150,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         super.reloadConfig();
 
         FileConfiguration config = getConfig();
-
+        this.prefix = config.getString("messages.prefix");
         reloadAllConfig(config);
     }
 

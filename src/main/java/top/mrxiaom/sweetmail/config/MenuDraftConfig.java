@@ -30,6 +30,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
     Icon iconSend;
     Icon iconAttachment;
 
+    public String messageNoReceivers;
     public MenuDraftConfig(SweetMail plugin) {
         super(plugin, "menus/draft.yml");
     }
@@ -37,7 +38,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
-
+        messageNoReceivers = cfg.getString("messages.draft.no-receivers");
     }
 
     @Override

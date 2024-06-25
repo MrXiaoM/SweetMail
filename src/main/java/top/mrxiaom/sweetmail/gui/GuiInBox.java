@@ -104,8 +104,7 @@ public class GuiInBox extends AbstractPluginHolder implements IGui {
                             }
                         } catch (Throwable t) {
                             warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                            // TODO: 提示玩家有邮件的附件领取失败 请联系管理员
-                            // t(player, "");
+                            t(player, plugin.prefix() + config.messageFail);
                         }
                     }
                     plugin.getDatabase().markUsed(dismiss, target);
@@ -114,17 +113,14 @@ public class GuiInBox extends AbstractPluginHolder implements IGui {
             }
             case "格": {
                 if (!click.isShiftClick()) {
+                    int i = config.getKeyIndex(c, slot);
+                    if (i < 0 || i >= inBox.size()) return;
+                    MailWithStatus mail = inBox.get(i);
                     if (click.isLeftClick()) {
-                        int i = config.getKeyIndex(c, slot);
-                        if (i < 0 || i >= inBox.size()) return;
-                        MailWithStatus mail = inBox.get(i);
                         player.openBook(mail.generateBook());
                         return;
                     }
                     if (click.isRightClick()) {
-                        int i = config.getKeyIndex(c, slot);
-                        if (i < 0 || i >= inBox.size()) return;
-                        MailWithStatus mail = inBox.get(i);
                         // TODO: 打开附件预览菜单
 
                         return;

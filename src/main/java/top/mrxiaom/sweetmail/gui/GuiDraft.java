@@ -148,7 +148,7 @@ public class GuiDraft extends AbstractDraftGui {
                     }
                     receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
                     if (receivers.isEmpty()) {
-                        // TODO: 警告玩家未设置接收者
+                        t(player, plugin.prefix() + config.messageNoReceivers);
                         return;
                     }
                     Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);

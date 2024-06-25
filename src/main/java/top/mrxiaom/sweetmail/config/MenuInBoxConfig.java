@@ -77,6 +77,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
     String iconGetAllRedirect;
     IconSlot iconSlot;
     int slotsCount;
+    public String messageFail;
     public MenuInBoxConfig(SweetMail plugin) {
         super(plugin, "menus/inbox.yml");
         return;
@@ -89,6 +90,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
+        messageFail = cfg.getString("messages.inbox.attachments-fail");
+
         titleAll = config.getString("title-all", "&0收件箱 全部 %page%/%max_page%");
         titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 %page%/%max_page%");
         titleUnread = config.getString("title-unread", "&0收件箱 未读 %page%/%max_page%");

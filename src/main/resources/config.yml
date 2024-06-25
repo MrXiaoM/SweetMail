@@ -34,3 +34,7 @@ messages:
     reload: '配置文件已重载 &7(如需重载数据库，请使用 &f/mail reload database&7)'
     reload-database: '数据库配置已重载，已重新连接数据库'
   date-time: 'yyyy年MM月dd日 HH:mm:ss'
+  draft:
+    no-receivers: '你没有设置接收者，无法发送邮件!'
+  inbox:
+    attachments-fail: '有附件领取失败! 请联系管理员查看后台了解详细'
