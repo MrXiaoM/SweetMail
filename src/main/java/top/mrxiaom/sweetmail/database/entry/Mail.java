@@ -1,7 +1,10 @@
 package top.mrxiaom.sweetmail.database.entry;
 
 import com.google.gson.*;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 
 import java.time.LocalDateTime;
@@ -32,6 +35,19 @@ public class Mail {
 
     public ItemStack generateIcon() {
         return ItemStackUtil.getItem(icon);
+    }
+
+    public ItemStack generateBook() {
+        ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
+        ItemMeta rawMeta = item.getItemMeta();
+        if (rawMeta instanceof BookMeta) {
+            BookMeta meta = (BookMeta) rawMeta;
+            meta.setTitle(title);
+            meta.setPages(content);
+            meta.setAuthor(senderDisplay == null || senderDisplay.isEmpty() ? sender : senderDisplay);
+            item.setItemMeta(meta);
+        }
+        return item;
     }
 
     public void noticeSent() {
@@ -70,7 +86,7 @@ public class Mail {
     }
 
     private static <T> T deserialize(String s, Func8<String, String, String, String, List<String>, String, List<String>, List<IAttachment>, T> func) {
-        JsonObject json = JsonParser.parseString(s).getAsJsonObject();
+        JsonObject json = new JsonParser().parse(s).getAsJsonObject();
 
         String uuid = getString(json, "uuid");
         String sender = getString(json, "sender");

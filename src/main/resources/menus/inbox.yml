@@ -57,6 +57,7 @@ items:
       part2:
       - ''
       - '&a左键&7 | &f查看邮件内容'
+      - '&b右键&7 | &f查看附件'
     lore-content:
       - part1
       - attachments

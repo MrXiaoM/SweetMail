@@ -113,11 +113,22 @@ public class GuiInBox extends AbstractPluginHolder implements IGui {
                 return;
             }
             case "格": {
-                if (!click.isShiftClick() && click.isLeftClick()) {
-                    int i = config.getKeyIndex(c, slot);
-                    if (i < 0 || i >= inBox.size()) return;
-                    MailWithStatus mail = inBox.get(i);
-                    // TODO: 打开邮件预览菜单
+                if (!click.isShiftClick()) {
+                    if (click.isLeftClick()) {
+                        int i = config.getKeyIndex(c, slot);
+                        if (i < 0 || i >= inBox.size()) return;
+                        MailWithStatus mail = inBox.get(i);
+                        player.openBook(mail.generateBook());
+                        return;
+                    }
+                    if (click.isRightClick()) {
+                        int i = config.getKeyIndex(c, slot);
+                        if (i < 0 || i >= inBox.size()) return;
+                        MailWithStatus mail = inBox.get(i);
+                        // TODO: 打开附件预览菜单
+
+                        return;
+                    }
                 }
                 return;
             }
