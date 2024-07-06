@@ -12,6 +12,9 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
     protected Player player;
     protected MenuDraftConfig config;
     protected DraftManager.Draft draft;
+    protected Runnable reopen = () -> {
+        plugin.getGuiManager().openGui(this);
+    };
     public AbstractDraftGui(SweetMail plugin, Player player) {
         super(plugin);
         this.player = player;

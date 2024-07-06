@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GuiDraft extends AbstractDraftGui {
-    Runnable reopen = () -> {
-        plugin.getGuiManager().openGui(this);
-    };
     public GuiDraft(SweetMail plugin, Player player) {
         super(plugin, player);
     }
@@ -39,6 +36,7 @@ public class GuiDraft extends AbstractDraftGui {
     }
 
     @Override
+    @SuppressWarnings({"deprecation"})
     public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
         Character c = config.getSlotKey(slot);
         if (c == null) return;
