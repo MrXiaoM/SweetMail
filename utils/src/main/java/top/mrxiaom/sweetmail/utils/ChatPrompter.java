@@ -16,8 +16,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
-
 public class ChatPrompter implements Listener {
     private static final Set<UUID> processing = new HashSet<>();
     Player player;
@@ -68,7 +66,7 @@ public class ChatPrompter implements Listener {
         prompter.cancelPrompt = cancelPrompt;
         prompter.success = successCallback;
         prompter.fail = failCallback;
-        t(player, tips);
+        ColorHelper.t(player, tips);
         Bukkit.getPluginManager().registerEvents(prompter, plugin);
         processing.add(player.getUniqueId());
     }

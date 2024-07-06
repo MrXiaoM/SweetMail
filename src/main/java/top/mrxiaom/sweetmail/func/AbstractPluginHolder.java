@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static top.mrxiaom.sweetmail.utils.Util.stackTraceToString;
+import static top.mrxiaom.sweetmail.utils.StringHelper.stackTraceToString;
 
 @SuppressWarnings({"unused"})
 public abstract class AbstractPluginHolder {
@@ -164,12 +164,10 @@ public abstract class AbstractPluginHolder {
     }
 
     public static boolean t(CommandSender sender, String... msg) {
-        sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
-        return true;
+        return ColorHelper.t(sender, msg);
     }
 
     public static boolean t(CommandSender sender, List<String> msg) {
-        sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
-        return true;
+        return ColorHelper.t(sender, msg);
     }
 }

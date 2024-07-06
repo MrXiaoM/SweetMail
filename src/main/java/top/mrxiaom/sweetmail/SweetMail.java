@@ -23,10 +23,10 @@ import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
+import top.mrxiaom.sweetmail.utils.StringHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
-import java.util.function.Function;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
 
@@ -37,7 +37,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return instance;
     }
     public static void warn(Throwable t) {
-        warn(Util.stackTraceToString(t));
+        warn(StringHelper.stackTraceToString(t));
     }
     public static void warn(String s) {
         getInstance().getLogger().warning(s);

@@ -2,17 +2,28 @@ package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static top.mrxiaom.sweetmail.utils.Util.split;
+import static top.mrxiaom.sweetmail.utils.StringHelper.split;
 
 public class ColorHelper {
     private static final Pattern startWithColor = Pattern.compile("^(&[LMNKOlmnko])+");
     private static final Pattern gradientPattern = Pattern.compile("\\{(#[ABCDEFabcdef0123456789]{6}):(#[ABCDEFabcdef0123456789]{6}):(.*?)}");
     private static final Pattern hexPattern = Pattern.compile("&(#[ABCDEFabcdef0123456789]{6})");
+
+    public static boolean t(CommandSender sender, String... msg) {
+        sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
+        return true;
+    }
+
+    public static boolean t(CommandSender sender, List<String> msg) {
+        sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
+        return true;
+    }
 
     public static List<String> parseColor(List<String> s) {
         return Lists.newArrayList(parseColor(String.join("\n", s)).split("\n"));

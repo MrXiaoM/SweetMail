@@ -11,15 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static top.mrxiaom.sweetmail.utils.ColorHelper.parseColor;
-import static top.mrxiaom.sweetmail.utils.Util.split;
 
 public class ItemStackPaper {
     private static final Pattern translatePattern = Pattern.compile("<translate:(.*?)>");
     
     static Component parse(String s) {
         TextComponent.Builder builder = Component.text();
-        split(translatePattern, parseColor(s), regexResult -> {
+        StringHelper.split(translatePattern, ColorHelper.parseColor(s), regexResult -> {
             if (!regexResult.isMatched) {
                 builder.append(LegacyComponentSerializer.legacySection().deserialize(regexResult.text));
             } else {
@@ -40,6 +38,7 @@ public class ItemStackPaper {
     
     public static void setItemDisplayName(ItemStack item, String name) {
         ItemMeta meta = item.getItemMeta();
+
         meta.displayName(parse(name));
         item.setItemMeta(meta);
     }

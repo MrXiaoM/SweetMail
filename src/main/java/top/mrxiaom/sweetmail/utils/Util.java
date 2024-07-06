@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -15,13 +14,11 @@ import top.mrxiaom.sweetmail.utils.comp.IA;
 import top.mrxiaom.sweetmail.utils.comp.Mythic;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
@@ -46,14 +43,6 @@ public class Util {
         IA.init();
         Mythic.load();
         ItemStackUtil.init();
-    }
-
-    public static String stackTraceToString(Throwable t) {
-        StringWriter sw = new StringWriter();
-        try (PrintWriter pw = new PrintWriter(sw)) {
-            t.printStackTrace(pw);
-        }
-        return sw.toString();
     }
 
     @SafeVarargs
@@ -81,19 +70,6 @@ public class Util {
 
     public static Optional<OfflinePlayer> getOfflinePlayer(String name) {
         return Optional.ofNullable(players.get(name));
-    }
-
-    public static List<String> startsWith(String s, String... texts) {
-        return startsWith(s, Lists.newArrayList(texts));
-    }
-
-    public static List<String> startsWith(String s, Iterable<String> texts) {
-        List<String> list = new ArrayList<>();
-        s = s.toLowerCase();
-        for (String text : texts) {
-            if (text.toLowerCase().startsWith(s)) list.add(text);
-        }
-        return list;
     }
 
     public static Optional<Player> getOnlinePlayer(String name) {
@@ -153,45 +129,6 @@ public class Util {
         } catch (ClassNotFoundException ignored) {
             return false;
         }
-    }
-
-    public static void split(Pattern regex, String s, Consumer<RegexResult> consumer) {
-        int index = 0;
-        Matcher m = regex.matcher(s);
-        while (m.find()) {
-            int first = m.start();
-            int last = m.end();
-            if (first > index) {
-                consumer.accept(new RegexResult(null, s.substring(index, first)));
-            }
-            consumer.accept(new RegexResult(m.toMatchResult(), s.substring(first, last)));
-            index = last;
-        }
-        if (index < s.length()) {
-            consumer.accept(new RegexResult(null, s.substring(index)));
-        }
-    }
-
-    public static <T> List<T> split(Pattern regex, String s, Function<RegexResult, T> transform) {
-        List<T> list = new ArrayList<>();
-        int index = 0;
-        Matcher m = regex.matcher(s);
-        while (m.find()) {
-            int first = m.start();
-            int last = m.end();
-            if (first > index) {
-                T value = transform.apply(new RegexResult(null, s.substring(index, first)));
-                if (value != null) list.add(value);
-            }
-            T value = transform.apply(new RegexResult(m.toMatchResult(), s.substring(first, last)));
-            if (value != null) list.add(value);
-            index = last;
-        }
-        if (index < s.length()) {
-            T value = transform.apply(new RegexResult(null, s.substring(index)));
-            if (value != null) list.add(value);
-        }
-        return list;
     }
 
     public static class ByteArrayDataOutputStream implements ByteArrayDataOutput {
@@ -318,18 +255,6 @@ public class Util {
         @NotNull
         public byte[] toByteArray() {
             return this.byteArrayOutputStream.toByteArray();
-        }
-    }
-
-    public static class RegexResult {
-        public final MatchResult result;
-        public final boolean isMatched;
-        public final String text;
-
-        public RegexResult(MatchResult result, String text) {
-            this.result = result;
-            this.isMatched = result != null;
-            this.text = text;
         }
     }
 }

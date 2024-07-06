@@ -4,25 +4,40 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
-group = "top.mrxiaom"
-version = "1.0.0"
-
-repositories {
-    mavenCentral()
-    maven("https://maven.fastmirror.net/repositories/minecraft")
-    maven("https://mvn.lumine.io/repository/maven/")
-    maven("https://repo.codemc.io/repository/maven-public/")
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    maven("https://jitpack.io")
-    maven("https://repo.rosewooddev.io/repository/public/")
-    maven("https://oss.sonatype.org/content/groups/public/")
+val targetJavaVersion = 8
+java {
+    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
+    }
 }
 
+allprojects {
+    group = "top.mrxiaom"
+    version = "1.0.0"
+
+    repositories {
+        mavenCentral()
+        maven("https://maven.fastmirror.net/repositories/minecraft")
+        maven("https://mvn.lumine.io/repository/maven/")
+        maven("https://repo.codemc.io/repository/maven-public/")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+        maven("https://jitpack.io")
+        maven("https://repo.rosewooddev.io/repository/public/")
+        maven("https://oss.sonatype.org/content/groups/public/")
+    }
+
+    tasks.withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
+        if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
+            options.release.set(targetJavaVersion)
+        }
+    }
+}
 dependencies {
     // Minecraft
-    val mcVersion = "1.16.5"
-    compileOnly("com.destroystokyo.paper:paper-api:$mcVersion-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:1.20-R0.1-SNAPSHOT")
 
     // API
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
@@ -40,32 +55,23 @@ dependencies {
     // Shadow Dependency
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.jetbrains:annotations:19.0.0")
-}
-
-val targetJavaVersion = 8
-java {
-    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-    }
+    implementation(project(":paper"))
+    implementation(project(":utils"))
 }
 
 tasks {
     shadowJar {
         archiveClassifier.set("")
-        val p = "top.mrxiaom.sweetmail.utils"
-        relocate("org.intellij.lang.annotations", "$p.annotations.intellij")
-        relocate("org.jetbrains.annotations", "$p.annotations.jetbrains")
-        relocate("com.zaxxer.hikari", "$p.hikari")
+        mapOf(
+            "org.intellij.lang.annotations" to "annotations.intellij",
+            "org.jetbrains.annotations" to "annotations.jetbrains",
+            "com.zaxxer.hikari" to "hikari",
+        ).forEach { (original, target) ->
+            relocate(original, "top.mrxiaom.sweetmail.utils.$target")
+        }
     }
     build {
         dependsOn(shadowJar)
-    }
-    withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
-            options.release.set(targetJavaVersion)
-        }
     }
     processResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
