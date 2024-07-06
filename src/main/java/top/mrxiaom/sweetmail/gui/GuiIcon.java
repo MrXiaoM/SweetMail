@@ -46,7 +46,7 @@ public class GuiIcon extends AbstractDraftGui {
             if (draft.iconKey.equals(pair.getKey())) {
                 ItemStackUtil.setGlow(item);
                 List<String> lore = ItemStackUtil.getItemLore(item);
-                // TODO: 添加“已选择”Lore
+                lore.addAll(plugin.getConfig().getStringList("messages.draft.selected-icon-lore"));
                 ItemStackUtil.setItemLore(item, lore);
             }
             iconKeyMap.put(i, pair.getKey());
