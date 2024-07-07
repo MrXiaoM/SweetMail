@@ -6,7 +6,6 @@ import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.utils.ListX;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,11 +54,9 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                 ps.setString(1, mail.uuid);
                 ps.setString(2, mail.sender);
                 byte[] bytes = mail.serialize().getBytes(StandardCharsets.UTF_8);
-                try (InputStream in = new ByteArrayInputStream(bytes)) {
-                    ps.setBinaryStream(3, in);
-                    ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-                    ps.execute();
-                }
+                ps.setBytes(3, bytes);
+                ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+                ps.execute();
             }
             try (PreparedStatement ps = conn.prepareStatement(
                     "INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0);"
@@ -72,7 +69,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                 ps.executeBatch();
             }
             mail.noticeSent();
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             SweetMail.warn(e);
         }
     }
