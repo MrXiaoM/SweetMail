@@ -1,6 +1,9 @@
 package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -23,6 +26,22 @@ public class ColorHelper {
     public static boolean t(CommandSender sender, List<String> msg) {
         sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
         return true;
+    }
+
+    public static TextComponent bungee(String s) {
+        return new TextComponent(TextComponent.fromLegacyText(parseColor(s)));
+    }
+
+    @SuppressWarnings({"deprecation"})
+    public static HoverEvent hover(String s) {
+        return new HoverEvent(
+                HoverEvent.Action.SHOW_TEXT,
+                new BaseComponent[]{ bungee(s) }
+        );
+    }
+
+    public static HoverEvent hover(List<String> s) {
+        return hover(String.join("\n", s));
     }
 
     public static List<String> parseColor(List<String> s) {
