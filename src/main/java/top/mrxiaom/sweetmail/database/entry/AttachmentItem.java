@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 
 import java.util.Collection;
+import java.util.List;
 
 public class AttachmentItem implements IAttachment {
     ItemStack item;
@@ -23,6 +24,12 @@ public class AttachmentItem implements IAttachment {
 
     @Override
     public ItemStack generateDraftIcon(Player target) {
+        ItemStack item = this.item.clone();
+        if (!Text.loreRemove.isEmpty()) {
+            List<String> lore = ItemStackUtil.getItemLore(item);
+            lore.addAll(Text.loreRemove);
+            ItemStackUtil.setItemLore(item);
+        }
         return item;
     }
 

@@ -1,7 +1,10 @@
 package top.mrxiaom.sweetmail.database.entry;
 
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,5 +24,23 @@ public interface IAttachment {
             }
         }
         return null;
+    }
+    class Text extends AbstractPluginHolder {
+        protected static List<String> loreRemove;
+        protected static String moneyIcon;
+        protected static String moneyName;
+        protected static List<String> moneyLore;
+        public Text(SweetMail plugin) {
+            super(plugin);
+            register();
+        }
+
+        @Override
+        public void reloadConfig(MemoryConfiguration config) {
+            loreRemove = config.getStringList("messages.draft.attachments.remove-lore");
+            moneyIcon = config.getString("messages.draft.attachments.money.icon", "GOLD_NUGGET");
+            moneyName = config.getString("messages.draft.attachments.money.name", "");
+            moneyLore = config.getStringList("messages.draft.attachments.money.lore");
+        }
     }
 }

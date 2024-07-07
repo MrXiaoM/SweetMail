@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.config.*;
+import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 
 import java.io.ByteArrayInputStream;
@@ -39,7 +40,7 @@ public abstract class AbstractPluginHolder {
                 CommandMain.class,
                 MainConfig.class, MenuDraftConfig.class, MenuInBoxConfig.class,
                 MenuOutBoxConfig.class,
-                DraftManager.class, NoticeManager.class
+                DraftManager.class, NoticeManager.class, IAttachment.Text.class
         );
         for (Class<?> clazz : classes) {
             try {

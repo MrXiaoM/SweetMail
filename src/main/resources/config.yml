@@ -38,6 +38,16 @@ messages:
     selected-icon-lore:
       - '&a&l已选择'
     no-receivers: '你没有设置接收者，无法发送邮件!'
+    attachments:
+      remove-lore:
+        - ''
+        - '&a左键 &7| &f删除并取出该附件'
+      money:
+        icon: GOLD_NUGGET
+        name: '&e&l金币'
+        lore:
+          - ''
+          - '  &f数量: &e%money%'
   inbox:
     attachments-fail: '有附件领取失败! 请联系管理员查看后台了解详细'
   join:

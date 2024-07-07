@@ -7,6 +7,8 @@ import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
+import java.util.List;
+
 public class AttachmentCommand implements IAttachment {
     String item;
     String display;
@@ -28,6 +30,11 @@ public class AttachmentCommand implements IAttachment {
     public ItemStack generateDraftIcon(Player target) {
         ItemStack item = ItemStackUtil.getItem(this.item);
         ItemStackUtil.setItemDisplayName(item, display);
+        if (!Text.loreRemove.isEmpty()) {
+            List<String> lore = ItemStackUtil.getItemLore(item);
+            lore.addAll(Text.loreRemove);
+            ItemStackUtil.setItemLore(item);
+        }
         return item;
     }
 
