@@ -1,9 +1,11 @@
 package top.mrxiaom.sweetmail.config;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
@@ -11,6 +13,7 @@ import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.gui.GuiDraft;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 
 public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
     Icon iconReceiver;
@@ -103,10 +106,17 @@ public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
         switch (key) {
             case "接": {
                 String receiver = draft.receiver.isEmpty() ? iconReceiverUnset : draft.receiver;
-                return iconReceiver.generateIcon(
+                ItemStack item = iconReceiver.generateIcon(
                         target,
                         Pair.of("%receiver%", receiver)
                 );
+                if (!draft.receiver.isEmpty() && item.getItemMeta() instanceof SkullMeta) {
+                    OfflinePlayer owner = Util.getOfflinePlayer(draft.receiver).orElse(null);
+                    SkullMeta meta = (SkullMeta) item.getItemMeta();
+                    meta.setOwningPlayer(owner);
+                    item.setItemMeta(meta);
+                }
+                return item;
             }
             case "图": {
                 ItemStack item = ItemStackUtil.getItem(manager.getMailIcon(draft.iconKey));
