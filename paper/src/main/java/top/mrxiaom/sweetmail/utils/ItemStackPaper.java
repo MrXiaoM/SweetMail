@@ -3,6 +3,7 @@ package top.mrxiaom.sweetmail.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,7 +26,7 @@ public class ItemStackPaper {
                 builder.append(translatable);
             }
         });
-        return builder.build().asComponent();
+        return builder.decoration(TextDecoration.ITALIC, false).asComponent();
     }
     
     static List<Component> parse(List<String> list) {
@@ -38,7 +39,6 @@ public class ItemStackPaper {
     
     public static void setItemDisplayName(ItemStack item, String name) {
         ItemMeta meta = item.getItemMeta();
-
         meta.displayName(parse(name));
         item.setItemMeta(meta);
     }
