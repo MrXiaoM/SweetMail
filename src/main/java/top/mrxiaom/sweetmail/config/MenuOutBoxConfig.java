@@ -9,17 +9,20 @@ import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
-import top.mrxiaom.sweetmail.gui.GuiInBox;
+import top.mrxiaom.sweetmail.gui.GuiOutBox;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.ListX;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
-public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
+public class MenuOutBoxConfig extends AbstractMenuConfig<GuiOutBox> {
     public static class IconSlot {
         public final Icon base;
         Map<String, List<String>> loreParts = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -68,7 +71,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
             return icon;
         }
     }
-    String titleAll, titleAllOther, titleUnread, titleUnreadOther;
+    String title, titleOther;
     Icon iconAll;
     Icon iconUnread;
     Icon iconOut;
@@ -78,9 +81,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
     String iconGetAllRedirect;
     IconSlot iconSlot;
     int slotsCount;
-    public String messageFail;
-    public MenuInBoxConfig(SweetMail plugin) {
-        super(plugin, "menus/inbox.yml");
+    public MenuOutBoxConfig(SweetMail plugin) {
+        super(plugin, "menus/outbox.yml");
     }
 
     public int getSlotsCount() {
@@ -90,22 +92,16 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
-        messageFail = cfg.getString("messages.inbox.attachments-fail");
 
-        titleAll = config.getString("title-all", "&0收件箱 全部 %page%/%max_page%");
-        titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 %page%/%max_page%");
-        titleUnread = config.getString("title-unread", "&0收件箱 未读 %page%/%max_page%");
-        titleUnreadOther = config.getString("title-unread-other", "&0%target% 的收件箱 未读 %page%/%max_page%");
+        titleOther = config.getString("title-all-other", "&0%target% 的发件箱 %page%/%max_page%");
         slotsCount = 0;
         for (char c : inventory) {
             if (c == '格') slotsCount++;
         }
     }
 
-    public Inventory createInventory(Player target, boolean unread, boolean other, int page, int maxPage) {
-        String title = unread
-                ? (other ? titleUnreadOther : titleUnread)
-                : (other ? titleAllOther : titleAll);
+    public Inventory createInventory(Player target, boolean other, int page, int maxPage) {
+        String title = other ? this.titleOther : this.title;
         return Bukkit.createInventory(null, inventory.length,
                 PAPI.setPlaceholders(target, replace(
                         title,
@@ -163,7 +159,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
     }
 
     @Override
-    protected ItemStack tryApplyMainIcon(GuiInBox gui, String key, Player target, int iconIndex) {
+    protected ItemStack tryApplyMainIcon(GuiOutBox gui, String key, Player target, int iconIndex) {
         switch (key) {
             case "全":
                 return iconAll.generateIcon(target);
@@ -186,7 +182,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
                 }
                 break;
             case "格":
-                ListX<MailWithStatus> inBox = gui.getInBox();
+                ListX<MailWithStatus> inBox = gui.getOutBox();
                 if (iconIndex >= 0 && iconIndex < inBox.size()) {
                     MailWithStatus mail = inBox.get(iconIndex);
                     ItemStack icon = mail.generateIcon();
@@ -215,7 +211,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
         return null;
     }
 
-    public static MenuInBoxConfig inst() {
-        return get(MenuInBoxConfig.class).orElseThrow(IllegalStateException::new);
+    public static MenuOutBoxConfig inst() {
+        return get(MenuOutBoxConfig.class).orElseThrow(IllegalStateException::new);
     }
 }

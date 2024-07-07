@@ -72,6 +72,12 @@ public class GuiInBox extends AbstractPluginHolder implements IGui {
                 }
                 return;
             }
+            case "发": {
+                if (!click.isShiftClick() && click.isLeftClick()) {
+                    plugin.getGuiManager().openGui(new GuiOutBox(plugin, player, target));
+                }
+                return;
+            }
             case "上": {
                 if (!click.isShiftClick() && click.isLeftClick()) {
                     if (page <= 1) return;
