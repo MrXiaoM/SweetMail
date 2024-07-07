@@ -89,7 +89,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
                     while (result.next()) {
-                        mailList.add(resolveResult(result));
+                        mailList.add(resolveResult(result, true));
                     }
                 }
             }
@@ -122,7 +122,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
                     while (result.next()) {
-                        mailList.add(resolveResult(result));
+                        mailList.add(resolveResult(result, false));
                         if (mailList.getMaxCount() == 0) {
                             mailList.setMaxCount(result.getInt("mail_count"));
                         }
@@ -145,7 +145,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
                     while (result.next()) {
-                        mailList.add(resolveResult(result));
+                        mailList.add(resolveResult(result, false));
                     }
                 }
             }
@@ -155,7 +155,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
         return mailList;
     }
 
-    private MailWithStatus resolveResult(ResultSet result) throws IOException, SQLException {
+    private MailWithStatus resolveResult(ResultSet result, boolean outbox) throws IOException, SQLException {
         String dataJson;
         try (InputStream in = result.getBinaryStream("data")) {
             try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -168,8 +168,8 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
             }
         }
         LocalDateTime time = result.getTimestamp("time").toLocalDateTime();
-        boolean read = result.getInt("read") == 1;
-        boolean used = result.getInt("used") == 1;
+        boolean read = outbox || result.getInt("read") == 1;
+        boolean used = outbox || result.getInt("used") == 1;
         return Mail.deserialize(dataJson, time, read, used);
     }
 
