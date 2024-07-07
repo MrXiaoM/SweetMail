@@ -93,10 +93,10 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
         super.reloadConfig(cfg);
         messageFail = cfg.getString("messages.inbox.attachments-fail");
 
-        titleAll = config.getString("title-all", "&0收件箱 全部 %page%/%max_page%");
-        titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 %page%/%max_page%");
-        titleUnread = config.getString("title-unread", "&0收件箱 未读 %page%/%max_page%");
-        titleUnreadOther = config.getString("title-unread-other", "&0%target% 的收件箱 未读 %page%/%max_page%");
+        titleAll = config.getString("title-all", "&0收件箱 全部 ( %page%/%max_page% 页)");
+        titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 ( %page%/%max_page% 页)");
+        titleUnread = config.getString("title-unread", "&0收件箱 未读 ( %page%/%max_page% 页)");
+        titleUnreadOther = config.getString("title-unread-other", "&0%target% 的收件箱 未读 ( %page%/%max_page% 页)");
         slotsCount = 0;
         for (char c : inventory) {
             if (c == '格') slotsCount++;

@@ -40,7 +40,8 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<GuiOutBox> {
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
 
-        titleOther = config.getString("title-all-other", "&0%target% 的发件箱 %page%/%max_page%");
+        title = config.getString("title", "&0发件箱 ( %page%/%max_page% 页)");
+        titleOther = config.getString("title-other", "&0%target% 的发件箱 ( %page%/%max_page% 页)");
         slotsCount = 0;
         for (char c : inventory) {
             if (c == '格') slotsCount++;

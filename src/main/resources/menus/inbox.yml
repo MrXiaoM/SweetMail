@@ -1,8 +1,8 @@
 # 界面标题，支持 PAPI
-title-all: '&0收件箱 全部 %page%/%max_page%'
-title-all-other: '&0%target% 的收件箱 全部 %page%/%max_page%'
-title-unread: '&0收件箱 未读 %page%/%max_page%'
-title-unread-other: '&0%target% 的收件箱 未读 %page%/%max_page%'
+title-all: '&0收件箱 全部 (%page%/%max_page% 页)'
+title-all-other: '&0%target% 的收件箱 全部 (%page%/%max_page% 页)'
+title-unread: '&0收件箱 未读 (%page%/%max_page% 页)'
+title-unread-other: '&0%target% 的收件箱 未读 (%page%/%max_page% 页)'
 # 界面布局，每行9个图标，不能超过6行
 inventory:
   - '全黑黑黑黑黑黑黑黑'

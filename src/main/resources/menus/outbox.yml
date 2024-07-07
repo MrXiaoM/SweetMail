@@ -1,6 +1,6 @@
 # 界面标题，支持 PAPI
-title: '&0发件箱 %page%/%max_page%'
-title-other: '&0%target% 的发件箱 %page%/%max_page%'
+title: '&0发件箱 (%page%/%max_page% 页)'
+title-other: '&0%target% 的发件箱 (%page%/%max_page% 页)'
 # 界面布局，每行9个图标，不能超过6行
 inventory:
   - '全黑黑黑黑黑黑黑黑'
