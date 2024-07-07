@@ -73,14 +73,22 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     }
 
     @Override
-    public List<MailWithStatus> getOutBox(String player, int page, int perPage) {
-        List<MailWithStatus> mailList = new ArrayList<>();
+    public ListX<MailWithStatus> getOutBox(String player, int page, int perPage) {
+        ListX<MailWithStatus> mailList = new ListX<>();
         try (Connection conn = getConnection()) {
             int offset = (page - 1) * perPage;
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
-                    "(`" + TABLE_STATUS + "` NATURAL JOIN (SELECT * FROM `" + TABLE_BOX + "` WHERE `sender` = ?) as A) " +
-                    "LIMIT " + offset + ", " + perPage + " " +
-                    "ORDER BY `time` DESC;")) {
+            try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
+                    "  SELECT * FROM (" +
+                    "    (SELECT * FROM `" + TABLE_BOX + "` WHERE `sender` = ?) AS A" +
+                    "    LEFT JOIN " +
+                    "    `" + TABLE_STATUS + "` AS B" +
+                    "    ON A.`uuid` = B.`uuid`" +
+                    "  )" +
+                    ")" +
+                    "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
+                    "ORDER BY `used` ASC, `time` DESC " +
+                    "LIMIT " + offset + ", " + perPage + ";"
+            )) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
                     while (result.next()) {
@@ -102,8 +110,13 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
             String conditions = unread
                     ? "`receiver` = ? AND unread = 1"
                     : "`receiver` = ?";
-            try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS(" +
-                    "  SELECT * FROM (`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") as A) " +
+            try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
+                    "  SELECT * FROM (" +
+                    "    `" + TABLE_BOX + "` AS A" +
+                    "    LEFT JOIN" +
+                    "    (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") AS B" +
+                    "    ON A.`uuid` = B.`uuid`" +
+                    "  )" +
                     ")" +
                     "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
                     "ORDER BY `used` ASC, `time` DESC " +

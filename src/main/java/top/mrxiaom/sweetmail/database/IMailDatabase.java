@@ -21,7 +21,7 @@ public interface IMailDatabase {
      * @param perPage 每页数量
      * @return 邮件列表
      */
-    List<MailWithStatus> getOutBox(String player, int page, int perPage);
+    ListX<MailWithStatus> getOutBox(String player, int page, int perPage);
 
     /**
      * 拉取收件箱

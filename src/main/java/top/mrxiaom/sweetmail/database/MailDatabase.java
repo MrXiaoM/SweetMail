@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.database;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
@@ -44,7 +43,7 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
     }
 
     @Override
-    public List<MailWithStatus> getOutBox(String player, int page, int perPage) {
+    public ListX<MailWithStatus> getOutBox(String player, int page, int perPage) {
         return database.getOutBox(player, page, perPage);
     }
 
