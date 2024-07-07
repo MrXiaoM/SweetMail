@@ -31,11 +31,11 @@ public class DraftManager extends AbstractPluginHolder {
             receiver = "";
             iconKey = "default";
             title = manager.defaultTitle;
-            if (content == null) content = new ArrayList<>();
-            else content.clear();
-            if (attachments == null) attachments = new ArrayList<>();
-            else attachments.clear();
-            advSenderDisplay = advReceivers = null;
+            content = new ArrayList<>();
+            attachments = new ArrayList<>();
+            advSenderDisplay = null;
+            advReceivers = null;
+            save();
         }
 
         public static Draft load(DraftManager manager, String player) {
