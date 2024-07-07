@@ -69,6 +69,7 @@ public class GuiDraft extends AbstractDraftGui {
             }
             case "题": {
                 if (click.isLeftClick() && !click.isShiftClick()) {
+                    player.closeInventory();
                     ChatPrompter.prompt(
                             plugin, player,
                             config.iconTitlePromptTips,
