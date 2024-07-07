@@ -18,6 +18,7 @@ import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.database.entry.AttachmentItem;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
 
 import java.util.ArrayList;
@@ -132,7 +133,7 @@ public class GuiDraft extends AbstractDraftGui {
                     String uuid = plugin.getDatabase().generateMailUUID();
                     String sender = draft.sender;
                     String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
-                    String icon = draft.iconKey;
+                    String icon = DraftManager.inst().getMailIcon(draft.iconKey);
                     String title = draft.title;
                     List<String> content = draft.content;
                     List<IAttachment> attachments = draft.attachments;
@@ -160,6 +161,8 @@ public class GuiDraft extends AbstractDraftGui {
                     plugin.getDatabase().sendMail(mail);
                     draft.reset();
                     draft.save();
+                    player.closeInventory();
+                    t(player, plugin.prefix() + config.messageSent);
                 }
                 return;
             }

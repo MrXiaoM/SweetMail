@@ -40,6 +40,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
 
     public String messageNoReceivers;
     public String messageCantSendToYourself;
+    public String messageSent;
     public boolean canSendToYourself;
     public MenuDraftConfig(SweetMail plugin) {
         super(plugin, "menus/draft.yml");
@@ -51,6 +52,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
         canSendToYourself = cfg.getBoolean("can-send-to-yourself", false);
         messageNoReceivers = cfg.getString("messages.draft.no-receivers");
         messageCantSendToYourself = cfg.getString("messages.draft.cant-send-to-yourself");
+        messageSent = cfg.getString("messages.draft.sent");
     }
 
     @Override
