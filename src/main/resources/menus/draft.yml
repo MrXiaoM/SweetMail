@@ -34,7 +34,7 @@ items:
     title: '选择图标'
     title-custom: '选择图标 (可在物品栏选择)'
   题:
-    material: BOOK
+    material: NAME_TAG
     display: '&e&l标题'
     lore:
       - ''
@@ -75,7 +75,7 @@ items:
       - ''
       - '&a左键&7 | &f执行操作'
   发:
-    material: LAVA_BUCKET
+    material: ENDER_EYE
     display: '&a&l发送邮件'
     lore:
       - ''
@@ -84,7 +84,7 @@ items:
       - ''
       - '&a左键&7 | &f执行操作'
   附:
-    material: LAVA_BUCKET
+    material: MINECART
     display: '&a&l附件槽'
     lore:
       - ''
