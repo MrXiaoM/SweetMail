@@ -28,7 +28,7 @@ public class AttachmentMoney implements IAttachment {
     @Override
     public ItemStack generateDraftIcon(Player target) {
         ItemStack item = ItemStackUtil.getItem(Text.moneyIcon);
-        ItemStackUtil.setItemDisplayName(item, Text.moneyName.replace("%money%", String.valueOf(money)));
+        ItemStackUtil.setItemDisplayName(item, toString());
         if (!Text.moneyLore.isEmpty() || !Text.loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
             lore.addAll(Text.moneyLore);
@@ -41,13 +41,18 @@ public class AttachmentMoney implements IAttachment {
     @Override
     public ItemStack generateIcon(Player target) {
         ItemStack item = ItemStackUtil.getItem(Text.moneyIcon);
-        ItemStackUtil.setItemDisplayName(item, Text.moneyName.replace("%money%", String.valueOf(money)));
+        ItemStackUtil.setItemDisplayName(item, toString());
         if (!Text.moneyLore.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
             lore.addAll(Text.moneyLore);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
         }
         return item;
+    }
+
+    @Override
+    public String toString() {
+        return Text.moneyName.replace("%money%", String.valueOf(money));
     }
 
     @Override

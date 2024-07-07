@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.database.entry;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 
 import java.util.Collection;
@@ -36,6 +37,15 @@ public class AttachmentItem implements IAttachment {
     @Override
     public ItemStack generateIcon(Player target) {
         return item;
+    }
+
+    @Override
+    public String toString() {
+        if (item.getItemMeta() != null) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta.hasDisplayName() && !meta.getDisplayName().isEmpty()) return meta.getDisplayName();
+        }
+        return "<translate:" + item.getTranslationKey() + ">";
     }
 
     @Override

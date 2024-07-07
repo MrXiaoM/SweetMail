@@ -46,6 +46,11 @@ public class AttachmentCommand implements IAttachment {
     }
 
     @Override
+    public String toString() {
+        return display;
+    }
+
+    @Override
     public String serialize() {
         return "command:" + item + "," + "display" + "," + command;
     }
