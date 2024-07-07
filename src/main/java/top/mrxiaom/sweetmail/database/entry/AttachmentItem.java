@@ -28,7 +28,7 @@ public class AttachmentItem implements IAttachment {
         if (!Text.loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
             lore.addAll(Text.loreRemove);
-            ItemStackUtil.setItemLore(item);
+            ItemStackUtil.setItemLore(item, lore);
         }
         return item;
     }
