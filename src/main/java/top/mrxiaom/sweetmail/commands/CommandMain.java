@@ -11,8 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
+import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.gui.GuiDraft;
 import top.mrxiaom.sweetmail.gui.GuiInBox;
+import top.mrxiaom.sweetmail.gui.GuiOutBox;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         boolean admin = sender.hasPermission(PERM_ADMIN);
         if (args.length > 0) {
+            GuiManager gui = plugin.getGuiManager();
             if ("admin".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length >= 4 && "inbox".equalsIgnoreCase(args[1])) {
                     if (!(sender instanceof Player)) {
@@ -61,7 +64,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if (!type.equals("unread") && !type.equals("all")) {
                         return true;
                     }
-                    plugin.getGuiManager().openGui(new GuiInBox(plugin, player, target, type.equals("unread")));
+                    gui.openGui(new GuiInBox(plugin, player, target, type.equals("unread")));
                     return true;
                 }
                 if (args.length >= 3 && "outbox".equalsIgnoreCase(args[1])) {
@@ -70,7 +73,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     }
                     Player player = (Player) sender;
                     String target = args[2];
-                    // TODO: 打开别人的发件箱
+                    gui.openGui(new GuiOutBox(plugin, player, target));
                     return true;
                 }
             }
@@ -79,7 +82,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     return true;
                 }
                 Player player = (Player) sender;
-                plugin.getGuiManager().openGui(new GuiDraft(plugin, player));
+                gui.openGui(new GuiDraft(plugin, player));
                 return true;
             }
             if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
@@ -92,14 +95,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if (target == null) {
                         return true;
                     }
-                    plugin.getGuiManager().openGui(new GuiInBox(plugin, target, target.getName(), type.equals("unread")));
+                    gui.openGui(new GuiInBox(plugin, target, target.getName(), type.equals("unread")));
                     return true;
                 }
                 if (!(sender instanceof Player)) {
                     return true;
                 }
                 Player player = (Player) sender;
-                plugin.getGuiManager().openGui(new GuiInBox(plugin, player, player.getName(), type.equals("unread")));
+                gui.openGui(new GuiInBox(plugin, player, player.getName(), type.equals("unread")));
                 return true;
             }
             if ("outbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
@@ -108,14 +111,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if (target == null) {
                         return true;
                     }
-                    // TODO: 为别人打开发件箱
+                    gui.openGui(new GuiOutBox(plugin, target, target.getName()));
                     return true;
                 }
                 if (!(sender instanceof Player)) {
                     return true;
                 }
                 Player player = (Player) sender;
-                // TODO: 为自己打开发件箱
+                gui.openGui(new GuiOutBox(plugin, player, player.getName()));
                 return true;
             }
             if ("reload".equalsIgnoreCase(args[0]) && admin) {
