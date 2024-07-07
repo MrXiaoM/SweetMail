@@ -30,6 +30,8 @@ public interface IAttachment {
         protected static String moneyIcon;
         protected static String moneyName;
         protected static List<String> moneyLore;
+        protected static String itemDisplay;
+        protected static String itemDisplayWithAmount;
         public Text(SweetMail plugin) {
             super(plugin);
             register();
@@ -41,6 +43,8 @@ public interface IAttachment {
             moneyIcon = config.getString("messages.draft.attachments.money.icon", "GOLD_NUGGET");
             moneyName = config.getString("messages.draft.attachments.money.name", "");
             moneyLore = config.getStringList("messages.draft.attachments.money.lore");
+            itemDisplay = config.getString("messages.draft.attachments.item.display");
+            itemDisplayWithAmount = config.getString("messages.draft.attachments.item.display-with-amount");
         }
     }
 }

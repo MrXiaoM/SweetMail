@@ -4,9 +4,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.util.Collection;
 import java.util.List;
+
+import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class AttachmentItem implements IAttachment {
     ItemStack item;
@@ -39,13 +42,20 @@ public class AttachmentItem implements IAttachment {
         return item;
     }
 
-    @Override
-    public String toString() {
+    public String getName() {
         if (item.getItemMeta() != null) {
             ItemMeta meta = item.getItemMeta();
             if (meta.hasDisplayName() && !meta.getDisplayName().isEmpty()) return meta.getDisplayName();
         }
         return "<translate:" + item.getTranslationKey() + ">";
+    }
+
+    @Override
+    public String toString() {
+        String name = getName();
+        int amount = item.getAmount();
+        if (amount <= 1) return replace(Text.itemDisplay, Pair.of("%item%", name));
+        return replace(Text.itemDisplayWithAmount, Pair.of("%item%", name), Pair.of("%amount%", amount));
     }
 
     @Override
