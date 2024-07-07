@@ -60,6 +60,7 @@ messages:
     attachments-fail: '有附件领取失败! 请联系管理员查看后台了解详细'
   join:
     text: '&e你有 &b%count% &e封未读邮件 &7[&a点击查看&7]'
+    text-online: '&e你有一封新的未读邮件 &7[&a点击查看&7]'
     hover:
       - '&e点击打开收件箱'
     command: '/mail inbox unread'

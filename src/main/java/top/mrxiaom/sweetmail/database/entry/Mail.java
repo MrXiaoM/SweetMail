@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import top.mrxiaom.sweetmail.func.NoticeManager;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 
 import java.time.LocalDateTime;
@@ -51,8 +52,7 @@ public class Mail {
     }
 
     public void noticeSent() {
-        // TODO: 提醒本服接收者查看邮件
-        // TODO: 通过BC提醒其它服区的接收者查看邮件
+        NoticeManager.inst().noticeNew(receivers);
     }
 
     public String serialize() {

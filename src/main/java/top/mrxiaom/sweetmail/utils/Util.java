@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -85,6 +86,11 @@ public class Util {
             if (uuidList.contains(player.getUniqueId())) players.add(player);
         }
         return players;
+    }
+
+    public static Player getAnyPlayerOrNull() {
+        Iterator<? extends Player> i = Bukkit.getOnlinePlayers().iterator();
+        return i.hasNext() ? i.next() : null;
     }
 
     public static Optional<Double> parseDouble(String s) {
