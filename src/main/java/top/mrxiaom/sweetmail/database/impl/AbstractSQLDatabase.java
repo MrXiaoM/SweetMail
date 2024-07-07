@@ -11,10 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,16 +49,21 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     @Override
     public void sendMail(Mail mail) {
         try (Connection conn = getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, NOW());")) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, ?);"
+            )) {
                 ps.setString(1, mail.uuid);
                 ps.setString(2, mail.sender);
                 byte[] bytes = mail.serialize().getBytes(StandardCharsets.UTF_8);
                 try (InputStream in = new ByteArrayInputStream(bytes)) {
                     ps.setBinaryStream(3, in);
+                    ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
                     ps.execute();
                 }
             }
-            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0);")) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0);"
+            )) {
                 for (String receiver : mail.receivers) {
                     ps.setString(1, mail.uuid);
                     ps.setString(2, receiver);
