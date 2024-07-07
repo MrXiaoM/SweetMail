@@ -25,6 +25,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     String msgJoinTextOnline;
     List<String> msgJoinHover;
     String msgJoinCmd;
+    boolean noticeBungee;
     public NoticeManager(SweetMail plugin) {
         super(plugin);
         registerEvents(this);
@@ -34,6 +35,8 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
 
     @Override
     public void reloadConfig(MemoryConfiguration config) {
+        noticeBungee = config.getBoolean("notice-bungee", true);
+
         msgJoinText = config.getString("messages.join.text", "");
         msgJoinTextOnline = config.getString("messages.join.text-online", "");
         msgJoinHover = config.getStringList("messages.join.hover");
@@ -51,7 +54,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
 
     @Override
     public void receiveBungee(String subChannel, DataInputStream in) throws IOException {
-        if (subChannel.equals("SweetMail_Notice")) {
+        if (noticeBungee && subChannel.equals("SweetMail_Notice")) {
             int length = in.readInt();
             for (int i = 0; i < length; i++) {
                 Player player = Util.getOnlinePlayer(in.readUTF()).orElse(null);
@@ -76,7 +79,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     }
 
     private void noticeToBungee(List<String> players) {
-        if (players.isEmpty()) return;
+        if (!noticeBungee || players.isEmpty()) return;
         Player player = Util.getAnyPlayerOrNull();
         if (player == null) return;
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
