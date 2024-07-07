@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.gui;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.MenuDraftConfig;
@@ -10,9 +11,9 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
     protected Player player;
     protected MenuDraftConfig config;
     protected DraftManager.Draft draft;
-    protected Runnable reopen = () -> {
-        plugin.getGuiManager().openGui(this);
-    };
+    protected Runnable reopen = () ->
+            Bukkit.getScheduler().runTask(plugin,
+                    () -> plugin.getGuiManager().openGui(this));
     public AbstractDraftGui(SweetMail plugin, Player player) {
         super(plugin);
         this.player = player;

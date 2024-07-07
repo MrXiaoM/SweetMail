@@ -40,17 +40,24 @@ public class GuiIcon extends AbstractDraftGui {
         }
         size = Math.min(54, ((pairs.size() / 9) + 1) * 9);
         Inventory inv = Bukkit.createInventory(null, size, PAPI.setPlaceholders(player, title));
-        for (int i = 0; i < pairs.size(); i++) {
+        for (int i = 0, j = 0; i < pairs.size(); i++) {
             Pair<String, String> pair = pairs.get(i);
-            ItemStack item = ItemStackUtil.getItem(pair.getValue());
+            ItemStack item;
+            try {
+                item = ItemStackUtil.getItem(pair.getValue());
+            } catch (Throwable t) {
+                warn(t.getMessage());
+                continue;
+            }
             if (draft.iconKey.equals(pair.getKey())) {
                 ItemStackUtil.setGlow(item);
                 List<String> lore = ItemStackUtil.getItemLore(item);
                 lore.addAll(plugin.getConfig().getStringList("messages.draft.selected-icon-lore"));
                 ItemStackUtil.setItemLore(item, lore);
             }
-            iconKeyMap.put(i, pair.getKey());
-            inv.setItem(i, item);
+            iconKeyMap.put(j, pair.getKey());
+            inv.setItem(j, item);
+            j++;
         }
         return inv;
     }

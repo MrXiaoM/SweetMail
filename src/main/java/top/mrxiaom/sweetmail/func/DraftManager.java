@@ -41,7 +41,7 @@ public class DraftManager extends AbstractPluginHolder {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             Draft draft = new Draft(manager, player);
             draft.receiver = config.getString("receiver", "");
-            draft.receiver = config.getString("icon_key", "default");
+            draft.iconKey = config.getString("icon_key", "default");
             draft.title = config.getString("title", manager.defaultTitle);
             draft.content = config.getStringList("content");
             List<IAttachment> attachments = new ArrayList<>();

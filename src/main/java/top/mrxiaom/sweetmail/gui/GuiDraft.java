@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.gui;
 
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,6 +46,7 @@ public class GuiDraft extends AbstractDraftGui {
         switch (String.valueOf(c)) {
             case "接": {
                 if (click.isLeftClick() && !click.isShiftClick()) {
+                    player.closeInventory();
                     ChatPrompter.prompt(
                             plugin, player,
                             config.iconReceiverPromptTips,
@@ -99,7 +101,7 @@ public class GuiDraft extends AbstractDraftGui {
                         if (rawMeta instanceof BookMeta) {
                             BookMeta meta = (BookMeta) rawMeta;
                             meta.setTitle(draft.title);
-                            meta.setPages(draft.content);
+                            meta.setPages(draft.content.isEmpty() ? Lists.newArrayList("") : draft.content);
                             meta.setAuthor(player.getName());
                             item.setItemMeta(meta);
                             player.openBook(item);

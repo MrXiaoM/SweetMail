@@ -38,6 +38,7 @@ public abstract class AbstractPluginHolder {
         List<Class<?>> classes = Lists.newArrayList(
                 CommandMain.class,
                 MainConfig.class, MenuDraftConfig.class, MenuInBoxConfig.class,
+                MenuOutBoxConfig.class,
                 DraftManager.class, NoticeManager.class
         );
         for (Class<?> clazz : classes) {

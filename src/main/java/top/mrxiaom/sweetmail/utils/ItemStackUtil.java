@@ -94,9 +94,9 @@ public class ItemStackUtil {
             return;
         }
         List<String> newLore = new ArrayList<>();
-        lore.forEach(s -> {
+        for (String s : lore) {
             if (s != null) newLore.add(ColorHelper.parseColor(s));
-        });
+        }
         im.setLore(newLore);
         item.setItemMeta(im);
     }
