@@ -13,7 +13,11 @@ public interface IGui {
 
     void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event);
 
-    void onDrag(InventoryView view, InventoryDragEvent event);
+    default void onDrag(InventoryView view, InventoryDragEvent event) {
+        event.setCancelled(true);
+    }
 
-    void onClose(InventoryView view);
+    default void onClose(InventoryView view) {
+
+    }
 }

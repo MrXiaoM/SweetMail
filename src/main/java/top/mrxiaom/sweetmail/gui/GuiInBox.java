@@ -131,13 +131,4 @@ public class GuiInBox extends AbstractPluginHolder implements IGui {
         }
     }
 
-    @Override
-    public void onDrag(InventoryView view, InventoryDragEvent event) {
-        event.setCancelled(true);
-    }
-
-    @Override
-    public void onClose(InventoryView view) {
-
-    }
 }

@@ -1,8 +1,6 @@
 package top.mrxiaom.sweetmail.gui;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.InventoryView;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.MenuDraftConfig;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
@@ -27,13 +25,4 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
         return player;
     }
 
-    @Override
-    public void onDrag(InventoryView view, InventoryDragEvent event) {
-        event.setCancelled(true);
-    }
-
-    @Override
-    public void onClose(InventoryView view) {
-
-    }
 }
