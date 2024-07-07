@@ -16,10 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.database.MailDatabase;
-import top.mrxiaom.sweetmail.database.entry.AttachmentCommand;
-import top.mrxiaom.sweetmail.database.entry.AttachmentItem;
-import top.mrxiaom.sweetmail.database.entry.IAttachment;
-import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.database.entry.*;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
@@ -100,6 +97,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private void loadBuiltInAttachments() {
         IAttachment.deserializers.add(AttachmentItem::deserialize);
         IAttachment.deserializers.add(AttachmentCommand::deserialize);
+        IAttachment.deserializers.add(AttachmentMoney::deserialize);
     }
 
     @Override
