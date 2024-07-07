@@ -78,15 +78,10 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
         try (Connection conn = getConnection()) {
             int offset = (page - 1) * perPage;
             try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
-                    "  SELECT * FROM (" +
-                    "    (SELECT * FROM `" + TABLE_BOX + "` WHERE `sender` = ?) AS A" +
-                    "    LEFT JOIN " +
-                    "    `" + TABLE_STATUS + "` AS B" +
-                    "    ON A.`uuid` = B.`uuid`" +
-                    "  )" +
+                    "  SELECT * FROM `" + TABLE_BOX + "` WHERE `sender` = ?" +
                     ")" +
                     "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
-                    "ORDER BY `used` ASC, `time` DESC " +
+                    "ORDER BY `time` DESC " +
                     "LIMIT " + offset + ", " + perPage + ";"
             )) {
                 ps.setString(1, player);
@@ -111,7 +106,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                     ? "`receiver` = ? AND unread = 1"
                     : "`receiver` = ?";
             try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
-                    "  SELECT * FROM (" +
+                    "  SELECT A.`uuid`, `sender`, `data`, `time`, `receiver`, `read`, `used` FROM (" +
                     "    `" + TABLE_BOX + "` AS A" +
                     "    LEFT JOIN" +
                     "    (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") AS B" +
