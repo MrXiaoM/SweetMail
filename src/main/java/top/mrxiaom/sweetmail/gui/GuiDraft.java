@@ -136,6 +136,10 @@ public class GuiDraft extends AbstractDraftGui {
                     String title = draft.title;
                     List<String> content = draft.content;
                     List<IAttachment> attachments = draft.attachments;
+                    if (!config.canSendToYourself && sender.equalsIgnoreCase(draft.receiver)) {
+                        t(player, plugin.prefix() + config.messageCantSendToYourself);
+                        return;
+                    }
                     List<String> receivers = new ArrayList<>();
                     if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
                         // TODO: 解析 advance receivers

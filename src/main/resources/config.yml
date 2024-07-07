@@ -1,6 +1,9 @@
 # 高级设置的泛匹配中，不接收邮件的玩家名
 blacklist-players: []
 
+# 是否能向自己发送邮件
+can-send-to-yourself: false
+
 default:
   title: '未命名邮件'
 # 预设图标，不能写 custom
@@ -37,7 +40,8 @@ messages:
   draft:
     selected-icon-lore:
       - '&a&l已选择'
-    no-receivers: '你没有设置接收者，无法发送邮件!'
+    no-receivers: '&e你没有设置接收者，无法发送邮件!'
+    cant-send-to-yourself: '&e你不能发送邮件给你自己!'
     attachments:
       remove-lore:
         - ''
