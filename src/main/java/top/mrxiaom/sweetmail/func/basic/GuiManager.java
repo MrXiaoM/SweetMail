@@ -42,7 +42,7 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
             if (player == null) continue;
             entry.getValue().onClose(player.getOpenInventory());
             player.closeInventory();
-            player.sendTitle("&e请等等", "&f管理员正在热更新插件", 10, 30, 10);
+            player.sendTitle("§e请等等", "§f管理员正在热更新插件", 10, 30, 10);
         }
         playersGui.clear();
     }
