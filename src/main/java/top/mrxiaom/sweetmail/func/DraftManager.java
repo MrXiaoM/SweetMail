@@ -104,7 +104,7 @@ public class DraftManager extends AbstractPluginHolder {
         if (section != null) for (String key : section.getKeys(false)) {
             mailIcons.put(key, section.getString(key));
         }
-        if (mailIcons.containsKey("default")) {
+        if (!mailIcons.containsKey("default")) {
             warn("[config.yml] preset-icons 缺少 default");
         }
         advReceiversBlackList.clear();
