@@ -10,7 +10,7 @@ public class ListX<T> extends ArrayList<T> {
     }
 
     public int getMaxPage(int perPage) {
-        return (int)Math.ceil((double)maxCount / perPage);
+        return Math.max(1, (int)Math.ceil((double)maxCount / perPage));
     }
 
     public void setMaxCount(int maxCount) {
