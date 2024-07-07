@@ -1,9 +1,11 @@
 package top.mrxiaom.sweetmail.config;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -14,6 +16,9 @@ import top.mrxiaom.sweetmail.gui.GuiDraft;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.comp.PAPI;
+
+import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
     Icon iconReceiver;
@@ -97,6 +102,11 @@ public class MenuDraftConfig extends AbstractMenuConfig<GuiDraft> {
                 break;
             }
         }
+    }
+
+    @Override
+    public Inventory createInventory(GuiDraft gui, Player target) {
+        return Bukkit.createInventory(null, inventory.length, replace(PAPI.setPlaceholders(target, title), Pair.of("%title%", gui.getDraft().title)));
     }
 
     @Override

@@ -21,6 +21,10 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
         this.draft = DraftManager.inst().getDraft(player);
     }
 
+    public DraftManager.Draft getDraft() {
+        return draft;
+    }
+
     @Override
     public Player getPlayer() {
         return player;
