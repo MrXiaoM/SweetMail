@@ -27,12 +27,15 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
         hikariConfig.setDriverClassName("org.sqlite.JDBC");
         hikariConfig.setAutoCommit(true);
         hikariConfig.setMaxLifetime(120000L);
-        hikariConfig.setIdleTimeout(5000L);
+        hikariConfig.setIdleTimeout(10000L);
         hikariConfig.setConnectionTimeout(5000L);
         hikariConfig.setMinimumIdle(10);
         hikariConfig.setMaximumPoolSize(100);
         hikariConfig.setJdbcUrl("jdbc:sqlite:plugins/SweetMail/mail.db");
 
+        String prefix = config.getString("database.table_prefix", "sweetmail_");
+        TABLE_BOX = prefix + "box";
+        TABLE_STATUS = prefix + "status";
         dataSource = new HikariDataSource(hikariConfig);
 
         createTables();

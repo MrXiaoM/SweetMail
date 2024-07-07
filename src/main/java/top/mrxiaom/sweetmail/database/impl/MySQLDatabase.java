@@ -26,7 +26,7 @@ public class MySQLDatabase extends AbstractSQLDatabase {
         hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
         hikariConfig.setAutoCommit(true);
         hikariConfig.setMaxLifetime(120000L);
-        hikariConfig.setIdleTimeout(5000L);
+        hikariConfig.setIdleTimeout(10000L);
         hikariConfig.setConnectionTimeout(5000L);
         hikariConfig.setMinimumIdle(10);
         hikariConfig.setMaximumPoolSize(100);
