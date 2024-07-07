@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashSet;
@@ -40,6 +41,14 @@ public class ChatPrompter implements Listener {
             } else {
                 if (success != null) success.accept(message);
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onTeleport(PlayerTeleportEvent e) {
+        processing.remove(player.getUniqueId());
+        if (e.getPlayer().getUniqueId().equals(player.getUniqueId())) {
+            HandlerList.unregisterAll(this);
         }
     }
 
