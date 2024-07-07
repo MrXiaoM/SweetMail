@@ -31,8 +31,10 @@ public class DraftManager extends AbstractPluginHolder {
             receiver = "";
             iconKey = "default";
             title = manager.defaultTitle;
-            content.clear();
-            attachments.clear();
+            if (content == null) content = new ArrayList<>();
+            else content.clear();
+            if (attachments == null) attachments = new ArrayList<>();
+            else attachments.clear();
             advSenderDisplay = advReceivers = null;
         }
 
