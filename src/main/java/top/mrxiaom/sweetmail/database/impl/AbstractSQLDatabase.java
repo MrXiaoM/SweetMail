@@ -31,7 +31,10 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                             "`sender` VARCHAR(32)," +
                             "`data` MEDIUMBLOB," +
                             "`time` TIMESTAMP" +
-                    ");" +
+                    ");")) {
+                ps.execute();
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
                     "CREATE TABLE if NOT EXISTS `" + TABLE_STATUS + "`(" +
                             "`uuid` VARCHAR(32)," +
                             "`receiver` VARCHAR(32)," +
