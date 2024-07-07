@@ -149,7 +149,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
         }
     }
 
-    IconSlot loadSlot(ConfigurationSection section, String key, Icon base) {
+    protected static IconSlot loadSlot(ConfigurationSection section, String key, Icon base) {
         IconSlot icon = new IconSlot(base);
         ConfigurationSection section1 = section.getConfigurationSection(key + ".lore-parts");
         if (section1 != null) for (String k : section1.getKeys(false)) {
