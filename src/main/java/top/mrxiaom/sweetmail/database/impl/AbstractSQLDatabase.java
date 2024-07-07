@@ -110,7 +110,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
             try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
                     "  SELECT A.`uuid`, `sender`, `data`, `time`, `receiver`, `read`, `used` FROM (" +
                     "    `" + TABLE_BOX + "` AS A" +
-                    "    LEFT JOIN" +
+                    "    JOIN" +
                     "    (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") AS B" +
                     "    ON A.`uuid` = B.`uuid`" +
                     "  )" +
@@ -139,8 +139,12 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public List<MailWithStatus> getInBoxUnused(String player) {
         List<MailWithStatus> mailList = new ArrayList<>();
         try (Connection conn = getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM " +
-                    "(`" + TABLE_BOX + "` NATURAL JOIN (SELECT * FROM `" + TABLE_STATUS + "` WHERE `receiver` = ? AND `used` = 0) as A) " +
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM (" +
+                    "  `" + TABLE_BOX + "` as A" +
+                    "  JOIN" +
+                    "  (SELECT * FROM `" + TABLE_STATUS + "` WHERE `receiver` = ? AND `used` = 0) as B" +
+                    "  ON A.`uuid` = B.`uuid`" +
+                    ") " +
                     "ORDER BY `time` DESC;")) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
