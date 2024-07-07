@@ -10,6 +10,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.gui.GuiInBox;
+import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.ListX;
 import top.mrxiaom.sweetmail.utils.Pair;
@@ -107,11 +108,11 @@ public class MenuInBoxConfig extends AbstractMenuConfig<GuiInBox> {
                 ? (other ? titleUnreadOther : titleUnread)
                 : (other ? titleAllOther : titleAll);
         return Bukkit.createInventory(null, inventory.length,
-                PAPI.setPlaceholders(target, replace(
+                ColorHelper.parseColor(PAPI.setPlaceholders(target, replace(
                         title,
                         Pair.of("%page%", page),
                         Pair.of("%max_page%", maxPage)
-                ))
+                )))
         );
     }
 

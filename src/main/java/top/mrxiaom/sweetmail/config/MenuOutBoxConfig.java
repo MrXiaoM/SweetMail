@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.gui.GuiOutBox;
+import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ListX;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
@@ -49,11 +50,11 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<GuiOutBox> {
     public Inventory createInventory(Player target, boolean other, int page, int maxPage) {
         String title = other ? this.titleOther : this.title;
         return Bukkit.createInventory(null, inventory.length,
-                PAPI.setPlaceholders(target, replace(
+                ColorHelper.parseColor(PAPI.setPlaceholders(target, replace(
                         title,
                         Pair.of("%page%", page),
                         Pair.of("%max_page%", maxPage)
-                ))
+                )))
         );
     }
 
