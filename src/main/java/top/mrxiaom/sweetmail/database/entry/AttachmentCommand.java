@@ -1,11 +1,11 @@
 package top.mrxiaom.sweetmail.database.entry;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 public class AttachmentCommand implements IAttachment {
     String item;
@@ -20,7 +20,7 @@ public class AttachmentCommand implements IAttachment {
 
     @Override
     public void use(Player player) {
-        String cmd = PlaceholderAPI.setPlaceholders(player, command);
+        String cmd = PAPI.setPlaceholders(player, command);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), ColorHelper.parseColor(cmd));
     }
 
