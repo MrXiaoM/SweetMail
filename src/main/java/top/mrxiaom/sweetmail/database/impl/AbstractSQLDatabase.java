@@ -115,7 +115,8 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                     ")" +
                     "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
                     "ORDER BY `used` ASC, `time` DESC " +
-                    "LIMIT " + offset + ", " + perPage + ";")) {
+                    "LIMIT " + offset + ", " + perPage + ";"
+            )) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
                     while (result.next()) {
