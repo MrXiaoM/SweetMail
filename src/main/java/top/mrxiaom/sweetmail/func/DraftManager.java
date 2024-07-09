@@ -100,6 +100,7 @@ public class DraftManager extends AbstractPluginHolder {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
+        config.addDefault("preset-icons", null);
         draftMap.clear();
         mailIcons.clear();
         ConfigurationSection section = config.getConfigurationSection("preset-icons");

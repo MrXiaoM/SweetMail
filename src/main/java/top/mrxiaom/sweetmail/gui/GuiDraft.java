@@ -115,7 +115,7 @@ public class GuiDraft extends AbstractDraftGui {
             case "高": {
                 if (click.isLeftClick() && !click.isShiftClick()) {
                     if (player.hasPermission(CommandMain.PERM_ADMIN)) {
-                        // TODO: 打开高级设置菜单
+                        plugin.getGuiManager().openGui(new GuiDraftAdvance(plugin, player));
                     }
                 }
                 return;

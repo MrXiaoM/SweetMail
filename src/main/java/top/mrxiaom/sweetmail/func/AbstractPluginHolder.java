@@ -38,8 +38,8 @@ public abstract class AbstractPluginHolder {
     public static void loadModules(SweetMail plugin) {
         List<Class<?>> classes = Lists.newArrayList(
                 CommandMain.class,
-                MainConfig.class, MenuDraftConfig.class, MenuInBoxConfig.class,
-                MenuOutBoxConfig.class,
+                MainConfig.class, MenuDraftConfig.class, MenuDraftAdvanceConfig.class,
+                MenuInBoxConfig.class, MenuOutBoxConfig.class,
                 DraftManager.class, NoticeManager.class, IAttachment.Text.class
         );
         for (Class<?> clazz : classes) {
