@@ -71,10 +71,15 @@ items:
       - part1
       - attachments
       - part2
+      - bottom_attachments
     lore-format:
       attachment-item:
         - '  &8● &e%attachment%'
       and-so-on: '%player% 等 %count% 名玩家'
+      attachment:
+        available:
+          - '&eShift+左键&7 | &f领取附件'
+        unavailable: []
 # 非必选物品
 other-items:
   黑:

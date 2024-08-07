@@ -57,7 +57,7 @@ messages:
           - '  &f数量: &e%money%'
       item:
         display: '%item%'
-        display-with-amount: '%item% x%amount%'
+        display-with-amount: '%item%&7 x%amount%'
     sent: '邮件发送成功!'
   inbox:
     attachments-fail: '有附件领取失败! 请联系管理员查看后台了解详细'
