@@ -56,6 +56,7 @@ items:
   格:
     redirect: 无
     display: '&e&l%title%'
+    # lore分割部分，可自由定义，在下面的 lore-content 中使用
     lore-parts:
       part1:
       - '&f发件人: &e%sender%'
@@ -67,18 +68,35 @@ items:
       - ''
       - '&a左键&7 | &f查看邮件内容'
       - '&b右键&7 | &f查看附件'
+    # lore 组成部分
+    # 除了上面 lore-parts 定义的以外，还可以使用
+    # read (已读)
+    # attachments (附件列表)
+    # bottom_attachments (附件已领取)
     lore-content:
+      - read
       - part1
       - attachments
       - part2
       - bottom_attachments
+    # lore-content 中的配置
     lore-format:
+      # read部分-已读
+      read: []
+      # read部分-未读
+      unread:
+        - '&d&l                   未读邮件'
+      # %receiver%部分-有多个接收者时显示内容
+      and-so-on: '%player% 等 %count% 名玩家'
+      # attachments部分-显示模板
       attachment-item:
         - '  &8● &e%attachment%'
-      and-so-on: '%player% 等 %count% 名玩家'
+      # bottom_attachments部分
       attachment:
+        # 可领取
         available:
           - '&eShift+左键&7 | &f领取附件'
+        # 已领取过
         unavailable: []
 # 非必选物品
 other-items:

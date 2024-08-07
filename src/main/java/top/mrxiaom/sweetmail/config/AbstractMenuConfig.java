@@ -156,6 +156,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
     }
     public void applyIcons(T gui, InventoryView inv, Player target) {
         applyIcons(gui, inv::setItem, target);
+        target.updateInventory();
     }
     public void applyIcons(T gui, BiConsumer<Integer, ItemStack> setItem, Player target) {
         for (int i = 0; i < this.inventory.length; i++) {

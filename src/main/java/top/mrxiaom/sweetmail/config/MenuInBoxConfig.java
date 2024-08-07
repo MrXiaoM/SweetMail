@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config;
 
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -37,6 +38,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         List<String> attachmentFormat;
         List<String> attachmentBottomAvailable;
         List<String> attachmentBottomUnavailable;
+        List<String> loreRead;
+        List<String> loreUnread;
         String redirect;
         String receiverAndSoOn;
         private IconSlot(Icon base) {
@@ -51,14 +54,21 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 if (list != null && !list.isEmpty()) {
                     lore.addAll(list);
                 } else {
-                    if (key.equals("attachments")) {
-                        for (IAttachment attachment : mail.attachments) {
-                            lore.addAll(replace(attachmentFormat, Pair.of("%attachment%", attachment.toString())));
-                        }
-                    } else if (key.equals("bottom_attachments")) {
-                        lore.addAll(mail.used ? attachmentBottomUnavailable : attachmentBottomAvailable);
-                    } else {
-                        lore.add(key);
+                    switch (key) {
+                        case "attachments":
+                            for (IAttachment attachment : mail.attachments) {
+                                lore.addAll(replace(attachmentFormat, Pair.of("%attachment%", attachment.toString())));
+                            }
+                            break;
+                        case "bottom_attachments":
+                            lore.addAll(mail.used ? attachmentBottomUnavailable : attachmentBottomAvailable);
+                            break;
+                        case "read":
+                            lore.addAll(mail.read ? loreRead : loreUnread);
+                            break;
+                        default:
+                            lore.add(key);
+                            break;
                     }
                 }
             }
@@ -173,6 +183,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         icon.attachmentFormat = section.getStringList(key + ".lore-format.attachment-item");
         icon.attachmentBottomAvailable = section.getStringList(key + ".lore-format.attachment.available");
         icon.attachmentBottomUnavailable = section.getStringList(key + ".lore-format.attachment.unavailable");
+        icon.loreRead = section.getStringList(key + ".lore-format.read");
+        icon.loreUnread = section.getStringList(key + ".lore-format.unread");
         icon.redirect = section.getString(key + ".redirect");
         icon.receiverAndSoOn = section.getString(key + ".lore-format.and-so-on");
         return icon;
@@ -325,6 +337,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         List<String> dismiss = new ArrayList<>();
                         for (MailWithStatus mail : unused) {
                             if (mail.used) continue;
+                            mail.used = true;
                             dismiss.add(mail.uuid);
                             try {
                                 for (IAttachment attachment : mail.attachments) {
@@ -336,28 +349,44 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             }
                         }
                         plugin.getDatabase().markUsed(dismiss, target);
+                        applyIcons(this, view, player);
                     }
                     return;
                 }
                 case "格": {
-                    if (!click.isShiftClick()) {
-                        int i = getKeyIndex(c, slot);
-                        if (i < 0 || i >= inBox.size()) return;
-                        MailWithStatus mail = inBox.get(i);
-                        if (click.isLeftClick()) {
-                            if (click.isShiftClick() && !mail.attachments.isEmpty() && !mail.used) {
-                                // TODO: 领取附件
-                                return;
+                    int i = getKeyIndex(c, slot);
+                    if (i < 0 || i >= inBox.size()) return;
+                    MailWithStatus mail = inBox.get(i);
+                    plugin.getDatabase().markRead(mail.uuid, target);
+                    if (click.isLeftClick()) {
+                        if (click.isShiftClick()) { // 领取附件
+                            if (!mail.attachments.isEmpty() && !mail.used) {
+                                mail.used = true;
+                                plugin.getDatabase().markUsed(Lists.newArrayList(mail.uuid), target);
+                                try {
+                                    for (IAttachment attachment : mail.attachments) {
+                                        attachment.use(player);
+                                    }
+                                } catch (Throwable t) {
+                                    warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
+                                    t(player, plugin.prefix() + messageFail);
+                                }
+                                applyIcons(this, view, player);
+                            } else {
+                                t(player, mail.attachments.size() + " " + mail.used);
                             }
-                            player.openBook(mail.generateBook());
                             return;
                         }
-                        if (click.isRightClick()) {
-                            MenuViewAttachmentsConfig.inst()
-                                    .new Gui(this, player, mail)
-                                    .open();
-                            return;
-                        }
+                        // 查看正文
+                        player.openBook(mail.generateBook());
+                        return;
+                    }
+                    if (!click.isShiftClick() && click.isRightClick()) {
+                        // 预览附件
+                        MenuViewAttachmentsConfig.inst()
+                                .new Gui(this, player, mail)
+                                .open();
+                        return;
                     }
                     return;
                 }
