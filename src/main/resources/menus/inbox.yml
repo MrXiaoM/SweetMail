@@ -82,10 +82,11 @@ items:
     # lore-content 中的配置
     lore-format:
       # read部分-已读
-      read: []
+      read:
+        - '&f'
       # read部分-未读
       unread:
-        - '&d&l                   未读邮件'
+        - '&d&l                         未读邮件'
       # %receiver%部分-有多个接收者时显示内容
       and-so-on: '%player% 等 %count% 名玩家'
       # attachments部分-显示模板
