@@ -35,6 +35,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         Map<String, List<String>> loreParts = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         List<String> loreContent;
         List<String> attachmentFormat;
+        List<String> attachmentBottomAvailable;
+        List<String> attachmentBottomUnavailable;
         String redirect;
         String receiverAndSoOn;
         private IconSlot(Icon base) {
@@ -53,6 +55,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         for (IAttachment attachment : mail.attachments) {
                             lore.addAll(replace(attachmentFormat, Pair.of("%attachment%", attachment.toString())));
                         }
+                    } else if (key.equals("bottom_attachments")) {
+                        lore.addAll(mail.used ? attachmentBottomUnavailable : attachmentBottomAvailable);
                     } else {
                         lore.add(key);
                     }
@@ -167,6 +171,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         }
         icon.loreContent = section.getStringList(key + ".lore-content");
         icon.attachmentFormat = section.getStringList(key + ".lore-format.attachment-item");
+        icon.attachmentBottomAvailable = section.getStringList(key + ".lore-format.attachment.available");
+        icon.attachmentBottomUnavailable = section.getStringList(key + ".lore-format.attachment.unavailable");
         icon.redirect = section.getString(key + ".redirect");
         icon.receiverAndSoOn = section.getString(key + ".lore-format.and-so-on");
         return icon;
@@ -231,9 +237,9 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     }
 
     public class Gui extends AbstractPluginHolder implements IGui {
-        Player player;
-        String target;
-        boolean unread;
+        private final Player player;
+        private final String target;
+        private boolean unread;
         int page = 1;
         ListX<MailWithStatus> inBox;
         public Gui(SweetMail plugin, Player player, String target, boolean unread) {
@@ -338,7 +344,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         if (i < 0 || i >= inBox.size()) return;
                         MailWithStatus mail = inBox.get(i);
                         if (click.isLeftClick()) {
-                            if (click.isShiftClick()) {
+                            if (click.isShiftClick() && !mail.attachments.isEmpty() && !mail.used) {
                                 // TODO: 领取附件
                                 return;
                             }
