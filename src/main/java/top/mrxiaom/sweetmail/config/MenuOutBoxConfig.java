@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.config;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -11,6 +12,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
@@ -18,6 +20,7 @@ import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ListX;
 import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
@@ -127,9 +130,9 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                     MailWithStatus mail = inBox.get(iconIndex);
                     ItemStack icon = mail.generateIcon();
                     String sender = mail.senderDisplay.trim().isEmpty()
-                            ? mail.sender : mail.senderDisplay;
+                            ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
                     String receiver = mail.receivers.size() == 1
-                            ? mail.receivers.get(0)
+                            ? Util.getPlayerName(mail.receivers.get(0))
                             : iconSlot.receiverAndSoOn
                             .replace("%player%", gui.getTarget())
                             .replace("%count%", String.valueOf(mail.receivers.size()));
@@ -160,15 +163,17 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
 
     public class Gui extends AbstractPluginHolder implements IGui {
         private final Player player;
+        @NotNull
         private final String target;
         int page = 1;
         ListX<MailWithStatus> outBox;
-        public Gui(SweetMail plugin, Player player, String target) {
+        public Gui(SweetMail plugin, Player player, @NotNull String target) {
             super(plugin);
             this.player = player;
             this.target = target;
         }
 
+        @NotNull
         public String getTarget() {
             return target;
         }
@@ -184,7 +189,15 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
 
         @Override
         public Inventory newInventory() {
-            outBox = plugin.getDatabase().getOutBox(target, page, getSlotsCount());
+            String targetKey;
+            if (plugin.isOnlineMode()) {
+                OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
+                if (offline == null) targetKey = null;
+                else targetKey = offline.getUniqueId().toString();
+            } else {
+                targetKey = target;
+            }
+            outBox = targetKey == null ? new ListX<>() : plugin.getDatabase().getOutBox(targetKey, page, getSlotsCount());
             Inventory inv = createInventory(player, !target.equals(player.getName()), page, outBox.getMaxPage(getSlotsCount()));
             applyIcons(this, inv, player);
             return inv;

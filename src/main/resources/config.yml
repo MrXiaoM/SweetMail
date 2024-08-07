@@ -4,6 +4,17 @@ blacklist-players: []
 # 是否能向自己发送邮件
 can-send-to-yourself: false
 
+# 是否使用 uuid 而非玩家名来识别玩家
+# 离线模式服务器不推荐启用该选项
+# auto - 自动 根据当前服务器的模式决定
+# true - 在线模式 使用uuid识别玩家
+# false - 离线模式 使用玩家名识别玩家
+###########################################
+#### 危险 : 插件正式投入使用后，请勿修改该选项
+#### 否则将出现不可预料的问题。
+###########################################
+online-mode: auto
+
 # BungeeCord 广播设置
 bungeecord:
   # 是否启用 BungeeCord 跨服通知新邮件 发送与接收
@@ -68,6 +79,8 @@ messages:
     reload-database: '数据库配置已重载，已重新连接数据库'
   date-time: 'yyyy年MM月dd日 HH:mm:ss'
   draft:
+    online:
+      no-player: '&e找不到该玩家'
     no-money: '&e你没有足够的金币&7(%price%)&e去发送邮件'
     money-format: '%.1f'
     selected-icon-lore:

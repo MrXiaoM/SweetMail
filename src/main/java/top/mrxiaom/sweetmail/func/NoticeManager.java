@@ -63,7 +63,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
             if (!key.contains(noticeReceiverKey)) return;
             int length = in.readInt();
             for (int i = 0; i < length; i++) {
-                Player player = Util.getOnlinePlayer(in.readUTF()).orElse(null);
+                Player player = Util.getOnlinePlayerByNameOrUUID(in.readUTF()).orElse(null);
                 if (player == null) continue;
                 notice(player, msgJoinTextOnline, 1);
             }
@@ -74,7 +74,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
         if (receivers.isEmpty()) return;
         List<String> players = new ArrayList<>();
         for (String s : receivers) {
-            Player player = Util.getOnlinePlayer(s).orElse(null);
+            Player player = Util.getOnlinePlayerByNameOrUUID(s).orElse(null);
             if (player != null) {
                 notice(player, msgJoinTextOnline, 1);
             } else {

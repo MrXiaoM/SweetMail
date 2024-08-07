@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.config;
 
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -12,21 +13,16 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.utils.ColorHelper;
-import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.ListX;
-import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.*;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
@@ -219,9 +215,9 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     MailWithStatus mail = inBox.get(iconIndex);
                     ItemStack icon = mail.generateIcon();
                     String sender = mail.senderDisplay.trim().isEmpty()
-                            ? mail.sender : mail.senderDisplay;
+                            ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
                     String receiver = mail.receivers.size() == 1
-                            ? mail.receivers.get(0)
+                            ? Util.getPlayerName(mail.receivers.get(0))
                             : iconSlot.receiverAndSoOn
                             .replace("%player%", gui.getTarget())
                             .replace("%count%", String.valueOf(mail.receivers.size()));
@@ -251,17 +247,19 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
 
     public class Gui extends AbstractPluginHolder implements IGui {
         private final Player player;
+        @NotNull
         private final String target;
         private boolean unread;
         int page = 1;
         ListX<MailWithStatus> inBox;
-        public Gui(SweetMail plugin, Player player, String target, boolean unread) {
+        public Gui(SweetMail plugin, Player player, @NotNull String target, boolean unread) {
             super(plugin);
             this.player = player;
             this.target = target;
             this.unread = unread;
         }
 
+        @NotNull
         public String getTarget() {
             return target;
         }
@@ -277,7 +275,15 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
 
         @Override
         public Inventory newInventory() {
-            inBox = plugin.getDatabase().getInBox(unread, target, page, getSlotsCount());
+            String targetKey;
+            if (plugin.isOnlineMode()) {
+                OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
+                if (offline == null) targetKey = null;
+                else targetKey = offline.getUniqueId().toString();
+            } else {
+                targetKey = target;
+            }
+            inBox = targetKey == null ? new ListX<>() : plugin.getDatabase().getInBox(unread, targetKey, page, getSlotsCount());
             Inventory inv = createInventory(player, unread, !target.equals(player.getName()), page, inBox.getMaxPage(getSlotsCount()));
             applyIcons(this, inv, player);
             return inv;
@@ -344,7 +350,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     attachment.use(player);
                                 }
                             } catch (Throwable t) {
-                                warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
+                                warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
                                 t(player, plugin.prefix() + messageFail);
                             }
                         }
@@ -368,7 +374,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                         attachment.use(player);
                                     }
                                 } catch (Throwable t) {
-                                    warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
+                                    warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
                                     t(player, plugin.prefix() + messageFail);
                                 }
                                 plugin.getDatabase().getInBoxUnused(target);

@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.func.NoticeManager;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class Mail {
             BookMeta meta = (BookMeta) rawMeta;
             meta.setTitle(title);
             meta.setPages(!content.isEmpty() ? content : Lists.newArrayList(""));
-            meta.setAuthor(senderDisplay == null || senderDisplay.isEmpty() ? sender : senderDisplay);
+            meta.setAuthor(senderDisplay == null || senderDisplay.isEmpty() ? Util.getPlayerName(sender) : senderDisplay);
             item.setItemMeta(meta);
         }
         return item;

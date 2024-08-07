@@ -64,6 +64,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public String prefix() {
         return prefix;
     }
+    private boolean onlineMode;
+    public boolean isOnlineMode() {
+        return onlineMode;
+    }
     @Override
     public void onEnable() {
         Util.init(instance = this);
@@ -149,6 +153,20 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
         FileConfiguration config = getConfig();
         this.prefix = config.getString("messages.prefix");
+        String online = config.getString("online-mode", "auto").toLowerCase();
+        switch (online) {
+            case "true":
+                onlineMode = true;
+                break;
+            case "false":
+                onlineMode = false;
+                break;
+            case "auto":
+            default:
+                onlineMode = Bukkit.getOnlineMode();
+                break;
+        }
+        getLogger().info("插件当前在 " + (onlineMode ? "在线模式": "离线模式") + " 下运行");
         reloadAllConfig(config);
     }
 

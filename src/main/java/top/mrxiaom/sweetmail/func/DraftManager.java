@@ -54,10 +54,11 @@ public class DraftManager extends AbstractPluginHolder {
     }
 
     public Draft getDraft(Player player) {
-        Draft draft = draftMap.get(player.getName());
+        String key = plugin.isOnlineMode() ? player.getUniqueId().toString() : player.getName();
+        Draft draft = draftMap.get(key);
         if (draft == null) {
-            draft = Draft.load(this, player.getName());
-            draftMap.put(player.getName(), draft);
+            draft = Draft.load(this, key);
+            draftMap.put(key, draft);
         }
         return draft;
     }

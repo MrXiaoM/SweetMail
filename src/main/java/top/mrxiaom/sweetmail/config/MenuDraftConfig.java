@@ -61,6 +61,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public String messageSent;
     public String messageNoMoney;
     public String messageMoneyFormat;
+    public String messageOnlineNoPlayer;
     public boolean canSendToYourself;
 
     Map<String, Double> priceMap = new HashMap<>();
@@ -77,6 +78,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         messageSent = cfg.getString("messages.draft.sent");
         messageNoMoney = cfg.getString("messages.draft.no-money");
         messageMoneyFormat = cfg.getString("messages.draft.money-format");
+        messageOnlineNoPlayer = cfg.getString("messages.draft.online.no-player");
         priceMap.clear();
         ConfigurationSection section = cfg.getConfigurationSection("price");
         if (section != null) for (String key : section.getKeys(false)) {
@@ -162,16 +164,18 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         Draft draft = manager.getDraft(target);
         switch (key) {
             case "接": {
-                String receiver = draft.receiver.isEmpty() ? iconReceiverUnset : draft.receiver;
+                String receiver = draft.receiver.isEmpty() ? iconReceiverUnset : Util.getPlayerName(draft.receiver);
                 ItemStack item = iconReceiver.generateIcon(
                         target,
                         Pair.of("%receiver%", receiver)
                 );
                 if (!draft.receiver.isEmpty() && item.getItemMeta() instanceof SkullMeta) {
-                    OfflinePlayer owner = Util.getOfflinePlayer(draft.receiver).orElse(null);
-                    SkullMeta meta = (SkullMeta) item.getItemMeta();
-                    meta.setOwningPlayer(owner);
-                    item.setItemMeta(meta);
+                    OfflinePlayer owner = Util.getOfflinePlayerByNameOrUUID(draft.receiver).orElse(null);
+                    if (owner != null) {
+                        SkullMeta meta = (SkullMeta) item.getItemMeta();
+                        meta.setOwningPlayer(owner);
+                        item.setItemMeta(meta);
+                    }
                 }
                 return item;
             }
@@ -264,7 +268,17 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 iconReceiverPromptTips,
                                 iconReceiverPromptCancel,
                                 receiver -> {
-                                    draft.receiver = receiver;
+                                    if (plugin.isOnlineMode()) {
+                                        OfflinePlayer offline = Util.getOfflinePlayer(receiver).orElse(null);
+                                        if (offline == null) {
+                                            t(player, messageOnlineNoPlayer);
+                                            reopen.run();
+                                            return;
+                                        }
+                                        draft.receiver = offline.getUniqueId().toString();
+                                    } else {
+                                        draft.receiver = receiver;
+                                    }
                                     draft.save();
                                     reopen.run();
                                 }, reopen
@@ -371,7 +385,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                     List<OfflinePlayer> players = Util.getOfflinePlayers();
                                     players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() > time);
                                     for (OfflinePlayer player : players) {
-                                        receivers.add(player.getName());
+                                        receivers.add(plugin.isOnlineMode() ? player.getUniqueId().toString() : player.getName());
                                     }
                                 }
                             }

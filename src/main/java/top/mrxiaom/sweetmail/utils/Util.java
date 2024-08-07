@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.utils.comp.IA;
 import top.mrxiaom.sweetmail.utils.comp.Mythic;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
@@ -26,11 +26,13 @@ import static top.mrxiaom.sweetmail.utils.Pair.replace;
 @SuppressWarnings({"unused"})
 public class Util {
     public static Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    public static Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(JavaPlugin plugin) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
                     players.put(player.getName(), player);
+                    players.put(player.getUniqueId().toString(), player);
                 }
             }
         });
@@ -38,6 +40,7 @@ public class Util {
             @EventHandler
             public void onJoin(PlayerJoinEvent e) {
                 players.put(e.getPlayer().getName(), e.getPlayer());
+                players.put(e.getPlayer().getUniqueId().toString(), e.getPlayer());
             }
         }, plugin);
         PAPI.init();
@@ -66,7 +69,11 @@ public class Util {
     }
 
     public static String getPlayerName(String s) {
-        return getOnlinePlayer(s).map(HumanEntity::getName).orElse(s);
+        if (SweetMail.getInstance().isOnlineMode()) {
+            OfflinePlayer offline = playersByUUID.get(s);
+            return offline == null ? s : offline.getName() == null ? s : offline.getName();
+        }
+        return s;
     }
 
     public static List<OfflinePlayer> getOfflinePlayers() {
@@ -77,6 +84,10 @@ public class Util {
         return Optional.ofNullable(players.get(name));
     }
 
+    public static Optional<OfflinePlayer> getOfflinePlayerByNameOrUUID(String s) {
+        return Optional.ofNullable((SweetMail.getInstance().isOnlineMode() ? playersByUUID : players).get(s));
+    }
+
     public static Optional<Player> getOnlinePlayer(String name) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (player.getName().equalsIgnoreCase(name)) return Optional.of(player);
@@ -84,12 +95,16 @@ public class Util {
         return Optional.empty();
     }
 
-    public static List<Player> getOnlinePlayers(List<UUID> uuidList) {
-        List<Player> players = new ArrayList<>();
+    public static Optional<Player> getOnlinePlayerByNameOrUUID(String name) {
+        boolean online = SweetMail.getInstance().isOnlineMode();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (uuidList.contains(player.getUniqueId())) players.add(player);
+            if (online) {
+                if (player.getUniqueId().toString().equals(name)) return Optional.of(player);
+            } else {
+                if (player.getName().equalsIgnoreCase(name)) return Optional.of(player);
+            }
         }
-        return players;
+        return Optional.empty();
     }
 
     public static Player getAnyPlayerOrNull() {
