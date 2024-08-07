@@ -371,6 +371,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
                                     t(player, plugin.prefix() + messageFail);
                                 }
+                                plugin.getDatabase().getInBoxUnused(target);
                                 applyIcons(this, view, player);
                             } else {
                                 t(player, mail.attachments.size() + " " + mail.used);
