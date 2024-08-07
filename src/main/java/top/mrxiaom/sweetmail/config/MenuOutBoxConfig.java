@@ -20,7 +20,6 @@ import top.mrxiaom.sweetmail.utils.ListX;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {

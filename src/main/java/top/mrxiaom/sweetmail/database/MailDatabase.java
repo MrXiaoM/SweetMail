@@ -10,7 +10,10 @@ import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.utils.ListX;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.UUID;
 
 public class MailDatabase extends AbstractPluginHolder implements IMailDatabase {
     File configFile;

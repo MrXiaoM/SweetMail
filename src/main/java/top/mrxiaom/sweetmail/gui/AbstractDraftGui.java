@@ -3,7 +3,6 @@ package top.mrxiaom.sweetmail.gui;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.config.MenuDraftConfig;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
 
