@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.database.entry;
 
+import com.google.common.collect.Lists;
 import com.google.gson.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -44,7 +45,7 @@ public class Mail {
         if (rawMeta instanceof BookMeta) {
             BookMeta meta = (BookMeta) rawMeta;
             meta.setTitle(title);
-            meta.setPages(content);
+            meta.setPages(!content.isEmpty() ? content : Lists.newArrayList(""));
             meta.setAuthor(senderDisplay == null || senderDisplay.isEmpty() ? sender : senderDisplay);
             item.setItemMeta(meta);
         }
