@@ -50,7 +50,7 @@ items:
       - '&f发件人: &e%sender%'
       - '&f收件人: &e%receiver%'
       - '&f发送时间: &e%time%'
-      - '&f正文: &e%count% 字'
+      - '&f正文: &e%count% 字 (共 %pages% 页)'
       - '&f附件: '
       part2:
       - ''

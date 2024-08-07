@@ -136,6 +136,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                     return iconSlot.generateIcon(target, mail, icon,
                             Pair.of("%title%", mail.title),
                             Pair.of("%sender%", sender),
+                            Pair.of("%pages%", String.valueOf(mail.content.size())),
                             Pair.of("%count%", String.join("", mail.content).length()),
                             Pair.of("%receiver%", receiver),
                             Pair.of("%receiver%", mail),
