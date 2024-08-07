@@ -69,6 +69,10 @@ public class Util {
         return getOnlinePlayer(s).map(HumanEntity::getName).orElse(s);
     }
 
+    public static List<OfflinePlayer> getOfflinePlayers() {
+        return Lists.newArrayList(players.values());
+    }
+
     public static Optional<OfflinePlayer> getOfflinePlayer(String name) {
         return Optional.ofNullable(players.get(name));
     }

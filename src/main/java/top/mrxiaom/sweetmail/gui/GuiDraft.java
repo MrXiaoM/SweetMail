@@ -3,6 +3,7 @@ package top.mrxiaom.sweetmail.gui;
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -20,6 +21,7 @@ import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,9 +146,24 @@ public class GuiDraft extends AbstractDraftGui {
                     List<String> receivers = new ArrayList<>();
                     if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
                         // TODO: 解析 advance receivers
-                        if (draft.advReceivers.equalsIgnoreCase("current online")) {
-                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                                receivers.add(onlinePlayer.getName());
+                        String s = draft.advReceivers;
+                        if (s.equalsIgnoreCase("current online")) {
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                receivers.add(player.getName());
+                            }
+                        }
+                        if (s.equalsIgnoreCase("current online bungeecord")) {
+                            // TODO: 从代理端获取玩家列表
+                        }
+                        if (s.startsWith("last played in ")) {
+                            Long timeRaw = Util.parseLong(s.substring(15)).orElse(null);
+                            if (timeRaw != null) {
+                                long time = System.currentTimeMillis() - timeRaw;
+                                List<OfflinePlayer> players = Util.getOfflinePlayers();
+                                players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() > time);
+                                for (OfflinePlayer player : players) {
+                                    receivers.add(player.getName());
+                                }
                             }
                         }
                     } else if (!draft.receiver.isEmpty()) {
