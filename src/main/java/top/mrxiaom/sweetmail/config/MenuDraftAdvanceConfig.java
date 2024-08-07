@@ -1,27 +1,24 @@
 package top.mrxiaom.sweetmail.config;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.commands.CommandMain;
-import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.func.DraftManager;
-import top.mrxiaom.sweetmail.gui.GuiDraft;
-import top.mrxiaom.sweetmail.gui.GuiDraftAdvance;
-import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.Pair;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
-public class MenuDraftAdvanceConfig extends AbstractMenuConfig<GuiDraftAdvance> {
+public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceConfig.Gui> {
     Icon iconBack;
     public MenuDraftAdvanceConfig(SweetMail plugin) {
         super(plugin, "menus/draft_advance.yml");
@@ -48,12 +45,12 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<GuiDraftAdvance> 
     }
 
     @Override
-    public Inventory createInventory(GuiDraftAdvance gui, Player target) {
+    public Inventory createInventory(Gui gui, Player target) {
         return Bukkit.createInventory(null, inventory.length, replace(PAPI.setPlaceholders(target, title)));
     }
 
     @Override
-    protected ItemStack tryApplyMainIcon(GuiDraftAdvance gui, String key, Player target, int iconIndex) {
+    protected ItemStack tryApplyMainIcon(Gui gui, String key, Player target, int iconIndex) {
         DraftManager manager = DraftManager.inst();
         DraftManager.Draft draft = manager.getDraft(target);
         switch (key) {
@@ -66,5 +63,42 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<GuiDraftAdvance> 
 
     public static MenuDraftAdvanceConfig inst() {
         return get(MenuDraftAdvanceConfig.class).orElseThrow(IllegalStateException::new);
+    }
+
+    public class Gui extends AbstractDraftGui {
+        protected MenuDraftAdvanceConfig config;
+        public Gui(SweetMail plugin, Player player) {
+            super(plugin, player);
+            config = MenuDraftAdvanceConfig.inst();
+        }
+
+
+        @Override
+        public Inventory newInventory() {
+            Inventory inv = config.createInventory(this, player);
+            config.applyIcons(this, inv, player);
+            return inv;
+        }
+
+        @Override
+        @SuppressWarnings({"deprecation"})
+        public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
+            Character c = config.getSlotKey(slot);
+            if (c == null) return;
+            event.setCancelled(true);
+
+            switch (String.valueOf(c)) {
+                case "返": {
+                    if (click.isLeftClick() && !click.isShiftClick()) {
+                        MenuDraftConfig draft = MenuDraftConfig.inst();
+                        plugin.getGuiManager().openGui(draft.new Gui(plugin, player));
+                    }
+                    return;
+                }
+                default: {
+                    config.handleClick(player, click, c);
+                }
+            }
+        }
     }
 }

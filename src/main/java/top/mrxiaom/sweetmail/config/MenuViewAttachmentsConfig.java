@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
-import top.mrxiaom.sweetmail.gui.GuiDraft;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
@@ -98,7 +97,7 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
 
             if (String.valueOf(c).equals("返")) {
                 if (click.isLeftClick() && !click.isShiftClick()) {
-                    plugin.getGuiManager().openGui(new GuiDraft(plugin, player));
+                    plugin.getGuiManager().openGui(MenuDraftConfig.inst().new Gui(plugin, player));
                 }
             } else {
                 handleClick(player, click, c);

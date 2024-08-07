@@ -11,6 +11,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.config.MenuDraftConfig;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 import top.mrxiaom.sweetmail.utils.Pair;
@@ -65,8 +66,9 @@ public class GuiIcon extends AbstractDraftGui {
     @Override
     public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
         event.setCancelled(true);
+        MenuDraftConfig draftConfig = MenuDraftConfig.inst();
         if (slot == -1) {
-            plugin.getGuiManager().openGui(new GuiDraft(plugin, player));
+            plugin.getGuiManager().openGui(draftConfig.new Gui(plugin, player));
             return;
         }
         if (click.isLeftClick() && !click.isShiftClick()) {
@@ -75,7 +77,7 @@ public class GuiIcon extends AbstractDraftGui {
                 if (key != null) {
                     draft.iconKey = key;
                     draft.save();
-                    plugin.getGuiManager().openGui(new GuiDraft(plugin, player));
+                    plugin.getGuiManager().openGui(draftConfig.new Gui(plugin, player));
                     return;
                 }
             }
@@ -90,7 +92,7 @@ public class GuiIcon extends AbstractDraftGui {
                     }
                     draft.iconKey = type;
                     draft.save();
-                    plugin.getGuiManager().openGui(new GuiDraft(plugin, player));
+                    plugin.getGuiManager().openGui(draftConfig.new Gui(plugin, player));
                 }
             }
         }
