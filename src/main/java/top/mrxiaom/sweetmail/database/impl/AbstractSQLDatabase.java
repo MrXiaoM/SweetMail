@@ -105,7 +105,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
         try (Connection conn = getConnection()) {
             int offset = (page - 1) * perPage;
             String conditions = unread
-                    ? "`receiver` = ? AND read = 0"
+                    ? "`receiver` = ? AND (read = 0 OR used = 0)"
                     : "`receiver` = ?";
             try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
                     "  SELECT A.`uuid`, `sender`, `data`, `time`, `receiver`, `read`, `used` FROM (" +
