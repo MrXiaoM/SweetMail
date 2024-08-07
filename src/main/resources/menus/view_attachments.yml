@@ -1,0 +1,22 @@
+# 界面标题，支持 PAPI
+title: '&0附件预览'
+# 界面布局，每行9个图标，不能超过6行
+inventory:
+  - '黑黑黑黑黑黑黑黑黑'
+  - '黑附附附附附附附黑'
+  - '黑　　　　　　返黑'
+  - '黑黑黑黑黑黑黑黑黑'
+# 必选物品
+items:
+  返:
+    material: RED_DYE
+    display: '&e&l返回'
+    lore:
+      - ''
+      - '&a左键&7 | &f回到邮件列表'
+# 非必选物品
+other-items:
+  黑:
+    material: BLACK_STAINED_GLASS_PANE
+    custom-model: 10000
+    display: '&0'

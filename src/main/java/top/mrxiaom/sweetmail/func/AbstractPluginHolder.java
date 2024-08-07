@@ -39,7 +39,7 @@ public abstract class AbstractPluginHolder {
         List<Class<?>> classes = Lists.newArrayList(
                 CommandMain.class,
                 MainConfig.class, MenuDraftConfig.class, MenuDraftAdvanceConfig.class,
-                MenuInBoxConfig.class, MenuOutBoxConfig.class,
+                MenuInBoxConfig.class, MenuOutBoxConfig.class, MenuViewAttachmentsConfig.class,
                 DraftManager.class, NoticeManager.class, IAttachment.Text.class
         );
         for (Class<?> clazz : classes) {
