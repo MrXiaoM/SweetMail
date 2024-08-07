@@ -160,14 +160,12 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
 
     public class Gui extends AbstractPluginHolder implements IGui {
         Player player;
-        MenuOutBoxConfig config;
         String target;
         int page = 1;
         ListX<MailWithStatus> outBox;
         public Gui(SweetMail plugin, Player player, String target) {
             super(plugin);
             this.player = player;
-            this.config = MenuOutBoxConfig.inst();
             this.target = target;
         }
 
@@ -186,28 +184,30 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
 
         @Override
         public Inventory newInventory() {
-            outBox = plugin.getDatabase().getOutBox(target, page, config.getSlotsCount());
-            Inventory inv = config.createInventory(player, !target.equals(player.getName()), page, outBox.getMaxPage(config.getSlotsCount()));
-            config.applyIcons(this, inv, player);
+            outBox = plugin.getDatabase().getOutBox(target, page, getSlotsCount());
+            Inventory inv = createInventory(player, !target.equals(player.getName()), page, outBox.getMaxPage(getSlotsCount()));
+            applyIcons(this, inv, player);
             return inv;
         }
 
         @Override
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
             event.setCancelled(true);
-            Character c = config.getSlotKey(slot);
+            Character c = getSlotKey(slot);
             if (c != null) switch (String.valueOf(c)) {
                 case "全": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
-                        MenuInBoxConfig inbox = MenuInBoxConfig.inst();
-                        plugin.getGuiManager().openGui(inbox.new Gui(plugin, player, target, false));
+                        MenuInBoxConfig.inst()
+                                .new Gui(plugin, player, target, false)
+                                .open();
                     }
                     return;
                 }
                 case "读": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
-                        MenuInBoxConfig inbox = MenuInBoxConfig.inst();
-                        plugin.getGuiManager().openGui(inbox.new Gui(plugin, player, target, true));
+                        MenuInBoxConfig.inst()
+                                .new Gui(plugin, player, target, true)
+                                .open();
                     }
                     return;
                 }
@@ -224,7 +224,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 }
                 case "下": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
-                        if (page >= outBox.getMaxPage(config.getSlotsCount())) return;
+                        if (page >= outBox.getMaxPage(getSlotsCount())) return;
                         page++;
                         plugin.getGuiManager().openGui(this);
                     }
@@ -232,7 +232,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 }
                 case "格": {
                     if (!click.isShiftClick()) {
-                        int i = config.getKeyIndex(c, slot);
+                        int i = getKeyIndex(c, slot);
                         if (i < 0 || i >= outBox.size()) return;
                         MailWithStatus mail = outBox.get(i);
                         if (click.isLeftClick()) {
@@ -240,8 +240,9 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             return;
                         }
                         if (click.isRightClick()) {
-                            // TODO: 打开附件预览菜单
-
+                            MenuViewAttachmentsConfig.inst()
+                                    .new Gui(plugin, player, mail)
+                                    .open();
                             return;
                         }
                     }

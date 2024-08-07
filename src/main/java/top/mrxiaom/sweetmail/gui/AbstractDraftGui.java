@@ -9,7 +9,6 @@ import top.mrxiaom.sweetmail.func.DraftManager;
 
 public abstract class AbstractDraftGui extends AbstractPluginHolder implements IGui {
     protected Player player;
-    protected MenuDraftConfig config;
     protected DraftManager.Draft draft;
     protected Runnable reopen = () ->
             Bukkit.getScheduler().runTask(plugin,
@@ -17,7 +16,6 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
     public AbstractDraftGui(SweetMail plugin, Player player) {
         super(plugin);
         this.player = player;
-        this.config = MenuDraftConfig.inst();
         this.draft = DraftManager.inst().getDraft(player);
     }
 

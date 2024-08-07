@@ -229,7 +229,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
 
     public class Gui extends AbstractPluginHolder implements IGui {
         Player player;
-        MenuInBoxConfig config;
         String target;
         boolean unread;
         int page = 1;
@@ -237,7 +236,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         public Gui(SweetMail plugin, Player player, String target, boolean unread) {
             super(plugin);
             this.player = player;
-            this.config = MenuInBoxConfig.inst();
             this.target = target;
             this.unread = unread;
         }
@@ -257,16 +255,16 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
 
         @Override
         public Inventory newInventory() {
-            inBox = plugin.getDatabase().getInBox(unread, target, page, config.getSlotsCount());
-            Inventory inv = config.createInventory(player, unread, !target.equals(player.getName()), page, inBox.getMaxPage(config.getSlotsCount()));
-            config.applyIcons(this, inv, player);
+            inBox = plugin.getDatabase().getInBox(unread, target, page, getSlotsCount());
+            Inventory inv = createInventory(player, unread, !target.equals(player.getName()), page, inBox.getMaxPage(getSlotsCount()));
+            applyIcons(this, inv, player);
             return inv;
         }
 
         @Override
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
             event.setCancelled(true);
-            Character c = config.getSlotKey(slot);
+            Character c = getSlotKey(slot);
             if (c != null) switch (String.valueOf(c)) {
                 case "全": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
@@ -286,7 +284,9 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 }
                 case "发": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
-                        plugin.getGuiManager().openGui(MenuOutBoxConfig.inst().new Gui(plugin, player, target));
+                        MenuOutBoxConfig.inst()
+                                .new Gui(plugin, player, target)
+                                .open();
                     }
                     return;
                 }
@@ -300,7 +300,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 }
                 case "下": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
-                        if (page >= inBox.getMaxPage(config.getSlotsCount())) return;
+                        if (page >= inBox.getMaxPage(getSlotsCount())) return;
                         page++;
                         plugin.getGuiManager().openGui(this);
                     }
@@ -322,7 +322,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 }
                             } catch (Throwable t) {
                                 warn("玩家 " + target + " 领取 " + mail.sender + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                                t(player, plugin.prefix() + config.messageFail);
+                                t(player, plugin.prefix() + messageFail);
                             }
                         }
                         plugin.getDatabase().markUsed(dismiss, target);
@@ -331,16 +331,21 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 }
                 case "格": {
                     if (!click.isShiftClick()) {
-                        int i = config.getKeyIndex(c, slot);
+                        int i = getKeyIndex(c, slot);
                         if (i < 0 || i >= inBox.size()) return;
                         MailWithStatus mail = inBox.get(i);
                         if (click.isLeftClick()) {
+                            if (click.isShiftClick()) {
+                                // TODO: 领取附件
+                                return;
+                            }
                             player.openBook(mail.generateBook());
                             return;
                         }
                         if (click.isRightClick()) {
-                            // TODO: 打开附件预览菜单
-
+                            MenuViewAttachmentsConfig.inst()
+                                    .new Gui(plugin, player, mail)
+                                    .open();
                             return;
                         }
                     }

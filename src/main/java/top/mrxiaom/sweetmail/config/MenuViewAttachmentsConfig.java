@@ -97,7 +97,9 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
 
             if (String.valueOf(c).equals("返")) {
                 if (click.isLeftClick() && !click.isShiftClick()) {
-                    plugin.getGuiManager().openGui(MenuDraftConfig.inst().new Gui(plugin, player));
+                    MenuDraftConfig.inst()
+                            .new Gui(plugin, player)
+                            .open();
                 }
             } else {
                 handleClick(player, click, c);

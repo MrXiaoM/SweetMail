@@ -5,6 +5,7 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.SweetMail;
 
 public interface IGui {
     Player getPlayer();
@@ -19,5 +20,9 @@ public interface IGui {
 
     default void onClose(InventoryView view) {
 
+    }
+
+    default void open() {
+        SweetMail.getInstance().getGuiManager().openGui(this);
     }
 }

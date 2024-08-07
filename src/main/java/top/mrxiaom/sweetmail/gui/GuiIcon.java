@@ -68,7 +68,9 @@ public class GuiIcon extends AbstractDraftGui {
         event.setCancelled(true);
         MenuDraftConfig draftConfig = MenuDraftConfig.inst();
         if (slot == -1) {
-            plugin.getGuiManager().openGui(draftConfig.new Gui(plugin, player));
+            MenuDraftConfig.inst()
+                    .new Gui(plugin, player)
+                    .open();
             return;
         }
         if (click.isLeftClick() && !click.isShiftClick()) {
@@ -77,7 +79,9 @@ public class GuiIcon extends AbstractDraftGui {
                 if (key != null) {
                     draft.iconKey = key;
                     draft.save();
-                    plugin.getGuiManager().openGui(draftConfig.new Gui(plugin, player));
+                    MenuDraftConfig.inst()
+                            .new Gui(plugin, player)
+                            .open();
                     return;
                 }
             }
@@ -92,7 +96,9 @@ public class GuiIcon extends AbstractDraftGui {
                     }
                     draft.iconKey = type;
                     draft.save();
-                    plugin.getGuiManager().openGui(draftConfig.new Gui(plugin, player));
+                    MenuDraftConfig.inst()
+                            .new Gui(plugin, player)
+                            .open();
                 }
             }
         }

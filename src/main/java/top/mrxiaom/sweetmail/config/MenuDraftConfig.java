@@ -207,15 +207,15 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
 
         @Override
         public Inventory newInventory() {
-            Inventory inv = config.createInventory(this, player);
-            config.applyIcons(this, inv, player);
+            Inventory inv = createInventory(this, player);
+            applyIcons(this, inv, player);
             return inv;
         }
 
         @Override
         @SuppressWarnings({"deprecation"})
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
-            Character c = config.getSlotKey(slot);
+            Character c = getSlotKey(slot);
             if (c == null) return;
             event.setCancelled(true);
 
@@ -225,8 +225,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         player.closeInventory();
                         ChatPrompter.prompt(
                                 plugin, player,
-                                config.iconReceiverPromptTips,
-                                config.iconReceiverPromptCancel,
+                                iconReceiverPromptTips,
+                                iconReceiverPromptCancel,
                                 receiver -> {
                                     draft.receiver = receiver;
                                     draft.save();
@@ -238,7 +238,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 }
                 case "图": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
-                        String title = player.hasPermission("sweetmail.icon.custom") ? config.iconIconTitleCustom : config.iconIconTitle;
+                        String title = player.hasPermission("sweetmail.icon.custom") ? iconIconTitleCustom : iconIconTitle;
                         plugin.getGuiManager().openGui(new GuiIcon(plugin, player, title));
                     }
                     return;
@@ -248,8 +248,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         player.closeInventory();
                         ChatPrompter.prompt(
                                 plugin, player,
-                                config.iconTitlePromptTips,
-                                config.iconTitlePromptCancel,
+                                iconTitlePromptTips,
+                                iconTitlePromptCancel,
                                 title -> {
                                     draft.title = title;
                                     draft.save();
@@ -267,7 +267,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 BookMeta meta = (BookMeta) rawMeta;
                                 draft.content = meta.getPages();
                                 draft.save();
-                                config.applyIcon(this, view, player, slot);
+                                applyIcon(this, view, player, slot);
                                 player.updateInventory();
                             }
                         }
@@ -290,7 +290,9 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 case "高": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
                         if (player.hasPermission(CommandMain.PERM_ADMIN)) {
-                            plugin.getGuiManager().openGui(MenuDraftAdvanceConfig.inst().new Gui(plugin, player));
+                            MenuDraftAdvanceConfig.inst()
+                                    .new Gui(plugin, player)
+                                    .open();
                         }
                     }
                     return;
@@ -312,8 +314,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         String title = draft.title;
                         List<String> content = draft.content;
                         List<IAttachment> attachments = draft.attachments;
-                        if (!config.canSendToYourself && sender.equalsIgnoreCase(draft.receiver)) {
-                            t(player, plugin.prefix() + config.messageCantSendToYourself);
+                        if (!canSendToYourself && sender.equalsIgnoreCase(draft.receiver)) {
+                            t(player, plugin.prefix() + messageCantSendToYourself);
                             return;
                         }
                         List<String> receivers = new ArrayList<>();
@@ -344,7 +346,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         }
                         receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
                         if (receivers.isEmpty()) {
-                            t(player, plugin.prefix() + config.messageNoReceivers);
+                            t(player, plugin.prefix() + messageNoReceivers);
                             return;
                         }
                         Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
@@ -352,13 +354,13 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         draft.reset();
                         draft.save();
                         player.closeInventory();
-                        t(player, plugin.prefix() + config.messageSent);
+                        t(player, plugin.prefix() + messageSent);
                     }
                     return;
                 }
                 case "附": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
-                        int i = config.getKeyIndex(c, slot);
+                        int i = getKeyIndex(c, slot);
                         if (i < draft.attachments.size()) {
                             IAttachment attachment = draft.attachments.remove(i);
                             draft.save();
@@ -376,20 +378,21 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 return;
                             }
                             // TODO: 打开附件添加菜单
+                            player.sendMessage("附件菜单正在制作中，敬请期待");
                         }
                     }
                     return;
                 }
                 default: {
-                    config.handleClick(player, click, c);
+                    handleClick(player, click, c);
                 }
             }
         }
 
         private void updateAttachmentSlots(InventoryView view) {
-            for (int k = 0; k < config.inventory.length; k++) {
-                if (config.inventory[k] == '附') {
-                    config.applyIcon(this, view, player, k);
+            for (int k = 0; k < inventory.length; k++) {
+                if (inventory[k] == '附') {
+                    applyIcon(this, view, player, k);
                     player.updateInventory();
                 }
             }

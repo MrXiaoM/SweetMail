@@ -64,7 +64,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if (!type.equals("unread") && !type.equals("all")) {
                         return true;
                     }
-                    gui.openGui(MenuInBoxConfig.inst().new Gui(plugin, player, target, type.equals("unread")));
+                    MenuInBoxConfig.inst()
+                            .new Gui(plugin, player, target, type.equals("unread"))
+                            .open();
                     return true;
                 }
                 if (args.length >= 3 && "outbox".equalsIgnoreCase(args[1])) {
@@ -73,7 +75,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     }
                     Player player = (Player) sender;
                     String target = args[2];
-                    gui.openGui(MenuOutBoxConfig.inst().new Gui(plugin, player, target));
+                    MenuOutBoxConfig.inst()
+                            .new Gui(plugin, player, target)
+                            .open();
                     return true;
                 }
             }
@@ -82,7 +86,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     return true;
                 }
                 Player player = (Player) sender;
-                gui.openGui(MenuDraftConfig.inst().new Gui(plugin, player));
+                MenuDraftConfig.inst()
+                        .new Gui(plugin, player)
+                        .open();
                 return true;
             }
             if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
@@ -95,14 +101,18 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if (target == null) {
                         return true;
                     }
-                    gui.openGui(MenuInBoxConfig.inst().new Gui(plugin, target, target.getName(), type.equals("unread")));
+                    MenuInBoxConfig.inst()
+                            .new Gui(plugin, target, target.getName(), type.equals("unread"))
+                            .open();
                     return true;
                 }
                 if (!(sender instanceof Player)) {
                     return true;
                 }
                 Player player = (Player) sender;
-                gui.openGui(MenuInBoxConfig.inst().new Gui(plugin, player, player.getName(), type.equals("unread")));
+                MenuInBoxConfig.inst()
+                        .new Gui(plugin, player, player.getName(), type.equals("unread"))
+                        .open();
                 return true;
             }
             if ("outbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
@@ -111,14 +121,18 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if (target == null) {
                         return true;
                     }
-                    gui.openGui(MenuOutBoxConfig.inst().new Gui(plugin, target, target.getName()));
+                    MenuOutBoxConfig.inst()
+                            .new Gui(plugin, target, target.getName())
+                            .open();
                     return true;
                 }
                 if (!(sender instanceof Player)) {
                     return true;
                 }
                 Player player = (Player) sender;
-                gui.openGui(MenuOutBoxConfig.inst().new Gui(plugin, player, player.getName()));
+                MenuOutBoxConfig.inst()
+                        .new Gui(plugin, player, player.getName())
+                        .open();
                 return true;
             }
             if ("reload".equalsIgnoreCase(args[0]) && admin) {

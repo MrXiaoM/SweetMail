@@ -54,6 +54,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
         DraftManager manager = DraftManager.inst();
         DraftManager.Draft draft = manager.getDraft(target);
         switch (key) {
+            // TODO: 更多高级设置
             case "返": {
                 return iconBack.generateIcon(target);
             }
@@ -66,37 +67,36 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     }
 
     public class Gui extends AbstractDraftGui {
-        protected MenuDraftAdvanceConfig config;
         public Gui(SweetMail plugin, Player player) {
             super(plugin, player);
-            config = MenuDraftAdvanceConfig.inst();
         }
 
 
         @Override
         public Inventory newInventory() {
-            Inventory inv = config.createInventory(this, player);
-            config.applyIcons(this, inv, player);
+            Inventory inv = createInventory(this, player);
+            applyIcons(this, inv, player);
             return inv;
         }
 
         @Override
         @SuppressWarnings({"deprecation"})
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
-            Character c = config.getSlotKey(slot);
+            Character c = getSlotKey(slot);
             if (c == null) return;
             event.setCancelled(true);
 
             switch (String.valueOf(c)) {
                 case "返": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
-                        MenuDraftConfig draft = MenuDraftConfig.inst();
-                        plugin.getGuiManager().openGui(draft.new Gui(plugin, player));
+                        MenuDraftConfig.inst()
+                                .new Gui(plugin, player)
+                                .open();
                     }
                     return;
                 }
                 default: {
-                    config.handleClick(player, click, c);
+                    handleClick(player, click, c);
                 }
             }
         }
