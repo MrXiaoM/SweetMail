@@ -26,6 +26,8 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     List<String> msgJoinHover;
     String msgJoinCmd;
     boolean noticeBungee;
+    String noticeSenderKey;
+    String noticeReceiverKey;
     public NoticeManager(SweetMail plugin) {
         super(plugin);
         registerEvents(this);
@@ -35,7 +37,9 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
 
     @Override
     public void reloadConfig(MemoryConfiguration config) {
-        noticeBungee = config.getBoolean("notice-bungee", true);
+        noticeBungee = config.getBoolean("bungeecord.enable", true);
+        noticeSenderKey = config.getString("bungeecord.sender-key", "");
+        noticeReceiverKey = config.getString("bungeecord.receiver-key", "");
 
         msgJoinText = config.getString("messages.join.text", "");
         msgJoinTextOnline = config.getString("messages.join.text-online", "");
@@ -55,6 +59,8 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     @Override
     public void receiveBungee(String subChannel, DataInputStream in) throws IOException {
         if (noticeBungee && subChannel.equals("SweetMail_Notice")) {
+            String key = in.readUTF();
+            if (!key.contains(noticeReceiverKey)) return;
             int length = in.readInt();
             for (int i = 0; i < length; i++) {
                 Player player = Util.getOnlinePlayer(in.readUTF()).orElse(null);
@@ -89,6 +95,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
             out.writeUTF("SweetMail_Notice");
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             try (DataOutputStream msgOut = new DataOutputStream(bytes)) {
+                msgOut.writeUTF(noticeSenderKey);
                 msgOut.writeInt(players.size());
                 for (String s : players) {
                     msgOut.writeUTF(s);

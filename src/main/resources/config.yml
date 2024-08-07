@@ -4,8 +4,17 @@ blacklist-players: []
 # 是否能向自己发送邮件
 can-send-to-yourself: false
 
-# 是否发送和接收通过 BungeeCord 广播的在线玩家新邮件提醒
-notice-bungee: true
+# BungeeCord 广播设置
+bungeecord:
+  # 是否启用 BungeeCord 跨服通知新邮件 发送与接收
+  enable: true
+  # 发送方标识码，用于识别消息来源
+  sender-key: 'default'
+  # 接收方标识码，接收到的消息的标识码中包含该标识码才真正接收并通知相关玩家
+  # 如，发送方标识码为 'server1,server2,'
+  # 子服1的接收方标识码为 'server1,' 则它可以接收消息
+  # 子服2的接收方标识码为 'server3,' 则它不接收消息
+  receiver-key: 'default'
 
 default:
   title: '未命名邮件'
