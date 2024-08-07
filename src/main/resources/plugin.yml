@@ -17,3 +17,5 @@ commands:
 permissions:
   sweetmail.icon.default:
     default: true
+  sweetmail.price.default:
+    default: true

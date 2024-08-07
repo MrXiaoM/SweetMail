@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.permissions.Permissible;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.database.entry.AttachmentItem;
@@ -33,8 +34,7 @@ import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
@@ -59,7 +59,11 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public String messageNoReceivers;
     public String messageCantSendToYourself;
     public String messageSent;
+    public String messageNoMoney;
+    public String messageMoneyFormat;
     public boolean canSendToYourself;
+
+    Map<String, Double> priceMap = new HashMap<>();
     public MenuDraftConfig(SweetMail plugin) {
         super(plugin, "menus/draft.yml");
     }
@@ -71,6 +75,25 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         messageNoReceivers = cfg.getString("messages.draft.no-receivers");
         messageCantSendToYourself = cfg.getString("messages.draft.cant-send-to-yourself");
         messageSent = cfg.getString("messages.draft.sent");
+        messageNoMoney = cfg.getString("messages.draft.no-money");
+        messageMoneyFormat = cfg.getString("messages.draft.money-format");
+        priceMap.clear();
+        ConfigurationSection section = cfg.getConfigurationSection("price");
+        if (section != null) for (String key : section.getKeys(false)) {
+            double price = section.getDouble(key);
+            priceMap.put(key, price > 0 ? price : 0);
+        }
+    }
+
+    public double getPrice(Permissible permissible) {
+        ArrayList<Map.Entry<String, Double>> list = Lists.newArrayList(priceMap.entrySet());
+        list.sort(Comparator.comparingDouble(Map.Entry::getValue));
+        for (Map.Entry<String, Double> entry : list) {
+            if (permissible.hasPermission(entry.getKey())) {
+                return entry.getValue();
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -191,7 +214,10 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 return iconReset.generateIcon(target);
             }
             case "发": {
-                return iconSend.generateIcon(target);
+                return iconSend.generateIcon(
+                        target,
+                        Pair.of("%price%", String.format(messageMoneyFormat, getPrice(target)))
+                );
             }
             case "附": {
                 if (iconIndex < draft.attachments.size()) {
@@ -317,15 +343,12 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 }
                 case "发": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
-                        String uuid = plugin.getDatabase().generateMailUUID();
-                        String sender = draft.sender;
-                        String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
-                        MailIcon icon = DraftManager.inst().getMailIcon(draft.iconKey);
-                        String iconKey = icon == null ? draft.iconKey.substring(1) : icon.item;
-                        String title = draft.title;
-                        List<String> content = draft.content;
-                        List<IAttachment> attachments = draft.attachments;
-                        if (!canSendToYourself && sender.equalsIgnoreCase(draft.receiver)) {
+                        double price = getPrice(player);
+                        if (!plugin.getEconomy().has(player, price)) {
+                            t(player, plugin.prefix() + messageNoMoney.replace("%price%", String.format(messageMoneyFormat, price)));
+                            return;
+                        }
+                        if (!canSendToYourself && draft.sender.equalsIgnoreCase(draft.receiver)) {
                             t(player, plugin.prefix() + messageCantSendToYourself);
                             return;
                         }
@@ -356,10 +379,20 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             receivers.add(draft.receiver);
                         }
                         receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
+                        if (!canSendToYourself) receivers.remove(player.getName());
                         if (receivers.isEmpty()) {
                             t(player, plugin.prefix() + messageNoReceivers);
                             return;
                         }
+                        plugin.getEconomy().withdrawPlayer(player, price);
+                        String uuid = plugin.getDatabase().generateMailUUID();
+                        String sender = draft.sender;
+                        String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
+                        MailIcon icon = DraftManager.inst().getMailIcon(draft.iconKey);
+                        String iconKey = icon == null ? draft.iconKey.substring(1) : icon.item;
+                        String title = draft.title;
+                        List<String> content = draft.content;
+                        List<IAttachment> attachments = draft.attachments;
                         Mail mail = new Mail(uuid, sender, senderDisplay, iconKey, receivers, title, content, attachments);
                         plugin.getDatabase().sendMail(mail);
                         draft.reset();

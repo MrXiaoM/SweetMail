@@ -74,6 +74,7 @@
 + `sweetmail.admin` 邮件管理员权限，可在草稿打开高级设置发送系统邮件等
 + `sweetmail.icon.<图标>` 允许使用某个预设图标 (配置文件的 preset-icons)
 + `sweetmail.icon.custom` 允许使用自定义图标 (在选择图标界面使用物品栏里的物品)
++ `sweetmail.price.<价格组>` 设定玩家在哪个价格组内，详见配置文件 price 的注释
 
 ## 开发者
 

@@ -33,6 +33,17 @@ preset-icons:
     # 使用 ItemsAdder 物品作为图标，显示策略同 MythicMobs 图标
     item: itemsadder-示例
 
+# 各权限发邮件所需要花费的金币
+# 权限为 sweetmail.price.键，如 sweetmail.price.default
+# 价格低的检查优先级最高
+# 无法获取到价格或价格为0时不收取金币
+# 玩家默认拥有 default 权限
+price:
+  default: 100
+  vip: 80
+  svip: 50
+  mvp: 30
+
 # 帮助命令
 help:
   player:
@@ -57,6 +68,8 @@ messages:
     reload-database: '数据库配置已重载，已重新连接数据库'
   date-time: 'yyyy年MM月dd日 HH:mm:ss'
   draft:
+    no-money: '&e你没有足够的金币&7(%price%)&e去发送邮件'
+    money-format: '%.1f'
     selected-icon-lore:
       - '&a&l已选择'
     no-receivers: '&e你没有设置接收者，无法发送邮件!'
