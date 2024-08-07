@@ -12,10 +12,18 @@ import java.util.List;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class AttachmentItem implements IAttachment {
-    ItemStack item;
+    private final ItemStack item;
 
-    public AttachmentItem(ItemStack item) {
+    private AttachmentItem(ItemStack item) {
         this.item = item;
+    }
+
+    /**
+     * 构建一个物品附件
+     * @param item 物品
+     */
+    public static AttachmentItem build(ItemStack item) {
+        return new AttachmentItem(item);
     }
 
     @Override

@@ -13,10 +13,19 @@ import java.util.List;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class AttachmentMoney implements IAttachment {
-    double money;
+    private final double money;
 
-    public AttachmentMoney(double money) {
+    private AttachmentMoney(double money) {
         this.money = money;
+    }
+
+    /**
+     * 构建一个Vault金币附件
+     * @param money 金币数额
+     */
+    public static AttachmentMoney build(double money) {
+        if (money <= 0) throw new IllegalArgumentException("money is less then or equals to zero");
+        return new AttachmentMoney(money);
     }
 
     @Override

@@ -2,13 +2,23 @@
 
 便于玩家使用的图形化邮件系统，支持邮件携带物品等附件，支持 BC 跨服通知，支持跨服务器查看、发送邮件。
 
-> 插件正在编写中，此页面为插件预估实现的效果
-
 ## 简介
 
 我找了一堆免费的、开源的、付费的，支持物品附件的邮件插件，效果都不尽人意。  
 又不想用全球市场插件自带的邮件系统，功能太少了。  
 于是我计划编写一个对玩家使用友好，功能相对强大的邮件插件。
+
+## 未完成
+
+目前还有少量功能就写好可以正式发布了，敬请期待。
+
++ [ ] 草稿高级设置 (用于管理员发送系统邮件)
++ [ ] 第三方附属插件注册附件类型
++ [ ] 添加附件菜单
++ [ ] 材质包界面
++ [ ] 针对非 Paper 服务端的功能 fallback
+
+若想尝鲜，可翻到本文末尾自行尝试编译插件使用。
 
 ## 草稿
 
@@ -33,28 +43,40 @@
 
 ## 界面配置
 
-所有的界面和文字均可自定义！界面布局使用类似以下配置格式，可高度自定义
+所有的界面和文字均可自定义！界面布局使用可高度自定义的配置格式
 
-```yaml
-# 界面布局，每行9个图标，不能超过6行
-inventory:
-  - '黑黑黑黑黑黑黑黑黑'
-  - '黑接图题文高重发黑'
-  - '黑黑黑黑黑黑黑黑黑'
-  - '黑附附附附附附附黑'
-  - '黑黑黑黑黑黑黑黑黑'
-# 必选物品
-items:
-  接:
-    # TODO
-other-items:
-  黑:
-    material: 'BLACK_STAINED_GLASS_PANE#10000'
-    display: '&0'
-```
+图标配置的完整示例详见 [menus/draft.yml](https://github.com/MrXiaoM/SweetMail/blob/main/src/main/resources/menus/draft.yml) 末尾
 
-# 开发者
+## 命令
 
+标记了 ✅ 的命令代表控制台也可以执行，反之只有玩家可以执行。  
+`<>` 代表必选参数，`[]` 代表可选参数。
+根命令为 `/sweetmail`，可简写为 `/mail` 或 `/sm`
+
+|   | 命令                                    | 描述                    | 权限                    |
+|---|---------------------------------------|-----------------------|-----------------------|
+|   | 玩家命令                                  |                       |                       |
+|   | `/mail draft`                         | 打开草稿界面                | `sweetmail.draft`     |
+|   | `/mail inbox [all/unread]`            | 打开收件箱界面(所有/未读分区，默认未读) | `sweetmail.box`       |
+|   | `/mail outbox`                        | 打开收件箱界面               | `sweetmail.box`       |
+|   | 管理员命令                                 |                       |                       |
+| ✅ | `/mail inbox <all/unread> <玩家>`       | 为某人打开收件箱界面            | `sweetmail.box.other` |
+| ✅ | `/mail outbox <玩家>`                   | 为某人打开发件箱界面            | `sweetmail.box.other` |
+|   | `/mail admin inbox <all/unread> <玩家>` | 打开某人的收件箱界面            | `sweetmail.box.other` |
+|   | `/mail admin outbox <玩家>`             | 打开某人的发件箱界面            | `sweetmail.box.other` |
+| ✅ | `/mail reload database`               | 重载并重新连接数据库            | `sweetmail.admin`     |
+| ✅ | `/mail reload`                        | 重载配置文件，不重连数据库         | `sweetmail.admin`     |
+
+## 权限
+
+
+
+## 开发者
+
+**使用接口发送系统邮件**
+
+[![版本号](https://img.shields.io/github/v/release/MrXiaoM/SweetMail
+)](https://github.com/MrXiaoM/SweetMail/releases)
 ```kotlin
 repositories {
     maven("https://jitpack.io")
@@ -68,12 +90,25 @@ dependencies {
 import top.mrxiaom.sweetmail.IMail;
 // 使用示例
 void foo() {
-    boolean success = IMail.api()
+    IMail.Status status = IMail.api()
             .createSystemMail("系统消息")
             .setIcon("BOOK") // 设置图标，详见源码注释
-            .setTitle("标题")
-            .addContent("邮件内容")
-            .addAttachments() // 添加附件
+            .setTitle("邮件标题")
+            .addContent("邮件正文内容", "列表中每个元素代表每页。换行依旧用\n")
+            .addAttachments( // 添加附件
+                AttachmentItem.build(new ItemStack(Material.DIAMOND))
+            )
             .send();
+    if (status.ok()) {
+        info("邮件发送成功");
+    }
 }
+```
+
+**构建插件**
+
+请使用 `java 17` 执行以下命令。别担心，构建产物的目标版本是 `java 8`。
+
+```shell
+./gradlew clean build
 ```

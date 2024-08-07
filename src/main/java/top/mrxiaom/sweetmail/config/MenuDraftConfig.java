@@ -152,9 +152,13 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             }
             case "图": {
                 ItemStack item = ItemStackUtil.getItem(manager.getMailIcon(draft.iconKey));
+                String resolvedKey = draft.iconKey;
+                if (resolvedKey.startsWith("!")) {
+                    resolvedKey = resolvedKey.substring(1);
+                }
                 return iconIcon.generateIcon(
                         target, item,
-                        Pair.of("%icon%", draft.iconKey)
+                        Pair.of("%icon%", resolvedKey)
                 );
             }
             case "题": {
@@ -369,8 +373,9 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 attachment.use(player);
                             }
                         } else {
+                            // 快速添加物品附件
                             if (cursor != null && !cursor.getType().isAir()) {
-                                IAttachment attachment = new AttachmentItem(cursor);
+                                IAttachment attachment = AttachmentItem.build(cursor);
                                 event.setCursor(null);
                                 draft.attachments.add(attachment);
                                 draft.save();
@@ -378,7 +383,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 return;
                             }
                             // TODO: 打开附件添加菜单
-                            player.sendMessage("附件菜单正在制作中，敬请期待");
+                            player.sendMessage("§a附件菜单正在制作中，敬请期待");
                         }
                     }
                     return;

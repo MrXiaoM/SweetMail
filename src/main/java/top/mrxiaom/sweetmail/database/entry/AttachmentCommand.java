@@ -10,14 +10,24 @@ import top.mrxiaom.sweetmail.utils.comp.PAPI;
 import java.util.List;
 
 public class AttachmentCommand implements IAttachment {
-    String item;
-    String display;
-    String command;
+    private final String item;
+    private final String display;
+    private final String command;
 
-    public AttachmentCommand(String item, String display, String command) {
+    private AttachmentCommand(String item, String display, String command) {
         this.item = item;
         this.display = display;
         this.command = command;
+    }
+
+    /**
+     * 构建一个命令附件
+     * @param item 显示图标，格式详见 {@link top.mrxiaom.sweetmail.IMail.MailDraft#setIcon(String)}
+     * @param display 在界面中显示的附件名称
+     * @param command 领取该附件执行的控制台命令，支持PAPI变量
+     */
+    public static AttachmentCommand build(String item, String display, String command) {
+        return new AttachmentCommand(item, display, command);
     }
 
     @Override

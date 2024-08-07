@@ -156,10 +156,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         private MailAPI() {
         }
         @Override
-        protected boolean send(MailDraft draft) {
+        protected Status send(MailDraft draft) {
             List<String> receivers = draft.getReceivers();
             if (receivers.isEmpty()) {
-                return false;
+                return Status.EMPTY_RECEIVER;
             }
             MailDatabase db = getDatabase();
 
@@ -173,7 +173,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
             Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
             db.sendMail(mail);
-            return true;
+            return Status.SUCCESS;
         }
     }
 }

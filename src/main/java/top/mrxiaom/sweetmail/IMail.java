@@ -16,7 +16,7 @@ public abstract class IMail {
         return instance;
     }
 
-    protected abstract boolean send(MailDraft draft);
+    protected abstract Status send(MailDraft draft);
 
     /**
      * 创建邮件草稿，不会覆盖发件人创建的草稿
@@ -32,6 +32,20 @@ public abstract class IMail {
      */
     public MailDraft createSystemMail(String senderDisplay) {
         return new MailDraft(SERVER_SENDER).setSenderDisplay(senderDisplay);
+    }
+
+    public enum Status {
+        SUCCESS(true),
+        EMPTY_RECEIVER(false)
+
+        ;
+        private final boolean isOK;
+        Status(boolean isOK) {
+            this.isOK = isOK;
+        }
+        public boolean ok() {
+            return isOK;
+        }
     }
 
     public class MailDraft {
@@ -193,9 +207,9 @@ public abstract class IMail {
 
         /**
          * 发送邮件
-         * @return 返回 true 时发送成功，返回 false 时发送失败。发送失败通常由“未设置接收者”引起
+         * @return 邮件发送状态
          */
-        public boolean send() {
+        public Status send() {
             return IMail.this.send(this);
         }
     }
