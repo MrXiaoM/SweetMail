@@ -181,7 +181,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public void markRead(String uuid, String receiver) {
         try (Connection conn = getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
-                    "SET `read` = 1" +
+                    "SET `read` = 1 " +
                     "WHERE `uuid` = ? AND `receiver` = ?;")) {
                 ps.setString(1, uuid);
                 ps.setString(2, receiver);
@@ -196,7 +196,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public void markAllRead(String receiver) {
         try (Connection conn = getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
-                    "SET `read` = 1" +
+                    "SET `read` = 1 " +
                     "WHERE `receiver` = ?;")) {
                 ps.setString(1, receiver);
                 ps.execute();
@@ -210,7 +210,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public void markUsed(List<String> uuidList, String receiver) {
         try (Connection conn = getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
-                    "SET `used` = 1" +
+                    "SET `used` = 1 " +
                     "WHERE `uuid` = ? AND `receiver` = ?;")) {
                 for (String uuid : uuidList) {
                     ps.setString(1, uuid);
