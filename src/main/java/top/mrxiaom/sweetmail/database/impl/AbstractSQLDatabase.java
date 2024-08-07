@@ -210,7 +210,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public void markUsed(List<String> uuidList, String receiver) {
         try (Connection conn = getConnection()) {
             try (PreparedStatement ps = conn.prepareStatement("UPDATE `" + TABLE_STATUS + "` " +
-                    "SET `used` = 1 " +
+                    "SET `used` = 1, `read` = 1 " +
                     "WHERE `uuid` = ? AND `receiver` = ?;")) {
                 for (String uuid : uuidList) {
                     ps.setString(1, uuid);
