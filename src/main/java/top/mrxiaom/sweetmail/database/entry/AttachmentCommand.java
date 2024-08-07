@@ -52,7 +52,7 @@ public class AttachmentCommand implements IAttachment {
 
     @Override
     public String serialize() {
-        return "command:" + item + "," + "display" + "," + command;
+        return "command:" + item + "," + display.replace(",", "，") + "," + command;
     }
 
     public static IAttachment deserialize(String s) {
