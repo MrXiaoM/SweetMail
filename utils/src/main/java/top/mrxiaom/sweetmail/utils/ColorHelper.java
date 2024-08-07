@@ -29,7 +29,7 @@ public class ColorHelper {
     }
 
     public static TextComponent bungee(String s) {
-        return new TextComponent(TextComponent.fromLegacyText(parseColor(s)));
+        return new TextComponent(parseColor(s));
     }
 
     @SuppressWarnings({"deprecation"})

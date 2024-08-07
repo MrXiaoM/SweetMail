@@ -50,6 +50,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
+        if (!player.hasPermission("sweetmail.notice")) return;
         int count = plugin.getDatabase().getInBox(true, player.getName(), 1, 1).getMaxCount();
         if (count > 0) {
             notice(player, msgJoinText, count);
@@ -112,7 +113,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     }
 
     private void notice(Player player, String msg, int count) {
-        if (msg.isEmpty()) return;
+        if (msg.isEmpty() || !player.hasPermission("sweetmail.notice")) return;
         TextComponent component = ColorHelper.bungee(msg.replace("%count%", String.valueOf(count)));
         if (!msgJoinHover.isEmpty()) {
             component.setHoverEvent(ColorHelper.hover(msgJoinHover));
