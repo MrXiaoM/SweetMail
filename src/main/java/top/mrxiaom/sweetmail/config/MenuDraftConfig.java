@@ -23,6 +23,8 @@ import top.mrxiaom.sweetmail.database.entry.AttachmentItem;
 import top.mrxiaom.sweetmail.database.entry.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.data.Draft;
+import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.gui.GuiIcon;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
@@ -134,7 +136,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     @Override
     protected ItemStack tryApplyMainIcon(Gui gui, String key, Player target, int iconIndex) {
         DraftManager manager = DraftManager.inst();
-        DraftManager.Draft draft = manager.getDraft(target);
+        Draft draft = manager.getDraft(target);
         switch (key) {
             case "接": {
                 String receiver = draft.receiver.isEmpty() ? iconReceiverUnset : draft.receiver;
@@ -151,9 +153,13 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 return item;
             }
             case "图": {
-                ItemStack item = ItemStackUtil.getItem(manager.getMailIcon(draft.iconKey));
+                MailIcon icon = manager.getMailIcon(draft.iconKey);
+                String itemKey = icon == null ? draft.iconKey.substring(1) : icon.item;
+                ItemStack item = ItemStackUtil.getItem(itemKey);
                 String resolvedKey = draft.iconKey;
-                if (resolvedKey.startsWith("!")) {
+                if (icon != null && icon.display != null && !draft.iconKey.equals(icon.display)) {
+                    resolvedKey = icon.display;
+                } else if (resolvedKey.startsWith("!")) {
                     resolvedKey = resolvedKey.substring(1);
                 }
                 return iconIcon.generateIcon(
@@ -314,7 +320,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         String uuid = plugin.getDatabase().generateMailUUID();
                         String sender = draft.sender;
                         String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
-                        String icon = DraftManager.inst().getMailIcon(draft.iconKey);
+                        MailIcon icon = DraftManager.inst().getMailIcon(draft.iconKey);
+                        String iconKey = icon == null ? draft.iconKey.substring(1) : icon.item;
                         String title = draft.title;
                         List<String> content = draft.content;
                         List<IAttachment> attachments = draft.attachments;
@@ -353,7 +360,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             t(player, plugin.prefix() + messageNoReceivers);
                             return;
                         }
-                        Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
+                        Mail mail = new Mail(uuid, sender, senderDisplay, iconKey, receivers, title, content, attachments);
                         plugin.getDatabase().sendMail(mail);
                         draft.reset();
                         draft.save();

@@ -13,3 +13,7 @@ commands:
   sweetmail:
     description: SweetMail main command.
     aliases: [sm, mail]
+
+permissions:
+  sweetmail.icon.default:
+    default: true

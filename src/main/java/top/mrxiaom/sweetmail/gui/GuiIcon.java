@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.MenuDraftConfig;
+import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
@@ -33,8 +34,8 @@ public class GuiIcon extends AbstractDraftGui {
     @Override
     public Inventory newInventory() {
         iconKeyMap.clear();
-        List<Pair<String, String>> pairs = new ArrayList<>();
-        for (Map.Entry<String, String> entry : draft.manager.getMailIcons().entrySet()) {
+        List<Pair<String, MailIcon>> pairs = new ArrayList<>();
+        for (Map.Entry<String, MailIcon> entry : draft.manager.getMailIcons().entrySet()) {
             if (player.hasPermission("sweetmail.icon." + entry.getKey())) {
                 pairs.add(Pair.of(entry));
             }
@@ -42,13 +43,17 @@ public class GuiIcon extends AbstractDraftGui {
         size = Math.min(54, ((pairs.size() / 9) + 1) * 9);
         Inventory inv = Bukkit.createInventory(null, size, PAPI.setPlaceholders(player, title));
         for (int i = 0, j = 0; i < pairs.size(); i++) {
-            Pair<String, String> pair = pairs.get(i);
+            Pair<String, MailIcon> pair = pairs.get(i);
+            MailIcon icon = pair.getValue();
             ItemStack item;
             try {
-                item = ItemStackUtil.getItem(pair.getValue());
+                item = ItemStackUtil.getItem(icon.item);
             } catch (Throwable t) {
                 warn(t.getMessage());
                 continue;
+            }
+            if (icon.display != null && !pair.getKey().equals(icon.display)) {
+                ItemStackUtil.setItemDisplayName(item, "&r" + icon.display);
             }
             if (draft.iconKey.equals(pair.getKey())) {
                 ItemStackUtil.setGlow(item);

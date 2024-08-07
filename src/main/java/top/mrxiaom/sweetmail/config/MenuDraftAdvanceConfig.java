@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
@@ -52,7 +53,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     @Override
     protected ItemStack tryApplyMainIcon(Gui gui, String key, Player target, int iconIndex) {
         DraftManager manager = DraftManager.inst();
-        DraftManager.Draft draft = manager.getDraft(target);
+        Draft draft = manager.getDraft(target);
         switch (key) {
             // TODO: 更多高级设置
             case "返": {

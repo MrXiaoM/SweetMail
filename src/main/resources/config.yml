@@ -9,13 +9,20 @@ notice-bungee: true
 
 default:
   title: '未命名邮件'
-# 预设图标，不能写 custom
+# 预设图标，不能写 custom，不能以英文感叹号开头
 preset-icons:
-  default: PAPER
-  # 使用 MythicMobs 物品作为图标 (草稿菜单显示mm物品名，收件箱发件箱中仅使用物品、CustomModelData、附魔、染色数据，不使用名字和 Lore)
-  example: mythic-示例
-  # 使用 ItemsAdder 物品作为图标，显示策略同 MythicMobs 图标
-  example1: itemsadder-示例
+  # default 为默认图标，必须要有默认图标
+  default:
+    display: '默认'
+    item: PAPER
+  example:
+    display: '示例1'
+    # 使用 MythicMobs 物品作为图标 (草稿菜单显示mm物品名，收件箱发件箱中仅使用物品、CustomModelData、附魔、染色数据，不使用名字和 Lore)
+    item: mythic-示例
+  example1:
+    display: '示例2'
+    # 使用 ItemsAdder 物品作为图标，显示策略同 MythicMobs 图标
+    item: itemsadder-示例
 
 # 帮助命令
 help:

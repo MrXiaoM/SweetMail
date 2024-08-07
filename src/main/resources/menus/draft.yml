@@ -85,7 +85,7 @@ items:
       - '&a左键&7 | &f执行操作'
   附:
     material: MINECART
-    display: '&a&l附件槽'
+    display: '&e&l附件槽'
     lore:
       - ''
       - '  &f这是一个空的附件槽，  '

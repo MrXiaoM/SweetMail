@@ -5,10 +5,11 @@ import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.data.Draft;
 
 public abstract class AbstractDraftGui extends AbstractPluginHolder implements IGui {
     protected Player player;
-    protected DraftManager.Draft draft;
+    protected Draft draft;
     protected Runnable reopen = () ->
             Bukkit.getScheduler().runTask(plugin,
                     () -> plugin.getGuiManager().openGui(this));
@@ -18,7 +19,7 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
         this.draft = DraftManager.inst().getDraft(player);
     }
 
-    public DraftManager.Draft getDraft() {
+    public Draft getDraft() {
         return draft;
     }
 
