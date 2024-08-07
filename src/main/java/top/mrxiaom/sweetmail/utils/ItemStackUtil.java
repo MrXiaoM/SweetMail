@@ -22,9 +22,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class ItemStackUtil {
-    static boolean isPaper;
+    static boolean paper;
     protected static void init() {
-        isPaper = Util.isPresent("io.papermc.paper.event.player.AsyncChatEvent");
+        paper = Util.isPresent("io.papermc.paper.event.player.AsyncChatEvent");
+    }
+
+    public static boolean isPaper() {
+        return paper;
     }
 
     public static String itemStackToBase64(ItemStack item) {
@@ -71,7 +75,7 @@ public class ItemStackUtil {
         ItemMeta im = item.getItemMeta() == null ? getItemMeta(item.getType()) : item.getItemMeta();
         if (im == null)
             return;
-        if (isPaper) {
+        if (paper) {
             ItemStackPaper.setItemDisplayName(item, name);
             return;
         }
@@ -89,7 +93,7 @@ public class ItemStackUtil {
         ItemMeta im = item.getItemMeta() == null ? getItemMeta(item.getType()) : item.getItemMeta();
         if (im == null)
             return;
-        if (isPaper) {
+        if (paper) {
             ItemStackPaper.setItemLore(item, lore);
             return;
         }
