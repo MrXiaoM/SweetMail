@@ -347,7 +347,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         }
                         if (click.isRightClick()) {
                             MenuViewAttachmentsConfig.inst()
-                                    .new Gui(plugin, player, mail)
+                                    .new Gui(this, player, mail)
                                     .open();
                             return;
                         }

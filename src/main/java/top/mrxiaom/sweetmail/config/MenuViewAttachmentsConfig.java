@@ -68,18 +68,18 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
     }
 
     public class Gui implements IGui {
-        private final SweetMail plugin;
+        private final IGui parent;
         private final Player player;
         private final Mail mail;
-        public Gui(SweetMail plugin, Player player, Mail mail) {
-            this.plugin = plugin;
+        public Gui(IGui parent, Player player, Mail mail) {
+            this.parent = parent;
             this.player = player;
             this.mail = mail;
         }
 
         @Override
         public Player getPlayer() {
-            return null;
+            return player;
         }
 
         @Override
@@ -95,14 +95,17 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
             if (c == null) return;
             event.setCancelled(true);
 
-            if (String.valueOf(c).equals("返")) {
-                if (click.isLeftClick() && !click.isShiftClick()) {
-                    MenuDraftConfig.inst()
-                            .new Gui(plugin, player)
-                            .open();
+            switch (String.valueOf(c)) {
+                case "返": {
+                    if (click.isLeftClick() && !click.isShiftClick()) {
+                        parent.open();
+                    }
                 }
-            } else {
-                handleClick(player, click, c);
+                break;
+                case "附":
+                    break;
+                default:
+                    handleClick(player, click, c);
             }
         }
     }

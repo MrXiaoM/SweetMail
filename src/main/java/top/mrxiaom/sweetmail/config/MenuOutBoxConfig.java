@@ -158,8 +158,8 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
 
 
     public class Gui extends AbstractPluginHolder implements IGui {
-        Player player;
-        String target;
+        private final Player player;
+        private final String target;
         int page = 1;
         ListX<MailWithStatus> outBox;
         public Gui(SweetMail plugin, Player player, String target) {
@@ -240,7 +240,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         }
                         if (click.isRightClick()) {
                             MenuViewAttachmentsConfig.inst()
-                                    .new Gui(plugin, player, mail)
+                                    .new Gui(this, player, mail)
                                     .open();
                             return;
                         }
