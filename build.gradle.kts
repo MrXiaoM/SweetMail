@@ -53,8 +53,6 @@ dependencies {
 
     // Shadow Dependency
     implementation("com.zaxxer:HikariCP:4.0.3") { isTransitive = false }
-    implementation(project(":paper"))
-    implementation(project(":utils"))
     implementation("org.jetbrains:annotations:21.0.0")
     implementation("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
