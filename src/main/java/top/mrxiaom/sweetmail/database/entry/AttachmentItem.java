@@ -55,11 +55,7 @@ public class AttachmentItem implements IAttachment {
             ItemMeta meta = item.getItemMeta();
             if (meta.hasDisplayName() && !meta.getDisplayName().isEmpty()) return meta.getDisplayName();
         }
-        if (ItemStackUtil.isPaper()) {
-            return "<translate:" + item.getTranslationKey() + ">";
-        } else {
-            return item.getType().name();
-        }
+        return ItemStackUtil.miniTranslate(item);
     }
 
     @Override

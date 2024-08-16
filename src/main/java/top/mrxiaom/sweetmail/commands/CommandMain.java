@@ -144,7 +144,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             }
             if ("reload".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length > 1 && "database".equalsIgnoreCase(args[1])) {
-                    plugin.getDatabase().reload();
+                    plugin.getMailDatabase().reload();
                     t(sender, prefix + cmdReloadDatabase);
                     return true;
                 }

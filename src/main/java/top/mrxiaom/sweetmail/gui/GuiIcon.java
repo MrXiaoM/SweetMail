@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.gui;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -91,11 +92,11 @@ public class GuiIcon extends AbstractDraftGui {
                 }
             }
             if (slot >= size && player.hasPermission("sweetmail.icon.custom")) {
-                if (currentItem != null && !currentItem.getType().isAir()) {
+                if (currentItem != null && !currentItem.getType().equals(Material.AIR)) {
                     String type;
                     ItemMeta meta = currentItem.getItemMeta();
-                    if (meta != null && meta.hasCustomModelData()) {
-                        type = "!" + currentItem.getType().name().toUpperCase() + "#" + meta.getCustomModelData();
+                    if (meta != null && ItemStackUtil.hasCustomModelData(currentItem)) {
+                        type = "!" + currentItem.getType().name().toUpperCase() + "#" +  ItemStackUtil.getCustomModelData(currentItem);
                     } else {
                         type = "!" + currentItem.getType().name().toUpperCase();
                     }

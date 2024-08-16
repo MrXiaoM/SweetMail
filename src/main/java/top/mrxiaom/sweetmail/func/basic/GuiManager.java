@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
             if (player == null) continue;
             entry.getValue().onClose(player.getOpenInventory());
             player.closeInventory();
-            player.sendTitle("§e请等等", "§f管理员正在热更新插件", 10, 30, 10);
+            Util.sendTitle(player, "§e请等等", "§f管理员正在热更新插件", 10, 30, 10);
         }
         playersGui.clear();
     }

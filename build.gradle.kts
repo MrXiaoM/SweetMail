@@ -18,10 +18,9 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven("https://maven.fastmirror.net/repositories/minecraft")
+        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
         maven("https://repo.codemc.io/repository/maven-public/")
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://jitpack.io")
         maven("https://repo.rosewooddev.io/repository/public/")
@@ -54,9 +53,13 @@ dependencies {
 
     // Shadow Dependency
     implementation("com.zaxxer:HikariCP:4.0.3") { isTransitive = false }
-    implementation("org.jetbrains:annotations:19.0.0")
     implementation(project(":paper"))
     implementation(project(":utils"))
+    implementation("org.jetbrains:annotations:21.0.0")
+    implementation("net.kyori:adventure-api:4.17.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.4")
+    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    implementation("de.tr7zw:item-nbt-api:2.13.2")
 }
 
 tasks {
@@ -65,7 +68,9 @@ tasks {
         mapOf(
             "org.intellij.lang.annotations" to "annotations.intellij",
             "org.jetbrains.annotations" to "annotations.jetbrains",
+            "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "com.zaxxer.hikari" to "hikari",
+            "net.kyori" to "kyori",
         ).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }

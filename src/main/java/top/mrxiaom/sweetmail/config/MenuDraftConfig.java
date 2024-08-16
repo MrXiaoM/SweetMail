@@ -172,9 +172,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 if (!draft.receiver.isEmpty() && item.getItemMeta() instanceof SkullMeta) {
                     OfflinePlayer owner = Util.getOfflinePlayerByNameOrUUID(draft.receiver).orElse(null);
                     if (owner != null) {
-                        SkullMeta meta = (SkullMeta) item.getItemMeta();
-                        meta.setOwningPlayer(owner);
-                        item.setItemMeta(meta);
+                        item.setItemMeta(ItemStackUtil.setSkullOwner(item.getItemMeta(), owner));
                     }
                 }
                 return item;
@@ -331,7 +329,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 meta.setPages(draft.content.isEmpty() ? Lists.newArrayList("") : draft.content);
                                 meta.setAuthor(player.getName());
                                 item.setItemMeta(meta);
-                                player.openBook(item);
+                                Util.openBook(player, item);
                             }
                         }
                     }
@@ -399,7 +397,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             return;
                         }
                         plugin.getEconomy().withdrawPlayer(player, price);
-                        String uuid = plugin.getDatabase().generateMailUUID();
+                        String uuid = plugin.getMailDatabase().generateMailUUID();
                         String sender = draft.sender;
                         String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
                         MailIcon icon = DraftManager.inst().getMailIcon(draft.iconKey);
@@ -408,7 +406,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         List<String> content = draft.content;
                         List<IAttachment> attachments = draft.attachments;
                         Mail mail = new Mail(uuid, sender, senderDisplay, iconKey, receivers, title, content, attachments);
-                        plugin.getDatabase().sendMail(mail);
+                        plugin.getMailDatabase().sendMail(mail);
                         draft.reset();
                         draft.save();
                         player.closeInventory();
@@ -428,7 +426,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             }
                         } else {
                             // 快速添加物品附件
-                            if (cursor != null && !cursor.getType().isAir()) {
+                            if (cursor != null && !cursor.getType().equals(Material.AIR)) {
                                 IAttachment attachment = AttachmentItem.build(cursor);
                                 event.setCursor(null);
                                 draft.attachments.add(attachment);

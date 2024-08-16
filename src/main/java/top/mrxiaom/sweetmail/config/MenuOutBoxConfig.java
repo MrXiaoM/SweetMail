@@ -115,7 +115,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             case "下":
                 return iconNextPage.generateIcon(target);
             case "领":
-                if (plugin.getDatabase().hasUnUsed(target.getName())) {
+                if (plugin.getMailDatabase().hasUnUsed(target.getName())) {
                     return iconGetAll.generateIcon(target);
                 } else {
                     Icon icon = otherIcon.get(iconGetAllRedirect);
@@ -197,7 +197,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             } else {
                 targetKey = target;
             }
-            outBox = targetKey == null ? new ListX<>() : plugin.getDatabase().getOutBox(targetKey, page, getSlotsCount());
+            outBox = targetKey == null ? new ListX<>() : plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount());
             Inventory inv = createInventory(player, !target.equals(player.getName()), page, outBox.getMaxPage(getSlotsCount()));
             applyIcons(this, inv, player);
             return inv;
@@ -249,7 +249,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         if (i < 0 || i >= outBox.size()) return;
                         MailWithStatus mail = outBox.get(i);
                         if (click.isLeftClick()) {
-                            player.openBook(mail.generateBook());
+                            Util.openBook(player, mail.generateBook());
                             return;
                         }
                         if (click.isRightClick()) {

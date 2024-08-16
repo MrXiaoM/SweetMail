@@ -200,7 +200,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             case "下":
                 return iconNextPage.generateIcon(target);
             case "领":
-                if (plugin.getDatabase().hasUnUsed(target.getName())) {
+                if (plugin.getMailDatabase().hasUnUsed(target.getName())) {
                     return iconGetAll.generateIcon(target);
                 } else {
                     Icon icon = otherIcon.get(iconGetAllRedirect);
@@ -283,7 +283,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             } else {
                 targetKey = target;
             }
-            inBox = targetKey == null ? new ListX<>() : plugin.getDatabase().getInBox(unread, targetKey, page, getSlotsCount());
+            inBox = targetKey == null ? new ListX<>() : plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount());
             Inventory inv = createInventory(player, unread, !target.equals(player.getName()), page, inBox.getMaxPage(getSlotsCount()));
             applyIcons(this, inv, player);
             return inv;
@@ -338,7 +338,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     if (!click.isShiftClick() && click.isLeftClick()) {
                         if (!player.getName().equals(target)) return; // 不可代领
                         if (inBox.isEmpty() || inBox.get(0).used) return;
-                        List<MailWithStatus> unused = plugin.getDatabase().getInBoxUnused(target);
+                        List<MailWithStatus> unused = plugin.getMailDatabase().getInBoxUnused(target);
                         if (unused.isEmpty()) return;
                         List<String> dismiss = new ArrayList<>();
                         for (MailWithStatus mail : unused) {
@@ -354,7 +354,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 t(player, plugin.prefix() + messageFail);
                             }
                         }
-                        plugin.getDatabase().markUsed(dismiss, target);
+                        plugin.getMailDatabase().markUsed(dismiss, target);
                         applyIcons(this, view, player);
                     }
                     return;
@@ -363,12 +363,12 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     int i = getKeyIndex(c, slot);
                     if (i < 0 || i >= inBox.size()) return;
                     MailWithStatus mail = inBox.get(i);
-                    plugin.getDatabase().markRead(mail.uuid, target);
+                    plugin.getMailDatabase().markRead(mail.uuid, target);
                     if (click.isLeftClick()) {
                         if (click.isShiftClick()) { // 领取附件
                             if (!mail.attachments.isEmpty() && !mail.used) {
                                 mail.used = true;
-                                plugin.getDatabase().markUsed(Lists.newArrayList(mail.uuid), target);
+                                plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), target);
                                 try {
                                     for (IAttachment attachment : mail.attachments) {
                                         attachment.use(player);
@@ -377,7 +377,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
                                     t(player, plugin.prefix() + messageFail);
                                 }
-                                plugin.getDatabase().getInBoxUnused(target);
+                                plugin.getMailDatabase().getInBoxUnused(target);
                                 applyIcons(this, view, player);
                             } else {
                                 t(player, mail.attachments.size() + " " + mail.used);
@@ -385,7 +385,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             return;
                         }
                         // 查看正文
-                        player.openBook(mail.generateBook());
+                        Util.openBook(player, mail.generateBook());
                         return;
                     }
                     if (!click.isShiftClick() && click.isRightClick()) {

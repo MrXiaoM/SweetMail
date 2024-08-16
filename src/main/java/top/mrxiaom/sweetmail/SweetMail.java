@@ -52,7 +52,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return guiManager;
     }
 
-    public MailDatabase getDatabase() {
+    public MailDatabase getMailDatabase() {
         return database;
     }
 
@@ -179,7 +179,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             if (receivers.isEmpty()) {
                 return Status.EMPTY_RECEIVER;
             }
-            MailDatabase db = getDatabase();
+            MailDatabase db = getMailDatabase();
 
             String uuid = db.generateMailUUID();
             String sender = draft.getSender();
