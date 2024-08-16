@@ -43,12 +43,12 @@ dependencies {
     compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
 
     // Dependency Plugins
-    compileOnly("me.clip:placeholderapi:2.11.5")
-    compileOnly("org.black_ixx:playerpoints:3.2.5")
+    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("org.black_ixx:playerpoints:3.2.7")
 
     // MythicMobs 4 and 5
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
-    compileOnly("io.lumine:Mythic:5.4.1")
+    compileOnly("io.lumine:Mythic:5.6.2") // 不要再升级 Mythic5 了，再升级就要 java 21 才能编译了
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
     // Shadow Dependency
