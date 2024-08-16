@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.func.NoticeManager;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Util;
@@ -87,8 +88,10 @@ public class Mail {
         return json.toString();
     }
 
-    private static <T> T deserialize(String s, Func8<String, String, String, String, List<String>, String, List<String>, List<IAttachment>, T> func) {
-        JsonObject json = new JsonParser().parse(s).getAsJsonObject();
+    @SuppressWarnings({"deprecation"})
+    private static <T> T deserialize(String jsonString, Func8<String, String, String, String, List<String>, String, List<String>, List<IAttachment>, T> func) {
+        // 不要更改旧版 gson 用法，低版本 Minecraft 并没有新版本 gson
+        JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
 
         String uuid = getString(json, "uuid");
         String sender = getString(json, "sender");

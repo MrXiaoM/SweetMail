@@ -1,5 +1,7 @@
 package top.mrxiaom.sweetmail.database.entry;
 
+import top.mrxiaom.sweetmail.attachments.IAttachment;
+
 import java.time.LocalDateTime;
 import java.util.List;
 

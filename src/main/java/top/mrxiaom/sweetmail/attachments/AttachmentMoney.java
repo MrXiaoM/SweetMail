@@ -1,4 +1,4 @@
-package top.mrxiaom.sweetmail.database.entry;
+package top.mrxiaom.sweetmail.attachments;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package top.mrxiaom.sweetmail.database.entry;
+package top.mrxiaom.sweetmail.attachments;
 
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;

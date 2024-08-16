@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.config.*;
-import top.mrxiaom.sweetmail.database.entry.IAttachment;
+import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 
 import java.io.ByteArrayInputStream;

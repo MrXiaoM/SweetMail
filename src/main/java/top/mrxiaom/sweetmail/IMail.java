@@ -1,7 +1,7 @@
 package top.mrxiaom.sweetmail;
 
 import org.jetbrains.annotations.NotNull;
-import top.mrxiaom.sweetmail.database.entry.IAttachment;
+import top.mrxiaom.sweetmail.attachments.IAttachment;
 
 import java.util.ArrayList;
 import java.util.Collection;

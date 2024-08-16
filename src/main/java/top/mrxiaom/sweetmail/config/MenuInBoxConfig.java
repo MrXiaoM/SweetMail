@@ -15,7 +15,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.database.entry.IAttachment;
+import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;

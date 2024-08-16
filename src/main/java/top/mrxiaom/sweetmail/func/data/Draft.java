@@ -2,7 +2,7 @@ package top.mrxiaom.sweetmail.func.data;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.database.entry.IAttachment;
+import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.func.DraftManager;
 
 import java.io.File;

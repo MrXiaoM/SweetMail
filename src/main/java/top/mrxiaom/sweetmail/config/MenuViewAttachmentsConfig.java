@@ -12,7 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.database.entry.IAttachment;
+import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
