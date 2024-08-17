@@ -173,6 +173,15 @@ public class Util {
         }
     }
 
+    public static Optional<Byte> parseByte(String s) {
+        if (s == null) return Optional.empty();
+        try {
+            return Optional.of(Byte.parseByte(s));
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+    }
+
     public static Optional<Long> parseLong(String s) {
         if (s == null) return Optional.empty();
         try {

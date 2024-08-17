@@ -197,16 +197,22 @@ public class ItemStackUtil {
         } else {
             Integer customModelData = null;
             String material = str;
+            Byte dataValue = null;
             if (str.contains("#")) {
                 String customModel = str.substring(str.indexOf("#") + 1);
                 customModelData = Util.parseInt(customModel).orElseThrow(
                         () -> new IllegalStateException("无法解析 " + customModel + " 为整数")
                 );
-                material = str.replace("#" + customModelData, "");
+                material = str.replace("#" + customModel, "");
+            }
+            else if (str.contains(":")) {
+                String data = str.substring(str.indexOf(":"));
+                dataValue = Util.parseByte(data.substring(1)).orElse(null);
+                material = str.replace(data, "");
             }
             Material m = Util.valueOr(Material.class, material, null);
             if (m == null) throw new IllegalStateException("找不到物品 " + str);
-            ItemStack item = new ItemStack(m);
+            ItemStack item = dataValue == null ? new ItemStack(m) : new ItemStack(m, 0, (short) 0, dataValue);
             if (customModelData != null) setCustomModelData(item, customModelData);
             return item;
         }
