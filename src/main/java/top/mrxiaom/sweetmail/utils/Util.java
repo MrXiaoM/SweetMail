@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -35,6 +36,7 @@ import static top.mrxiaom.sweetmail.utils.Pair.replace;
 public class Util {
     private static BukkitAudiences adventure;
     private static MiniMessage miniMessage;
+    private static boolean is1144;
     public static Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(JavaPlugin plugin) {
@@ -42,6 +44,7 @@ public class Util {
         miniMessage = MiniMessage.builder()
                 .postProcessor(it -> it.decoration(TextDecoration.ITALIC, false))
                 .build();
+        is1144 = Bukkit.getBukkitVersion().contains("1.14.4");
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
@@ -81,7 +84,12 @@ public class Util {
 
     public static void openBook(Player player, ItemStack book) {
         if (book.getType().equals(Material.WRITTEN_BOOK)) return;
-        player.openBook(book); // TODO: 兼容 1.8 等 player 没有 openBook 的版本
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_15_R1) || is1144) {
+            player.openBook(book);
+            return;
+        }
+        // 1.14.4 以下没有 PacketPlayOutOpenBook 包，只能给玩家发书了
+        player.getInventory().addItem(book);
     }
 
     @SafeVarargs
