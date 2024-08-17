@@ -10,10 +10,7 @@ import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.utils.ListX;
 
 import java.io.File;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 public class MailDatabase extends AbstractPluginHolder implements IMailDatabase {
     File configFile;
@@ -47,11 +44,21 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
 
     @Override
     public ListX<MailWithStatus> getOutBox(String player, int page, int perPage) {
+        if (player == null) {
+            ListX<MailWithStatus> list = new ListX<>();
+            list.setMaxCount(0);
+            return list;
+        }
         return database.getOutBox(player, page, perPage);
     }
 
     @Override
     public ListX<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
+        if (player == null) {
+            ListX<MailWithStatus> list = new ListX<>();
+            list.setMaxCount(0);
+            return list;
+        }
         ListX<MailWithStatus> inBox = database.getInBox(unread, player, page, perPage);
         boolean flag = false;
         for (MailWithStatus mail : inBox) {
@@ -71,6 +78,7 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
 
     @Override
     public List<MailWithStatus> getInBoxUnused(String player) {
+        if (player == null) return new ArrayList<>();
         List<MailWithStatus> inBox = database.getInBoxUnused(player);
         if (!inBox.isEmpty()) {
             canUsePlayers.add(player);
@@ -82,16 +90,19 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
 
     @Override
     public void markRead(String uuid, String receiver) {
+        if (receiver == null) return;
         database.markRead(uuid, receiver);
     }
 
     @Override
     public void markAllRead(String receiver) {
+        if (receiver == null) return;
         database.markAllRead(receiver);
     }
 
     @Override
     public void markUsed(List<String> uuidList, String receiver) {
+        if (receiver == null) return;
         database.markUsed(uuidList, receiver);
     }
 

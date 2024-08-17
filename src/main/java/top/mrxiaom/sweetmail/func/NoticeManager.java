@@ -51,7 +51,8 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         if (!player.hasPermission("sweetmail.notice")) return;
-        int count = plugin.getMailDatabase().getInBox(true, player.getName(), 1, 1).getMaxCount();
+        String targetKey = plugin.isOnlineMode() ? player.getUniqueId().toString() : player.getName();
+        int count = plugin.getMailDatabase().getInBox(true, targetKey, 1, 1).getMaxCount();
         if (count > 0) {
             notice(player, msgJoinText, count);
         }

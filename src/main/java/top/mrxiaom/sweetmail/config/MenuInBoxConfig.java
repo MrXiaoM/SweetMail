@@ -200,7 +200,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             case "下":
                 return iconNextPage.generateIcon(target);
             case "领":
-                if (plugin.getMailDatabase().hasUnUsed(target.getName())) {
+                String targetKey = plugin.isOnlineMode() ? target.getUniqueId().toString() : target.getName();
+                if (plugin.getMailDatabase().hasUnUsed(targetKey)) {
                     return iconGetAll.generateIcon(target);
                 } else {
                     Icon icon = otherIcon.get(iconGetAllRedirect);
@@ -338,7 +339,15 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     if (!click.isShiftClick() && click.isLeftClick()) {
                         if (!player.getName().equals(target)) return; // 不可代领
                         if (inBox.isEmpty() || inBox.get(0).used) return;
-                        List<MailWithStatus> unused = plugin.getMailDatabase().getInBoxUnused(target);
+                        String targetKey;
+                        if (plugin.isOnlineMode()) {
+                            OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
+                            if (offline == null) targetKey = null;
+                            else targetKey = offline.getUniqueId().toString();
+                        } else {
+                            targetKey = target;
+                        }
+                        List<MailWithStatus> unused = plugin.getMailDatabase().getInBoxUnused(targetKey);
                         if (unused.isEmpty()) return;
                         List<String> dismiss = new ArrayList<>();
                         for (MailWithStatus mail : unused) {
@@ -354,7 +363,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 t(player, plugin.prefix() + messageFail);
                             }
                         }
-                        plugin.getMailDatabase().markUsed(dismiss, target);
+                        plugin.getMailDatabase().markUsed(dismiss, targetKey);
                         applyIcons(this, view, player);
                     }
                     return;
@@ -363,12 +372,20 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     int i = getKeyIndex(c, slot);
                     if (i < 0 || i >= inBox.size()) return;
                     MailWithStatus mail = inBox.get(i);
-                    plugin.getMailDatabase().markRead(mail.uuid, target);
+                    String targetKey;
+                    if (plugin.isOnlineMode()) {
+                        OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
+                        if (offline == null) targetKey = null;
+                        else targetKey = offline.getUniqueId().toString();
+                    } else {
+                        targetKey = target;
+                    }
+                    plugin.getMailDatabase().markRead(mail.uuid, targetKey);
                     if (click.isLeftClick()) {
                         if (click.isShiftClick()) { // 领取附件
                             if (!mail.attachments.isEmpty() && !mail.used) {
                                 mail.used = true;
-                                plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), target);
+                                plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
                                 try {
                                     for (IAttachment attachment : mail.attachments) {
                                         attachment.use(player);
@@ -377,7 +394,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
                                     t(player, plugin.prefix() + messageFail);
                                 }
-                                plugin.getMailDatabase().getInBoxUnused(target);
+                                plugin.getMailDatabase().getInBoxUnused(targetKey);
                                 applyIcons(this, view, player);
                             } else {
                                 t(player, mail.attachments.size() + " " + mail.used);

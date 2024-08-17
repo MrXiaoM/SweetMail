@@ -115,7 +115,8 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             case "下":
                 return iconNextPage.generateIcon(target);
             case "领":
-                if (plugin.getMailDatabase().hasUnUsed(target.getName())) {
+                String targetKey = plugin.isOnlineMode() ? target.getUniqueId().toString() : target.getName();
+                if (plugin.getMailDatabase().hasUnUsed(targetKey)) {
                     return iconGetAll.generateIcon(target);
                 } else {
                     Icon icon = otherIcon.get(iconGetAllRedirect);
