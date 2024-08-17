@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -38,7 +39,9 @@ public class Util {
     public static Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(JavaPlugin plugin) {
         adventure = BukkitAudiences.builder(plugin).build();
-        miniMessage = MiniMessage.builder().build();
+        miniMessage = MiniMessage.builder()
+                .postProcessor(it -> it.decoration(TextDecoration.ITALIC, false))
+                .build();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
@@ -61,7 +64,9 @@ public class Util {
     }
 
     public static Component miniMessage(String s) {
-        return s == null ? Component.empty() :  miniMessage.deserialize(legacyToMiniMessage(s));
+        return s == null
+                ? Component.empty()
+                : miniMessage.deserialize(legacyToMiniMessage(s));
     }
 
     public static void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
