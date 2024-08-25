@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBTType;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
@@ -46,22 +47,36 @@ public class ItemStackUtil {
     }
 
     public static boolean hasCustomModelData(ItemStack item) {
-        if (!MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_14_R1)) return false;
-        ItemMeta meta = item.getItemMeta();
-        return meta != null && meta.hasCustomModelData();
+        return getCustomModelData(item) != null;
     }
 
     public static Integer getCustomModelData(ItemStack item) {
-        if (!MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_14_R1)) return null;
-        ItemMeta meta = item.getItemMeta();
-        return meta == null ? null : meta.getCustomModelData();
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+            return NBT.modifyComponents(item, nbt -> {
+                String key = "minecraft:custom_model_data";
+                return nbt.hasTag(key, NBTType.NBTTagInt) ? nbt.getInteger(key) : null;
+            });
+        } else {
+            return NBT.get(item, nbt -> {
+                String key = "CustomModelData";
+                return nbt.hasTag(key, NBTType.NBTTagInt) ? nbt.getInteger(key) : null;
+            });
+        }
     }
 
     public static void setCustomModelData(ItemStack item, Integer customModelData) {
-        if (!MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_14_R1)) return;
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setCustomModelData(customModelData);
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+            NBT.modifyComponents(item, nbt -> {
+                String key = "minecraft:custom_model_data";
+                if (customModelData != null) nbt.setInteger(key, customModelData);
+                else nbt.removeKey(key);
+            });
+        } else {
+            NBT.modify(item, nbt -> {
+                String key = "CustomModelData";
+                if (customModelData != null) nbt.setInteger(key, customModelData);
+                else nbt.removeKey(key);
+            });
         }
     }
 
