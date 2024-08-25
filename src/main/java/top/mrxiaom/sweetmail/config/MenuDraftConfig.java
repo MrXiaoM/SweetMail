@@ -366,46 +366,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         }
                         List<String> receivers = new ArrayList<>();
                         if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
-                            // TODO: 解析 advance receivers
-                            String s = draft.advReceivers;
-                            if (s.equalsIgnoreCase("current online")) {
-                                for (Player player : Bukkit.getOnlinePlayers()) {
-                                    receivers.add(player.getName());
-                                }
-                            }
-                            if (s.equalsIgnoreCase("current online bungeecord")) {
-                                // TODO: 从代理端获取玩家列表
-                            }
-                            if (s.startsWith("last played in ")) {
-                                Long timeRaw = Util.parseLong(s.substring(15)).orElse(null);
-                                if (timeRaw != null) {
-                                    long time = System.currentTimeMillis() - timeRaw;
-                                    List<OfflinePlayer> players = Util.getOfflinePlayers();
-                                    players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() > time);
-                                    for (OfflinePlayer player : players) {
-                                        receivers.add(plugin.isOnlineMode() ? player.getUniqueId().toString() : player.getName());
-                                    }
-                                }
-                            }
-                            if (s.startsWith("last played from ")) {
-                                String str = s.substring(17);
-                                String[] split = str.contains(" to ") ? str.split(" to ", 2) : new String[] { s };
-                                if (split.length == 2) {
-                                    Long fromTime = Util.parseLong(split[0]).orElse(null);
-                                    Long toTime = Util.parseLong(split[1]).orElse(null);
-                                    if (fromTime != null && toTime != null) {
-                                        List<OfflinePlayer> players = Util.getOfflinePlayers();
-                                        players.removeIf(it -> {
-                                            if (it == null || it.getName() == null) return true;
-                                            long lastPlayed = it.getLastPlayed();
-                                            return lastPlayed < fromTime || lastPlayed >= toTime;
-                                        });
-                                        for (OfflinePlayer player : players) {
-                                            receivers.add(plugin.isOnlineMode() ? player.getUniqueId().toString() : player.getName());
-                                        }
-                                    }
-                                }
-                            }
+                            receivers.addAll(draft.advReceivers());
                         } else if (!draft.receiver.isEmpty()) {
                             receivers.add(draft.receiver);
                         }
@@ -417,14 +378,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         }
                         plugin.getEconomy().withdrawPlayer(player, price);
                         String uuid = plugin.getMailDatabase().generateMailUUID();
-                        String sender = draft.sender;
-                        String senderDisplay = draft.advSenderDisplay == null ? "" : draft.advSenderDisplay;
-                        MailIcon icon = DraftManager.inst().getMailIcon(draft.iconKey);
-                        String iconKey = icon == null ? draft.iconKey.substring(1) : icon.item;
-                        String title = draft.title;
-                        List<String> content = draft.content;
-                        List<IAttachment> attachments = draft.attachments;
-                        Mail mail = new Mail(uuid, sender, senderDisplay, iconKey, receivers, title, content, attachments);
+                        Mail mail = draft.createMail(uuid, receivers);
                         plugin.getMailDatabase().sendMail(mail);
                         draft.reset();
                         draft.save();

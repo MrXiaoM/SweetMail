@@ -1,9 +1,14 @@
 package top.mrxiaom.sweetmail.func.data;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,5 +84,61 @@ public class Draft {
         } catch (Throwable t) {
             SweetMail.warn(t);
         }
+    }
+
+    public List<String> advReceivers() {
+        return generateReceivers(advReceivers);
+    }
+
+    public Mail createMail(String uuid, List<String> realReceivers) {
+        String senderDisplay = advSenderDisplay == null ? "" : advSenderDisplay;
+        MailIcon icon = DraftManager.inst().getMailIcon(iconKey);
+        String iconKeyMail = icon == null ? iconKey.substring(1) : icon.item;
+        return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments);
+    }
+
+    public static List<String> generateReceivers(String advReceivers) {
+        boolean online = SweetMail.getInstance().isOnlineMode();
+        List<String> receivers = new ArrayList<>();
+        // TODO: 解析 advance receivers
+        if (advReceivers.equalsIgnoreCase("current online")) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                receivers.add(player.getName());
+            }
+        }
+        if (advReceivers.equalsIgnoreCase("current online bungeecord")) {
+            // TODO: 从代理端获取玩家列表
+        }
+        if (advReceivers.startsWith("last played in ")) {
+            Long timeRaw = Util.parseLong(advReceivers.substring(15)).orElse(null);
+            if (timeRaw != null) {
+                long time = System.currentTimeMillis() - timeRaw;
+                List<OfflinePlayer> players = Util.getOfflinePlayers();
+                players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() > time);
+                for (OfflinePlayer player : players) {
+                    receivers.add(online ? player.getUniqueId().toString() : player.getName());
+                }
+            }
+        }
+        if (advReceivers.startsWith("last played from ")) {
+            String str = advReceivers.substring(17);
+            String[] split = str.contains(" to ") ? str.split(" to ", 2) : new String[] {advReceivers};
+            if (split.length == 2) {
+                Long fromTime = Util.parseLong(split[0]).orElse(null);
+                Long toTime = Util.parseLong(split[1]).orElse(null);
+                if (fromTime != null && toTime != null) {
+                    List<OfflinePlayer> players = Util.getOfflinePlayers();
+                    players.removeIf(it -> {
+                        if (it == null || it.getName() == null) return true;
+                        long lastPlayed = it.getLastPlayed();
+                        return lastPlayed < fromTime || lastPlayed >= toTime;
+                    });
+                    for (OfflinePlayer player : players) {
+                        receivers.add(online ? player.getUniqueId().toString() : player.getName());
+                    }
+                }
+            }
+        }
+        return receivers;
     }
 }
