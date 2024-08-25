@@ -37,9 +37,9 @@ public class AttachmentItem implements IAttachment {
     @Override
     public ItemStack generateDraftIcon(Player target) {
         ItemStack item = this.item.clone();
-        if (!Text.loreRemove.isEmpty()) {
+        if (!Internal.loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Text.loreRemove);
+            lore.addAll(Internal.loreRemove);
             ItemStackUtil.setItemLore(item, lore);
         }
         return item;
@@ -62,13 +62,43 @@ public class AttachmentItem implements IAttachment {
     public String toString() {
         String name = getName();
         int amount = item.getAmount();
-        if (amount <= 1) return replace(Text.itemDisplay, Pair.of("%item%", name));
-        return replace(Text.itemDisplayWithAmount, Pair.of("%item%", name), Pair.of("%amount%", amount));
+        if (amount <= 1) return replace(Internal.itemDisplay, Pair.of("%item%", name));
+        return replace(Internal.itemDisplayWithAmount, Pair.of("%item%", name), Pair.of("%amount%", amount));
     }
 
     @Override
     public String serialize() {
         return "item:" + ItemStackUtil.itemStackToBase64(item);
+    }
+
+    @Override
+    public boolean isLegal() {
+        if (Internal.itemBanMaterials.contains(item.getType())) return false;
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            String display = meta.hasDisplayName() ? meta.getDisplayName() : null;
+            List<String> lore = meta.hasLore() ? meta.getLore() : null;
+            if (display == null) {
+                if (Internal.itemBanName.contains("")) return false;
+            } else {
+                if (Internal.itemBanName.contains("*")) return false;
+                for (String s : Internal.itemBanName) {
+                    if (s.isEmpty()) continue;
+                    if (display.contains(s)) return false;
+                }
+            }
+            if ((lore == null || lore.isEmpty())) {
+                if (Internal.itemBanLore.contains("")) return false;
+            } else {
+                if (Internal.itemBanLore.contains("*")) return false;
+                String allLore = String.join("\n", lore);
+                for (String s : Internal.itemBanLore) {
+                    if (s.isEmpty()) continue;
+                    if (allLore.contains(s)) return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static IAttachment deserialize(String s) {

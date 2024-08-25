@@ -55,6 +55,24 @@ price:
   svip: 50
   mvp: 30
 
+# 内置附件类型设置
+attachments:
+  item:
+    # 物品附件不允许添加的 材质、物品名、Lore 内容
+    # 除了材质外，均为「包含」匹配
+    # 如 display_name 设为 [ '11', '22' ]，则不允许名字包含 11 或 22 的物品
+    # 如 lore 设为 [ '33', '44' ]，则不允许Lore包含 33 或 44 的物品
+    # 例外: 如果其中有一项为 *，则全部不允许
+    # 如 display_name 设为 [ '*' ]，则不允许所有拥有自定义名字的物品
+    # 如 lore 设为 [ '*' ]，则不允许所有拥有Lore的物品
+    # 例外: 如果其中有一项为空字符串，则不允许名字或lore不存在
+    # 如 display_name 设为 [ '', '11' ]，则不允许没有名字，或者名字包含 11 的物品，名字包含 22 的物品是允许的，空字符串不参与后续判定
+    # 如 lore 设为 [ '', '33' ]，则不允许没有Lore，或者Lore包含 11 的物品，名字包含 22 的物品是允许的，空字符串不参与后续判定
+    blacklist:
+      materials: []
+      display_name: []
+      lore: []
+
 # 帮助命令
 help:
   player:
@@ -100,6 +118,7 @@ messages:
       item:
         display: '%item%'
         display-with-amount: '%item%&7 x%amount%'
+        banned: '&e禁止添加该物品到附件'
     sent: '邮件发送成功!'
   inbox:
     attachments-fail: '有附件领取失败! 请联系管理员查看后台了解详细'

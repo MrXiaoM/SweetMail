@@ -62,6 +62,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public String messageNoMoney;
     public String messageMoneyFormat;
     public String messageOnlineNoPlayer;
+    public String messageItemBanned;
     public boolean canSendToYourself;
 
     Map<String, Double> priceMap = new HashMap<>();
@@ -73,12 +74,13 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
         canSendToYourself = cfg.getBoolean("can-send-to-yourself", false);
-        messageNoReceivers = cfg.getString("messages.draft.no-receivers");
-        messageCantSendToYourself = cfg.getString("messages.draft.cant-send-to-yourself");
-        messageSent = cfg.getString("messages.draft.sent");
-        messageNoMoney = cfg.getString("messages.draft.no-money");
-        messageMoneyFormat = cfg.getString("messages.draft.money-format");
-        messageOnlineNoPlayer = cfg.getString("messages.draft.online.no-player");
+        messageNoReceivers = cfg.getString("messages.draft.no-receivers", "");
+        messageCantSendToYourself = cfg.getString("messages.draft.cant-send-to-yourself", "");
+        messageSent = cfg.getString("messages.draft.sent", "");
+        messageNoMoney = cfg.getString("messages.draft.no-money", "");
+        messageMoneyFormat = cfg.getString("messages.draft.money-format", "");
+        messageOnlineNoPlayer = cfg.getString("messages.draft.online.no-player", "");
+        messageItemBanned = cfg.getString("messages.draft.attachments.item.banned", "");
         priceMap.clear();
         ConfigurationSection section = cfg.getConfigurationSection("price");
         if (section != null) for (String key : section.getKeys(false)) {
@@ -401,6 +403,10 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             // 快速添加物品附件
                             if (cursor != null && !cursor.getType().equals(Material.AIR)) {
                                 IAttachment attachment = AttachmentItem.build(cursor);
+                                if (!attachment.isLegal()) {
+                                    t(player, messageItemBanned);
+                                    return;
+                                }
                                 event.setCursor(null);
                                 draft.attachments.add(attachment);
                                 draft.save();

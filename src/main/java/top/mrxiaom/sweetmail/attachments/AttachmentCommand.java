@@ -40,9 +40,9 @@ public class AttachmentCommand implements IAttachment {
     public ItemStack generateDraftIcon(Player target) {
         ItemStack item = ItemStackUtil.getItem(this.item);
         ItemStackUtil.setItemDisplayName(item, display);
-        if (!Text.loreRemove.isEmpty()) {
+        if (!Internal.loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Text.loreRemove);
+            lore.addAll(Internal.loreRemove);
             ItemStackUtil.setItemLore(item, lore);
         }
         return item;
@@ -63,6 +63,11 @@ public class AttachmentCommand implements IAttachment {
     @Override
     public String serialize() {
         return "command:" + item + "," + display.replace(",", "，") + "," + command;
+    }
+
+    @Override
+    public boolean isLegal() {
+        return true;
     }
 
     public static IAttachment deserialize(String s) {

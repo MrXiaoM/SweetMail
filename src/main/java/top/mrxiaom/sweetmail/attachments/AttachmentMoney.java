@@ -36,12 +36,12 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public ItemStack generateDraftIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(Text.moneyIcon);
+        ItemStack item = ItemStackUtil.getItem(Internal.moneyIcon);
         ItemStackUtil.setItemDisplayName(item, toString());
-        if (!Text.moneyLore.isEmpty() || !Text.loreRemove.isEmpty()) {
+        if (!Internal.moneyLore.isEmpty() || !Internal.loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Text.moneyLore);
-            lore.addAll(Text.loreRemove);
+            lore.addAll(Internal.moneyLore);
+            lore.addAll(Internal.loreRemove);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
         }
         return item;
@@ -49,11 +49,11 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public ItemStack generateIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(Text.moneyIcon);
+        ItemStack item = ItemStackUtil.getItem(Internal.moneyIcon);
         ItemStackUtil.setItemDisplayName(item, toString());
-        if (!Text.moneyLore.isEmpty()) {
+        if (!Internal.moneyLore.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Text.moneyLore);
+            lore.addAll(Internal.moneyLore);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
         }
         return item;
@@ -61,12 +61,17 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public String toString() {
-        return Text.moneyName.replace("%money%", String.valueOf(money));
+        return Internal.moneyName.replace("%money%", String.valueOf(money));
     }
 
     @Override
     public String serialize() {
         return "money:" + money;
+    }
+
+    @Override
+    public boolean isLegal() {
+        return money > 0;
     }
 
     public static IAttachment deserialize(String s) {
