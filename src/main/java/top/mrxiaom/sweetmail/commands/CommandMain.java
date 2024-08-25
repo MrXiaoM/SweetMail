@@ -43,9 +43,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public void reloadConfig(MemoryConfiguration config) {
         helpPlayer = config.getStringList("help.player");
         helpAdmin = config.getStringList("help.admin");
-        prefix = config.getString("messages.prefix");
-        cmdReload = config.getString("messages.command.reload");
-        cmdReloadDatabase = config.getString("messages.command.reload-database");
+        prefix = config.getString("messages.prefix", "");
+        cmdReload = config.getString("messages.command.reload", "");
+        cmdReloadDatabase = config.getString("messages.command.reload-database", "");
     }
 
     @Override

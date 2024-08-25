@@ -156,7 +156,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         super.reloadConfig();
 
         FileConfiguration config = getConfig();
-        this.prefix = config.getString("messages.prefix");
+        this.prefix = config.getString("messages.prefix", "");
         String online = config.getString("online-mode", "auto").toLowerCase();
         switch (online) {
             case "true":

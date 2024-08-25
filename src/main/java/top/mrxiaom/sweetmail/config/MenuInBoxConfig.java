@@ -110,7 +110,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
-        messageFail = cfg.getString("messages.inbox.attachments-fail");
+        messageFail = cfg.getString("messages.inbox.attachments-fail", "");
 
         titleAll = config.getString("title-all", "&0收件箱 全部 ( %page%/%max_page% 页)");
         titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 ( %page%/%max_page% 页)");
@@ -182,7 +182,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         icon.loreRead = section.getStringList(key + ".lore-format.read");
         icon.loreUnread = section.getStringList(key + ".lore-format.unread");
         icon.redirect = section.getString(key + ".redirect");
-        icon.receiverAndSoOn = section.getString(key + ".lore-format.and-so-on");
+        icon.receiverAndSoOn = section.getString(key + ".lore-format.and-so-on", "");
         return icon;
     }
 

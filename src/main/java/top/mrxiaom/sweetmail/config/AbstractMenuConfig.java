@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
@@ -30,6 +31,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
     public static class Icon {
         String material;
         boolean glow;
+        @Nullable
         String display;
         List<String> lore;
         List<String> leftClick = null;
