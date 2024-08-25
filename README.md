@@ -59,7 +59,7 @@
 
 ## 命令
 
-标记了 *️⃣ 的命令代表控制台也可以执行，反之标记了 ❇️ 的只有玩家可以执行。  
+标记了 ☑️ 的命令代表控制台也可以执行，反之标记了 ❇️ 的只有玩家可以执行。  
 `<>` 代表必选参数，`[]` 代表可选参数。
 根命令为 `/sweetmail`，可简写为 `/mail` 或 `/sm`
 
@@ -70,12 +70,12 @@
 | ❇️  | `/mail inbox [all/unread]`            | 打开收件箱界面(所有/未读分区，默认未读) | `sweetmail.box`       |
 | ❇️  | `/mail outbox`                        | 打开收件箱界面               | `sweetmail.box`       |
 |     | 管理员命令                                 |                       |                       |
-| *️⃣ | `/mail inbox <all/unread> <玩家>`       | 为某人打开收件箱界面            | `sweetmail.box.other` |
-| *️⃣ | `/mail outbox <玩家>`                   | 为某人打开发件箱界面            | `sweetmail.box.other` |
+| ☑️️ | `/mail inbox <all/unread> <玩家>`       | 为某人打开收件箱界面            | `sweetmail.box.other` |
+| ☑️  | `/mail outbox <玩家>`                   | 为某人打开发件箱界面            | `sweetmail.box.other` |
 | ❇️  | `/mail admin inbox <all/unread> <玩家>` | 打开某人的收件箱界面            | `sweetmail.box.other` |
 | ❇️  | `/mail admin outbox <玩家>`             | 打开某人的发件箱界面            | `sweetmail.box.other` |
-| *️⃣ | `/mail reload database`               | 重载并重新连接数据库            | `sweetmail.admin`     |
-| *️⃣ | `/mail reload`                        | 重载配置文件，不重连数据库         | `sweetmail.admin`     |
+| ☑️  | `/mail reload database`               | 重载并重新连接数据库            | `sweetmail.admin`     |
+| ☑️  | `/mail reload`                        | 重载配置文件，不重连数据库         | `sweetmail.admin`     |
 
 ## 权限
 
