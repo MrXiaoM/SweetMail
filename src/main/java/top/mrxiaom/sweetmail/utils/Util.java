@@ -2,11 +2,12 @@ package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
-import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
+import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,6 +17,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -36,7 +39,6 @@ import static top.mrxiaom.sweetmail.utils.Pair.replace;
 public class Util {
     private static BukkitAudiences adventure;
     private static MiniMessage miniMessage;
-    private static boolean is1144;
     public static Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(JavaPlugin plugin) {
@@ -44,7 +46,6 @@ public class Util {
         miniMessage = MiniMessage.builder()
                 .postProcessor(it -> it.decoration(TextDecoration.ITALIC, false))
                 .build();
-        is1144 = Bukkit.getBukkitVersion().contains("1.14.4");
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
@@ -72,6 +73,12 @@ public class Util {
                 : miniMessage.deserialize(legacyToMiniMessage(s));
     }
 
+    public static Component legacy(String s) {
+        return s == null
+                ? Component.empty()
+                : LegacyComponentSerializer.legacySection().deserialize(s);
+    }
+
     public static void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
         adventure.player(player).showTitle(Title.title(
                 miniMessage(title), miniMessage(subTitle), Title.Times.times(
@@ -84,12 +91,20 @@ public class Util {
 
     public static void openBook(Player player, ItemStack book) {
         if (book.getType().equals(Material.WRITTEN_BOOK)) return;
-        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_15_R1) || is1144) {
-            player.openBook(book);
-            return;
+        ItemMeta m = book.getItemMeta();
+        // 1.14 以下使用 CustomPayLoad 包发送 MC|BOpen 来打开书本界面，使用 adventure 更简便
+        if (m instanceof BookMeta) {
+            BookMeta meta = (BookMeta) m;
+            Book.Builder builder = Book.builder();
+            if (meta.hasTitle()) builder.title(legacy(meta.getTitle()));
+            if (meta.hasAuthor()) builder.author(legacy(meta.getAuthor()));
+            if (meta.hasPages()) {
+                for (String page : meta.getPages()) {
+                    builder.addPage(legacy(page));
+                }
+            }
+            adventure.player(player).openBook(builder);
         }
-        // 1.14.4 以下没有 PacketPlayOutOpenBook 包，只能给玩家发书了
-        player.getInventory().addItem(book);
     }
 
     @SafeVarargs
