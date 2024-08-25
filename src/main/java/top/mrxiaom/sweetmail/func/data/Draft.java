@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.func.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -41,10 +42,8 @@ public class Draft {
         save();
     }
 
-    public static Draft load(DraftManager manager, String player) {
-        File file = new File(manager.dataFolder, player + ".yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        Draft draft = new Draft(manager, player);
+    public static Draft loadFromConfig(DraftManager manager, ConfigurationSection config, String sender) {
+        Draft draft = new Draft(manager, sender);
         draft.receiver = config.getString("receiver", "");
         draft.iconKey = config.getString("icon_key", "default");
         draft.title = config.getString("title", manager.defaultTitle());
@@ -60,12 +59,18 @@ public class Draft {
         draft.attachments = attachments;
         draft.advSenderDisplay = config.getString("advance.sender_display", null);
         draft.advReceivers = config.getString("advance.receivers", null);
+        return draft;
+    }
+
+    public static Draft load(DraftManager manager, String player) {
+        File file = new File(manager.dataFolder, player + ".yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        Draft draft = loadFromConfig(manager, config, player);
         if (!file.exists()) draft.save();
         return draft;
     }
 
-    public void save() {
-        YamlConfiguration config = new YamlConfiguration();
+    public void saveToConfig(ConfigurationSection config) {
         config.set("sender", sender);
         config.set("receiver", receiver);
         config.set("icon_key", iconKey);
@@ -78,6 +83,11 @@ public class Draft {
         config.set("attachments", attachmentsList);
         if (advSenderDisplay != null) config.set("advance.sender_display", advSenderDisplay);
         if (advReceivers != null) config.set("advance.receivers", advReceivers);
+    }
+
+    public void save() {
+        YamlConfiguration config = new YamlConfiguration();
+        saveToConfig(config);
         try {
             File file = new File(manager.dataFolder, sender + ".yml");
             config.save(file);
