@@ -78,6 +78,7 @@ tasks {
     }
     processResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        from("LICENSE")
         from(sourceSets.main.get().resources.srcDirs) {
             expand(mapOf(
                 "version" to version,
