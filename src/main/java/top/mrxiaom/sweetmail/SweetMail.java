@@ -27,6 +27,7 @@ import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.utils.StringHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
@@ -191,7 +192,12 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             String icon = draft.getIcon();
             String title = draft.getTitle();
             List<String> content = draft.getContent();
-            List<IAttachment> attachments = draft.getAttachments();
+            List<IAttachment> attachments = new ArrayList<>();
+            for (IAttachment attachment : draft.getAttachments()) {
+                if (attachment.isLegal()) {
+                    attachments.add(attachment);
+                }
+            }
 
             Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
             db.sendMail(mail);
