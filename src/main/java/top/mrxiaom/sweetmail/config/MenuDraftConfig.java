@@ -387,6 +387,25 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                     }
                                 }
                             }
+                            if (s.startsWith("last played from ")) {
+                                String str = s.substring(17);
+                                String[] split = str.contains(" to ") ? str.split(" to ", 2) : new String[] { s };
+                                if (split.length == 2) {
+                                    Long fromTime = Util.parseLong(split[0]).orElse(null);
+                                    Long toTime = Util.parseLong(split[1]).orElse(null);
+                                    if (fromTime != null && toTime != null) {
+                                        List<OfflinePlayer> players = Util.getOfflinePlayers();
+                                        players.removeIf(it -> {
+                                            if (it == null || it.getName() == null) return true;
+                                            long lastPlayed = it.getLastPlayed();
+                                            return lastPlayed < fromTime || lastPlayed >= toTime;
+                                        });
+                                        for (OfflinePlayer player : players) {
+                                            receivers.add(plugin.isOnlineMode() ? player.getUniqueId().toString() : player.getName());
+                                        }
+                                    }
+                                }
+                            }
                         } else if (!draft.receiver.isEmpty()) {
                             receivers.add(draft.receiver);
                         }
