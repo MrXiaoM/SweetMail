@@ -1,0 +1,31 @@
+name: Development Build
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - '*.md'
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '*.md'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+      - name: Build package
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: clean build
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: SweetMail
+          path: build/libs/*.jar
+          if-no-files-found: error
