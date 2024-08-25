@@ -67,6 +67,13 @@ public class Util {
         ItemStackUtil.init();
     }
 
+    public static void onDisable() {
+        if (adventure != null) {
+            adventure.close();
+            adventure = null;
+        }
+    }
+
     public static Component miniMessage(String s) {
         return s == null
                 ? Component.empty()

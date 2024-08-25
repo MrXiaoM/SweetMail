@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail;
 
 import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -116,39 +115,19 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
         HandlerList.unregisterAll((Plugin) this);
         Bukkit.getScheduler().cancelTasks(this);
+        Util.onDisable();
     }
 
     @Override
     @SuppressWarnings({"all"})
     public void onPluginMessageReceived(String channel, @NotNull Player player, @NotNull byte[] message) {
-        if (!channel.equals("BungeeCord")) {
-            return;
-        }
+        if (!channel.equals("BungeeCord")) return;
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
         String subChannel = in.readUTF();
         short len = in.readShort();
         byte[] bytes = new byte[len];
         in.readFully(bytes);
         AbstractPluginHolder.receiveFromBungee(subChannel, bytes);
-    }
-
-    @SuppressWarnings({"all"})
-    public void connect(Player player, String server) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("Connect");
-        out.writeUTF(server);
-
-        player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-    }
-
-    @SuppressWarnings({"all"})
-    public void connectOther(Player p, String player, String server) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("ConnectOther");
-        out.writeUTF(player);
-        out.writeUTF(server);
-
-        p.sendPluginMessage(this, "BungeeCord", out.toByteArray());
     }
 
     @Override
