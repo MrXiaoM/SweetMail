@@ -356,7 +356,11 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             dismiss.add(mail.uuid);
                             try {
                                 for (IAttachment attachment : mail.attachments) {
-                                    attachment.use(player);
+                                    if (attachment.isLegal()) {
+                                        attachment.use(player);
+                                    } else {
+                                        IAttachment.Internal.inst().useIllegalDeny(player);
+                                    }
                                 }
                             } catch (Throwable t) {
                                 warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
@@ -388,7 +392,11 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
                                 try {
                                     for (IAttachment attachment : mail.attachments) {
-                                        attachment.use(player);
+                                        if (attachment.isLegal()) {
+                                            attachment.use(player);
+                                        } else {
+                                            IAttachment.Internal.inst().useIllegalDeny(player);
+                                        }
                                     }
                                 } catch (Throwable t) {
                                     warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);

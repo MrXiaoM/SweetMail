@@ -119,6 +119,7 @@ messages:
         display: '%item%'
         display-with-amount: '%item%&7 x%amount%'
         banned: '&e禁止添加该物品到附件'
+      use-illegal-deny: '&b附件 &e%name% &b的数据不合规，无法领取，请联系管理员。'
     sent: '邮件发送成功!'
   inbox:
     attachments-fail: '有附件领取失败! 请联系管理员查看后台了解详细'

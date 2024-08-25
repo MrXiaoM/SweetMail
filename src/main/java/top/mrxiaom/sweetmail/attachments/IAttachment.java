@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.attachments;
 
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +39,7 @@ public interface IAttachment {
         protected static List<Material> itemBanMaterials;
         protected static List<String> itemBanName;
         protected static List<String> itemBanLore;
+        protected static String messageUseIllegalDeny;
         public Internal(SweetMail plugin) {
             super(plugin);
             register();
@@ -49,8 +51,8 @@ public interface IAttachment {
             moneyIcon = config.getString("messages.draft.attachments.money.icon", "GOLD_NUGGET");
             moneyName = config.getString("messages.draft.attachments.money.name", "");
             moneyLore = config.getStringList("messages.draft.attachments.money.lore");
-            itemDisplay = config.getString("messages.draft.attachments.item.display");
-            itemDisplayWithAmount = config.getString("messages.draft.attachments.item.display-with-amount");
+            itemDisplay = config.getString("messages.draft.attachments.item.display", "");
+            itemDisplayWithAmount = config.getString("messages.draft.attachments.item.display-with-amount", "");
             itemBanMaterials = new ArrayList<>();
             for (String s : config.getStringList("attachments.item.blacklist.materials")) {
                 Material material = Util.valueOr(Material.class, s, null);
@@ -60,6 +62,15 @@ public interface IAttachment {
             }
             itemBanName = config.getStringList("attachments.item.blacklist.display_name");
             itemBanLore = config.getStringList("attachments.item.blacklist.lore");
+            messageUseIllegalDeny = config.getString("messages.draft.attachments.use-illegal-deny", "");
+        }
+
+        public void useIllegalDeny(CommandSender sender) {
+            t(sender, messageUseIllegalDeny);
+        }
+
+        public static Internal inst() {
+            return get(Internal.class).orElseThrow(IllegalStateException::new);
         }
     }
 }

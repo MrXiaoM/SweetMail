@@ -397,7 +397,11 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             draft.save();
                             updateAttachmentSlots(view);
                             if (attachment != null) {
-                                attachment.use(player);
+                                if (attachment.isLegal()) {
+                                    attachment.use(player);
+                                } else {
+                                    IAttachment.Internal.inst().useIllegalDeny(player);
+                                }
                             }
                         } else {
                             // 快速添加物品附件
