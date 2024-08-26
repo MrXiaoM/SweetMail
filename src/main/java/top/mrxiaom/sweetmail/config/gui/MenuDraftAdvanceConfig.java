@@ -195,8 +195,8 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                                     player.closeInventory();
                                     ChatPrompter.prompt(
                                             plugin, player,
-                                            iconSenderDisplayPromptTips,
-                                            iconSenderDisplayPromptCancel,
+                                            iconReceiversPrompts3Tips,
+                                            iconReceiversPrompts3Cancel,
                                             timeStr -> {
                                                 Long timestamp = parseTime(timeStr);
                                                 if (timestamp == null) {
@@ -213,25 +213,28 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                                     player.closeInventory();
                                     ChatPrompter.prompt(
                                             plugin, player,
-                                            iconSenderDisplayPromptTips,
-                                            iconSenderDisplayPromptCancel,
+                                            iconReceiversPrompts4TipsStart,
+                                            iconReceiversPrompts4Cancel,
                                             timeStr1 -> {
                                                 Long timestampStart = parseTime(timeStr1);
                                                 if (timestampStart == null) {
                                                     t(player, iconReceiversBadTimeFormat);
                                                     reopen.run();
-                                                } else ChatPrompter.prompt(
+                                                    return;
+                                                }
+                                                ChatPrompter.prompt(
                                                         plugin, player,
-                                                        iconSenderDisplayPromptTips,
-                                                        iconSenderDisplayPromptCancel,
+                                                        iconReceiversPrompts4TipsEnd,
+                                                        iconReceiversPrompts4Cancel,
                                                         timeStr2 -> {
                                                             Long timestampEnd = parseTime(timeStr2);
                                                             if (timestampEnd == null) {
                                                                 t(player, iconReceiversBadTimeFormat);
-                                                            } else {
-                                                                draft.advReceivers = "last played from " + timestampStart + " to " + timestampEnd;
-                                                                draft.save();
+                                                                reopen.run();
+                                                                return;
                                                             }
+                                                            draft.advReceivers = "last played from " + timestampStart + " to " + timestampEnd;
+                                                            draft.save();
                                                             reopen.run();
                                                         }, reopen);
                                             }, reopen);
