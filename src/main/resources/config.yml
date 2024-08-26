@@ -86,6 +86,8 @@ help:
     - '  &f/mail inbox <all/unread> <玩家> &8-- &e为某人打开收件箱'
     - '  &f/mail admin outbox <玩家> &8-- &e打开某玩家的发件箱'
     - '  &f/mail admin inbox <all/unread> <玩家> &8-- &e打开某玩家的收件箱'
+    - '  &f/mail admin timed <定时序列> &8-- &e查看定时发送邮件序列简要信息'
+    - '  &f/mail admin cancel <定时序列> &8-- &e取消定时发送邮件序列'
     - '  &f/mail reload database &8-- &3重载数据库'
     - '  &f/mail reload &8-- &3重载配置文件'
 
