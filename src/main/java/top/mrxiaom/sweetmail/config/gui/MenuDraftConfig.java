@@ -406,8 +406,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 updateAttachmentSlots(view);
                                 return;
                             }
-                            // TODO: 打开附件添加菜单
-                            player.sendMessage("§a附件菜单正在制作中，敬请期待");
+                            MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
                         }
                     }
                     return;

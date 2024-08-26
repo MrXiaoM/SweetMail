@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
@@ -37,12 +38,17 @@ public interface IAttachment {
     }
     class Internal extends AbstractPluginHolder {
         public static class AttachmentInfo<T extends IAttachment> {
-            public final Class<T> clazz;
-            public final Function<Player, ItemStack> icon;
-            public final Function<Player, IGui> addGui;
-            public final Function<String, T> deserializer;
+            public @NotNull final Class<T> clazz;
+            public @NotNull final Function<Player, ItemStack> icon;
+            public @NotNull final Function<Player, IGui> addGui;
+            public @NotNull final Function<String, T> deserializer;
 
-            private AttachmentInfo(Class<T> clazz, Function<Player, ItemStack> icon, Function<Player, IGui> addGui, Function<String, T> deserializer) {
+            private AttachmentInfo(
+                    @NotNull Class<T> clazz,
+                    @NotNull Function<Player, ItemStack> icon,
+                    @NotNull Function<Player, IGui> addGui,
+                    @NotNull Function<String, T> deserializer
+            ) {
                 this.clazz = clazz;
                 this.icon = icon;
                 this.addGui = addGui;

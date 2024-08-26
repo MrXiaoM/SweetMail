@@ -1,0 +1,23 @@
+# 界面标题，支持 PAPI
+title: '&0添加附件 选择附件类型'
+# 界面布局，每行9个图标，不能超过6行
+inventory:
+  - '黑黑黑黑黑黑黑黑黑'
+  - '黑附附附附附附附黑'
+  - '黑附附附附附附附黑'
+  - '黑　　　　　　返黑'
+  - '黑黑黑黑黑黑黑黑黑'
+# 必选物品
+items:
+  返:
+    material: RED_DYE
+    display: '&e&l返回'
+    lore:
+      - ''
+      - '&a左键&7 | &f回到草稿'
+# 非必选物品
+other-items:
+  黑:
+    material: BLACK_STAINED_GLASS_PANE
+    custom-model: 10000
+    display: '&0'
