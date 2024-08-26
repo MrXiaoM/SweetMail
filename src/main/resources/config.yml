@@ -138,6 +138,7 @@ messages:
           prompt-tips: '&7[&e&l邮件&7] &b请在聊天栏发送&e“附件金币数量”&b的值 &7(输入 &ccancel &7取消添加附件)'
           prompt-cancel: 'cancel'
           fail: '&7[&e&l邮件&7] &e请输入大于0的实数'
+          not-enough: '&7[&e&l邮件&7] &e你没有足够的金币'
       item:
         display: '%item%'
         display-with-amount: '%item%&7 x%amount%'
