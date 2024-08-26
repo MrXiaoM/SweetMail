@@ -121,7 +121,7 @@ public class Draft {
         String senderDisplay = advSenderDisplay == null ? "" : advSenderDisplay;
         MailIcon icon = DraftManager.inst().getMailIcon(iconKey);
         String iconKeyMail = icon == null ? iconKey.substring(1) : icon.item;
-        String sender = advSenderDisplay.isEmpty() ? this.sender : IMail.SERVER_SENDER;
+        String sender = senderDisplay.isEmpty() ? this.sender : IMail.SERVER_SENDER;
         return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments);
     }
 

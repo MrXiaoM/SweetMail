@@ -9,6 +9,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import top.mrxiaom.sweetmail.IMail;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuInBoxConfig;
@@ -93,10 +94,12 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     TimerManager manager = TimerManager.inst();
                     TimedDraft timedDraft = manager.getQueue(id);
                     if (timedDraft == null) return t(sender, prefix + cmdTimedInfoNotFound);
+                    String senderDisplay = timedDraft.draft.advSenderDisplay == null ? "" : timedDraft.draft.advSenderDisplay;
+                    String mailSender = senderDisplay.isEmpty() ? timedDraft.draft.sender : IMail.SERVER_SENDER;
                     for (String s : Pair.replace(cmdTimedInfoDisplay,
                             Pair.of("%id%", id),
-                            Pair.of("%sender%", timedDraft.draft.sender),
-                            Pair.of("%senderDisplay%", timedDraft.draft.advSenderDisplay),
+                            Pair.of("%sender%", mailSender),
+                            Pair.of("%senderDisplay%", senderDisplay),
                             Pair.of("%receiver%", timedDraft.draft.receiver),
                             Pair.of("%advReceivers%", timedDraft.draft.advReceivers))) {
                         t(sender, prefix + s);
