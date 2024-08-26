@@ -50,11 +50,12 @@ public class TimerManager extends AbstractPluginHolder {
         return id;
     }
 
-    public void sendInTime(Draft draft, long timestamp) {
+    public String sendInTime(Draft draft, long timestamp) {
         String id = generateId();
         TimedDraft temp = TimedDraft.createFromDraft(id, draft, timestamp);
         queue.put(id, temp);
         save();
+        return id;
     }
 
     public void save() {

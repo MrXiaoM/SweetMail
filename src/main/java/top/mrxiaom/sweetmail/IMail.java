@@ -18,6 +18,8 @@ public abstract class IMail {
 
     protected abstract Status send(MailDraft draft);
 
+    protected abstract String send(MailDraft draft, long timestamp);
+
     /**
      * 创建邮件草稿，不会覆盖发件人创建的草稿
      * @param sender 发件人
@@ -128,7 +130,10 @@ public abstract class IMail {
         }
 
         /**
-         * 设置邮件接收者列表
+         * 设置邮件接收者列表。<br>
+         * 定时发送不支持该选项输入多个接收者，请将第一个元素设为 #advance#，第二个元素设为泛接收者表达式。<br>
+         * 表达式具体语法详见 Draft 源码。
+         * @see top.mrxiaom.sweetmail.func.data.Draft#generateReceivers
          */
         public MailDraft setReceivers(List<String> receivers) {
             this.receivers = receivers;
@@ -211,6 +216,15 @@ public abstract class IMail {
          */
         public Status send() {
             return IMail.this.send(this);
+        }
+
+        /**
+         * 将邮件加入定时发送队列
+         * @param timestamp 定时发送时间 (毫秒时间戳)
+         * @return 定时发送序列ID
+         */
+        public String send(long timestamp) {
+            return IMail.this.send(this, timestamp);
         }
     }
 }

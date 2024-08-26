@@ -25,7 +25,7 @@ public class Draft {
     public String advSenderDisplay = null;
     public String advReceivers = null;
     public final DraftManager manager;
-    private Draft(DraftManager manager, String sender) {
+    public Draft(DraftManager manager, String sender) {
         this.manager = manager;
         this.title = manager.defaultTitle();
         this.sender = sender;

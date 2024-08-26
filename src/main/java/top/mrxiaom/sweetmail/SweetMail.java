@@ -21,8 +21,11 @@ import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.MailDatabase;
 import top.mrxiaom.sweetmail.database.entry.*;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
+import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
+import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.utils.StringHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
@@ -181,6 +184,31 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments);
             db.sendMail(mail);
             return Status.SUCCESS;
+        }
+
+        @Override
+        protected String send(MailDraft draft, long timestamp) {
+            TimerManager manager = TimerManager.inst();
+            Draft generated = new Draft(DraftManager.inst(), draft.getSender());
+            generated.advSenderDisplay = draft.getSenderDisplay();
+            generated.iconKey = "!" + draft.getIcon();
+            generated.title = draft.getTitle();
+            generated.content = draft.getContent();
+            for (IAttachment attachment : draft.getAttachments()) {
+                if (attachment.isLegal()) {
+                    generated.attachments.add(attachment);
+                }
+            }
+            if (draft.getReceivers().isEmpty()) return null;
+            if (draft.getReceivers().size() > 1) {
+                if (!draft.getReceivers().get(0).equals("#advance#")) {
+                    throw new IllegalArgumentException("定时发送不支持多个 receivers 的用法，请将第一个元素设为 #advance#，第二个元素设为泛接收者表达式");
+                }
+                generated.advReceivers = draft.getReceivers().get(1);
+            } else {
+                generated.receiver = draft.getReceivers().get(0);
+            }
+            return manager.sendInTime(generated, timestamp);
         }
     }
 }
