@@ -1,4 +1,4 @@
-package top.mrxiaom.sweetmail.config;
+package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;

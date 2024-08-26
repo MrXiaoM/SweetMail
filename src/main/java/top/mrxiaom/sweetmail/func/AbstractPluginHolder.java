@@ -13,6 +13,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.config.*;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.config.gui.*;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 
 import java.io.ByteArrayInputStream;

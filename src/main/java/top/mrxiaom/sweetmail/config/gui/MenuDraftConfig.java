@@ -1,4 +1,4 @@
-package top.mrxiaom.sweetmail.config;
+package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
@@ -22,6 +22,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;

@@ -29,18 +29,22 @@ import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginHolder {
     public static class Icon {
-        String material;
-        boolean glow;
+        public final String material;
+        public final boolean glow;
         @Nullable
-        String display;
-        List<String> lore;
+        public final String display;
+        public final List<String> lore;
         List<String> leftClick = null;
         List<String> rightClick = null;
         List<String> shiftLeftClick = null;
         List<String> shiftRightClick = null;
         List<String> dropClick = null;
 
-        private Icon() {
+        private Icon(String material, boolean glow, @Nullable String display, List<String> lore) {
+            this.material = material;
+            this.glow = glow;
+            this.display = display;
+            this.lore = lore;
         }
 
         @SafeVarargs
@@ -97,11 +101,11 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         }
 
         public static Icon getIcon(ConfigurationSection section, String key, boolean commands) {
-            Icon icon = new Icon();
-            icon.material = section.getString(key + ".material", "STONE");
-            icon.glow = section.getBoolean(key + ".glow", false);
-            icon.display = section.getString(key + ".display", null);
-            icon.lore = section.getStringList(key + ".lore");
+            String material = section.getString(key + ".material", "STONE");
+            boolean glow = section.getBoolean(key + ".glow", false);
+            String display = section.getString(key + ".display", null);
+            List<String> lore = section.getStringList(key + ".lore");
+            Icon icon = new Icon(material, glow, display, lore);
             if (commands) {
                 icon.leftClick = section.getStringList(key + ".left-click-commands");
                 icon.rightClick = section.getStringList(key + ".right-click-commands");
@@ -115,7 +119,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
     File configFile;
     String file;
     public Map<String, Icon> otherIcon = new HashMap<>();
-    String title;
+    protected String title;
     public char[] inventory;
     protected YamlConfiguration config;
     public AbstractMenuConfig(SweetMail plugin, String file) {

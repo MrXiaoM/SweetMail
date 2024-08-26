@@ -12,7 +12,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.config.MenuDraftConfig;
+import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
