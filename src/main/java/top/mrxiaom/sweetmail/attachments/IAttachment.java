@@ -35,7 +35,6 @@ public interface IAttachment {
     static Collection<Internal.AttachmentInfo<?>> getAttachments() {
         return Collections.unmodifiableCollection(Internal.attachments);
     }
-    static
     class Internal extends AbstractPluginHolder {
         public static class AttachmentInfo<T extends IAttachment> {
             public final Class<T> clazz;

@@ -8,11 +8,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public abstract class IMail {
     public static final String SERVER_SENDER = "#Server#";
     protected static IMail instance;
     @NotNull
     public static IMail api() {
+        if (instance == null) {
+            throw new IllegalStateException("插件未加载");
+        }
         return instance;
     }
 
