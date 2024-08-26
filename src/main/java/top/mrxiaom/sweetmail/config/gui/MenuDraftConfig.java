@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
+import net.kyori.adventure.inventory.Book;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -325,16 +326,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         }
                         if (click.isRightClick()) {
                             player.closeInventory();
-                            ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
-                            ItemMeta rawMeta = item.getItemMeta();
-                            if (rawMeta instanceof BookMeta) {
-                                BookMeta meta = (BookMeta) rawMeta;
-                                meta.setTitle(draft.title);
-                                meta.setPages(draft.content.isEmpty() ? Lists.newArrayList("") : draft.content);
-                                meta.setAuthor(player.getName());
-                                item.setItemMeta(meta);
-                                Util.openBook(player, item);
-                            }
+                            Book book = Util.legacyBook(draft.title, draft.content, player.getName());
+                            Util.openBook(player, book);
                         }
                     }
                     return;

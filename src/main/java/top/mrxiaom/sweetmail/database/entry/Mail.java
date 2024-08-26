@@ -1,11 +1,8 @@
 package top.mrxiaom.sweetmail.database.entry;
 
-import com.google.common.collect.Lists;
 import com.google.gson.*;
-import org.bukkit.Material;
+import net.kyori.adventure.inventory.Book;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.func.NoticeManager;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
@@ -41,17 +38,11 @@ public class Mail {
         return ItemStackUtil.getItem(icon);
     }
 
-    public ItemStack generateBook() {
-        ItemStack item = new ItemStack(Material.WRITTEN_BOOK);
-        ItemMeta rawMeta = item.getItemMeta();
-        if (rawMeta instanceof BookMeta) {
-            BookMeta meta = (BookMeta) rawMeta;
-            meta.setTitle(title);
-            meta.setPages(!content.isEmpty() ? content : Lists.newArrayList(""));
-            meta.setAuthor(senderDisplay == null || senderDisplay.isEmpty() ? Util.getPlayerName(sender) : senderDisplay);
-            item.setItemMeta(meta);
-        }
-        return item;
+    public Book generateBook() {
+        String author = senderDisplay == null || senderDisplay.isEmpty()
+                ? Util.getPlayerName(sender)
+                : senderDisplay;
+        return Util.legacyBook(title, content, author);
     }
 
     public void noticeSent() {

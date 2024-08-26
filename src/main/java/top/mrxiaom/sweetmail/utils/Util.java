@@ -10,15 +10,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -86,6 +82,14 @@ public class Util {
                 : LegacyComponentSerializer.legacySection().deserialize(s);
     }
 
+    public static List<Component> legacy(List<String> list) {
+        List<Component> components = new ArrayList<>();
+        for (String s : list) {
+            components.add(legacy(s));
+        }
+        return components;
+    }
+
     public static void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
         adventure.player(player).showTitle(Title.title(
                 miniMessage(title), miniMessage(subTitle), Title.Times.times(
@@ -96,22 +100,19 @@ public class Util {
         ));
     }
 
-    public static void openBook(Player player, ItemStack book) {
-        if (book.getType().equals(Material.WRITTEN_BOOK)) return;
-        ItemMeta m = book.getItemMeta();
-        // 1.14 以下使用 CustomPayLoad 包发送 MC|BOpen 来打开书本界面，使用 adventure 更简便
-        if (m instanceof BookMeta) {
-            BookMeta meta = (BookMeta) m;
-            Book.Builder builder = Book.builder();
-            if (meta.hasTitle()) builder.title(legacy(meta.getTitle()));
-            if (meta.hasAuthor()) builder.author(legacy(meta.getAuthor()));
-            if (meta.hasPages()) {
-                for (String page : meta.getPages()) {
-                    builder.addPage(legacy(page));
-                }
-            }
-            adventure.player(player).openBook(builder);
-        }
+    public static Book legacyBook(String title, List<String> pages, String author) {
+        List<Component> bookPages = pages.isEmpty() ? Lists.newArrayList(Component.empty()) : Util.legacy(pages);
+        Component bookAuthor = Util.legacy(author);
+        return Book.builder()
+                .title(Util.legacy(title))
+                .pages(bookPages)
+                .author(bookAuthor)
+                .build();
+    }
+
+    public static void openBook(Player player, Book book) {
+        adventure.player(player).openBook(book);
+    }
 
     public static void updateInventory(Player player) {
         player.updateInventory();
