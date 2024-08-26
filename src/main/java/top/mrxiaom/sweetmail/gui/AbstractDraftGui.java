@@ -8,8 +8,8 @@ import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 
 public abstract class AbstractDraftGui extends AbstractPluginHolder implements IGui {
-    protected Player player;
-    protected Draft draft;
+    protected final Player player;
+    protected final Draft draft;
     protected Runnable reopen = () ->
             Bukkit.getScheduler().runTask(plugin,
                     () -> plugin.getGuiManager().openGui(this));
