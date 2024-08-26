@@ -20,6 +20,7 @@ import java.util.List;
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 
 public class AttachmentCommand implements IAttachment {
+    public static final String PERM = "sweetmail.attachment.command";
     private final String item;
     private final String display;
     private final String command;
@@ -82,7 +83,7 @@ public class AttachmentCommand implements IAttachment {
     }
 
     public static void register() {
-        IAttachment.registerAttachment(AttachmentCommand.class,
+        IAttachment.registerAttachment(AttachmentCommand.class, PERM,
                 // TODO: 从语言配置读取图标
                 (player) -> ItemStackUtil.buildItem(Material.COMMAND_BLOCK, "控制台命令附件", Lists.newArrayList()),
                 (player) -> {

@@ -394,7 +394,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                     }
                                 }
                             }
-                        } else if (!click.isShiftClick()) {
+                        } else if (!click.isShiftClick() && player.hasPermission(AttachmentItem.PERM)) {
                             // 快速添加物品附件
                             if (cursor != null && !cursor.getType().equals(Material.AIR)) {
                                 IAttachment attachment = AttachmentItem.build(cursor);

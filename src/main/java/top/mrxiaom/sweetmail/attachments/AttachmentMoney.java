@@ -21,6 +21,7 @@ import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class AttachmentMoney implements IAttachment {
+    public static final String PERM = "sweetmail.attachment.money";
     private final double money;
 
     private AttachmentMoney(double money) {
@@ -84,7 +85,7 @@ public class AttachmentMoney implements IAttachment {
     }
 
     public static void register() {
-        IAttachment.registerAttachment(AttachmentMoney.class,
+        IAttachment.registerAttachment(AttachmentMoney.class, PERM,
                 // TODO: 从语言配置读取图标
                 (player) -> ItemStackUtil.buildItem(Material.GOLD_NUGGET, "金币附件", Lists.newArrayList()),
                 (player) -> {

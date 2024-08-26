@@ -32,8 +32,8 @@ public interface IAttachment {
         }
         return null;
     }
-    static <T extends IAttachment> void registerAttachment(Class<T> clazz, Function<Player, ItemStack> icon, Function<Player, IGui> addGui, Function<String, T> deserializer) {
-        Internal.AttachmentInfo<T> info = new Internal.AttachmentInfo<>(clazz, icon, addGui, deserializer);
+    static <T extends IAttachment> void registerAttachment(Class<T> clazz, String permission, Function<Player, ItemStack> icon, Function<Player, IGui> addGui, Function<String, T> deserializer) {
+        Internal.AttachmentInfo<T> info = new Internal.AttachmentInfo<>(clazz, permission, icon, addGui, deserializer);
         Internal.attachments.add(info);
     }
     static Collection<Internal.AttachmentInfo<?>> getAttachments() {
@@ -42,17 +42,20 @@ public interface IAttachment {
     class Internal extends AbstractPluginHolder {
         public static class AttachmentInfo<T extends IAttachment> {
             public @NotNull final Class<T> clazz;
+            public @NotNull final String permission;
             public @NotNull final Function<Player, ItemStack> icon;
             public @NotNull final Function<Player, IGui> addGui;
             public @NotNull final Function<String, T> deserializer;
 
             private AttachmentInfo(
                     @NotNull Class<T> clazz,
+                    @NotNull String permission,
                     @NotNull Function<Player, ItemStack> icon,
                     @NotNull Function<Player, IGui> addGui,
                     @NotNull Function<String, T> deserializer
             ) {
                 this.clazz = clazz;
+                this.permission = permission;
                 this.icon = icon;
                 this.addGui = addGui;
                 this.deserializer = deserializer;

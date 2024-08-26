@@ -86,6 +86,9 @@
 + `sweetmail.icon.custom` 允许使用自定义图标 (在选择图标界面使用物品栏里的物品)
 + `sweetmail.price.<价格组>` 设定玩家在哪个价格组内，详见配置文件 price 的注释
 + `sweetmail.notice` 玩家是否在收到新邮件时、上线时接收新邮件通知
++ `sweetmail.attachment.command` 允许使用`控制台命令`附件 (不推荐给玩家)
++ `sweetmail.attachment.money` 允许使用`金币`附件
++ `sweetmail.attachment.item` 允许使用`物品`附件
 
 ## 开发者
 

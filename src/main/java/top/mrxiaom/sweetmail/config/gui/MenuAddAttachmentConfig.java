@@ -81,7 +81,9 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
             int i = 0;
             attachments.clear();
             for (IAttachment.Internal.AttachmentInfo<?> info : IAttachment.getAttachments()) {
-                attachments.put(i++, info);
+                if (player.hasPermission(info.permission)) {
+                    attachments.put(i++, info);
+                }
             }
             Inventory inv = createInventory(this, player);
             applyIcons(this, inv, player);
@@ -104,7 +106,7 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
                 case "附": {
                     int i = getKeyIndex(c, slot);
                     IAttachment.Internal.AttachmentInfo<?> info = attachments.get(i);
-                    if (info != null) {
+                    if (info != null && player.hasPermission(info.permission)) {
                         IGui gui = info.addGui.apply(player);
                         if (gui != null) {
                             gui.open();
