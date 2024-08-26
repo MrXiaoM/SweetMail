@@ -17,7 +17,7 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
         onDisable();
 
         if (!Util.isPresent("org.sqlite.JDBC")) {
-            SweetMail.warn("预料中的错误: 未找到 SQLite JDBC: org.sqlite.jdbc");
+            SweetMail.warn("预料中的错误: 未找到 SQLite JDBC: org.sqlite.JDBC");
             SweetMail.warn("正在卸载插件，请使用最新版 Spigot 或其衍生服务端");
             Bukkit.getPluginManager().disablePlugin(SweetMail.getInstance());
             return;
