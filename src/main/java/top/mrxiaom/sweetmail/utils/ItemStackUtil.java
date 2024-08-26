@@ -12,8 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -21,6 +23,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.utils.comp.IA;
 import top.mrxiaom.sweetmail.utils.comp.Mythic;
 
@@ -35,8 +38,10 @@ import static top.mrxiaom.sweetmail.utils.Util.miniMessage;
 @SuppressWarnings({"deprecation", "unused"})
 public class ItemStackUtil {
     private static boolean supportTranslationKey;
+    private static boolean supportBundle;
     protected static void init() {
         supportTranslationKey = Util.isPresent("org.bukkit.Translatable");
+        supportBundle = Util.isPresent("org.bukkit.inventory.meta.BundleMeta");
     }
 
     public static String miniTranslate(ItemStack item) {
@@ -44,6 +49,23 @@ public class ItemStackUtil {
             return "<translate:" + item.getTranslationKey() + ">";
         }
         return item.getType().name(); // TODO: 在不支持 Translatable 的服务端获取物品翻译键
+    }
+
+    public static ItemStack resolveBundle(Player player, ItemStack item, List<IAttachment> attachments) {
+        if (!supportBundle) return item;
+        try {
+            ItemMeta m = item.getItemMeta();
+            if (m instanceof BundleMeta) {
+                BundleMeta meta = (BundleMeta) m;
+                meta.setItems(new ArrayList<>());
+                for (IAttachment attachment : attachments) {
+                    meta.addItem(attachment.generateIcon(player));
+                }
+                item.setItemMeta(meta);
+            }
+        } catch (Throwable ignored) {
+        }
+        return item;
     }
 
     public static boolean hasCustomModelData(ItemStack item) {
@@ -225,8 +247,7 @@ public class ItemStackUtil {
                 dataValue = Util.parseByte(data.substring(1)).orElse(null);
                 material = str.replace(data, "");
             }
-            Material m = Util.valueOr(Material.class, material, null);
-            if (m == null) throw new IllegalStateException("找不到物品 " + str);
+            Material m = Util.valueOr(Material.class, material, Material.PAPER);
             ItemStack item = dataValue == null ? new ItemStack(m) : new ItemStack(m, 0, (short) 0, dataValue);
             if (customModelData != null) setCustomModelData(item, customModelData);
             return item;

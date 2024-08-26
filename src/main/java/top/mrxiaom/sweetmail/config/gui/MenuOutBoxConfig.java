@@ -18,10 +18,7 @@ import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.utils.ColorHelper;
-import top.mrxiaom.sweetmail.utils.ListX;
-import top.mrxiaom.sweetmail.utils.Pair;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.*;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
@@ -130,7 +127,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 ListX<MailWithStatus> inBox = gui.getOutBox();
                 if (iconIndex >= 0 && iconIndex < inBox.size()) {
                     MailWithStatus mail = inBox.get(iconIndex);
-                    ItemStack icon = mail.generateIcon();
+                    ItemStack icon = ItemStackUtil.resolveBundle(target, mail.generateIcon(), mail.attachments);
                     String sender = mail.senderDisplay.trim().isEmpty()
                             ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
                     String receiver = mail.receivers.size() == 1

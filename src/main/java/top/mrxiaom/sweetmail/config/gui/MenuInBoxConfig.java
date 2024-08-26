@@ -215,7 +215,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 ListX<MailWithStatus> inBox = gui.getInBox();
                 if (iconIndex >= 0 && iconIndex < inBox.size()) {
                     MailWithStatus mail = inBox.get(iconIndex);
-                    ItemStack icon = mail.generateIcon();
+                    ItemStack icon = ItemStackUtil.resolveBundle(target, mail.generateIcon(), mail.attachments);
                     String sender = mail.senderDisplay.trim().isEmpty()
                             ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
                     String receiver = mail.receivers.size() == 1

@@ -34,7 +34,7 @@ preset-icons:
   # default 为默认图标，必须要有默认图标
   default:
     display: '默认'
-    item: PAPER
+    item: BUNDLE
   example:
     display: '示例1'
     # 使用 MythicMobs 物品作为图标 (草稿菜单显示mm物品名，收件箱发件箱中仅使用物品、CustomModelData、附魔、染色数据，不使用名字和 Lore)
