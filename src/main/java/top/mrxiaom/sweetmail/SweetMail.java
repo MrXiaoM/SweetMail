@@ -106,9 +106,9 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     }
 
     private void loadBuiltInAttachments() {
-        IAttachment.deserializers.add(AttachmentItem::deserialize);
-        IAttachment.deserializers.add(AttachmentCommand::deserialize);
-        IAttachment.deserializers.add(AttachmentMoney::deserialize);
+        AttachmentItem.register();
+        AttachmentCommand.register();
+        AttachmentMoney.register();
     }
 
     @Override

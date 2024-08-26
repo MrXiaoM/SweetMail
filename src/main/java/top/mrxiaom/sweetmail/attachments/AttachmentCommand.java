@@ -1,6 +1,9 @@
 package top.mrxiaom.sweetmail.attachments;
 
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
@@ -70,16 +73,22 @@ public class AttachmentCommand implements IAttachment {
         return true;
     }
 
-    public static IAttachment deserialize(String s) {
-        if (s.startsWith("command:")) {
-            String[] split = s.substring(8).split(",", 3);
-            if (split.length == 3) {
-                String item = split[0];
-                String display = split[1];
-                String command = split[2];
-                return new AttachmentCommand(item, display, command);
-            }
-        }
-        return null;
+    public static void register() {
+        IAttachment.registerAttachment(AttachmentCommand.class,
+                // TODO: 从语言配置读取图标
+                (player) -> ItemStackUtil.buildItem(Material.COMMAND_BLOCK, "控制台命令附件", Lists.newArrayList()),
+                (player) -> { throw new NotImplementedException("TODO"); },
+                (s) -> {
+                    if (s.startsWith("command:")) {
+                        String[] split = s.substring(8).split(",", 3);
+                        if (split.length == 3) {
+                            String item = split[0];
+                            String display = split[1];
+                            String command = split[2];
+                            return new AttachmentCommand(item, display, command);
+                        }
+                    }
+                    return null;
+                });
     }
 }

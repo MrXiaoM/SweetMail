@@ -1,6 +1,9 @@
 package top.mrxiaom.sweetmail.attachments;
 
+import com.google.common.collect.Lists;
 import net.milkbowl.vault.economy.Economy;
+import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -74,13 +77,19 @@ public class AttachmentMoney implements IAttachment {
         return money > 0;
     }
 
-    public static IAttachment deserialize(String s) {
-        if (s.startsWith("money:")) {
-            Double money = Util.parseDouble(s.substring(6)).orElse(null);
-            if (money != null) {
-                return new AttachmentMoney(money);
-            }
-        }
-        return null;
+    public static void register() {
+        IAttachment.registerAttachment(AttachmentMoney.class,
+                // TODO: 从语言配置读取图标
+                (player) -> ItemStackUtil.buildItem(Material.GOLD_NUGGET, "金币附件", Lists.newArrayList()),
+                (player) -> { throw new NotImplementedException("TODO"); },
+                (s) -> {
+                    if (s.startsWith("money:")) {
+                        Double money = Util.parseDouble(s.substring(6)).orElse(null);
+                        if (money != null) {
+                            return new AttachmentMoney(money);
+                        }
+                    }
+                    return null;
+                });
     }
 }

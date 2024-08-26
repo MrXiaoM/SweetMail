@@ -1,5 +1,8 @@
 package top.mrxiaom.sweetmail.attachments;
 
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -101,13 +104,19 @@ public class AttachmentItem implements IAttachment {
         return true;
     }
 
-    public static IAttachment deserialize(String s) {
-        if (s.startsWith("item:")) {
-            ItemStack item = ItemStackUtil.itemStackFromBase64(s.substring(5));
-            if (item != null) {
-                return new AttachmentItem(item);
-            }
-        }
-        return null;
+    public static void register() {
+        IAttachment.registerAttachment(AttachmentItem.class,
+                // TODO: 从语言配置读取图标
+                (player) -> ItemStackUtil.buildItem(Material.ITEM_FRAME, "物品附件", Lists.newArrayList()),
+                (player) -> { throw new NotImplementedException("TODO"); },
+                (s) -> {
+                    if (s.startsWith("item:")) {
+                        ItemStack item = ItemStackUtil.itemStackFromBase64(s.substring(5));
+                        if (item != null) {
+                            return new AttachmentItem(item);
+                        }
+                    }
+                    return null;
+                });
     }
 }

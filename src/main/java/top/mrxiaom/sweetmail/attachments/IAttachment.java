@@ -7,29 +7,63 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
+import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.Util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public interface IAttachment {
-    List<Function<String, IAttachment>> deserializers = new ArrayList<>();
     void use(Player player);
     ItemStack generateDraftIcon(Player target);
     ItemStack generateIcon(Player target);
     String serialize();
     boolean isLegal();
     static IAttachment deserialize(String s) {
-        for (Function<String, IAttachment> deserializer : deserializers) {
-            IAttachment apply = deserializer.apply(s);
+        for (Internal.AttachmentInfo<?> info : Internal.attachments) {
+            IAttachment apply = info.deserializer.apply(s);
             if (apply != null) {
                 return apply;
             }
         }
         return null;
     }
+    static <T extends IAttachment> void registerAttachment(Class<T> clazz, Function<Player, ItemStack> icon, Function<Player, IGui> addGui, Function<String, T> deserializer) {
+        Internal.AttachmentInfo<T> info = new Internal.AttachmentInfo<>(clazz, icon, addGui, deserializer);
+        Internal.attachments.add(info);
+    }
+    static Collection<Internal.AttachmentInfo<?>> getAttachments() {
+        return Collections.unmodifiableCollection(Internal.attachments);
+    }
+    static
     class Internal extends AbstractPluginHolder {
+        public static class AttachmentInfo<T extends IAttachment> {
+            public final Class<T> clazz;
+            public final Function<Player, ItemStack> icon;
+            public final Function<Player, IGui> addGui;
+            public final Function<String, T> deserializer;
+
+            private AttachmentInfo(Class<T> clazz, Function<Player, ItemStack> icon, Function<Player, IGui> addGui, Function<String, T> deserializer) {
+                this.clazz = clazz;
+                this.icon = icon;
+                this.addGui = addGui;
+                this.deserializer = deserializer;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof AttachmentInfo)) return false;
+                AttachmentInfo<?> that = (AttachmentInfo<?>) o;
+                return Objects.equals(clazz, that.clazz);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hashCode(clazz);
+            }
+        }
+        protected static Set<AttachmentInfo<?>> attachments = new HashSet<>();
         protected static List<String> loreRemove;
         protected static String moneyIcon;
         protected static String moneyName;
