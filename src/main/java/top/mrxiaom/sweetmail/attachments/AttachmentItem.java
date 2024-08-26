@@ -1,11 +1,19 @@
 package top.mrxiaom.sweetmail.attachments;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.NotImplementedException;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 
@@ -104,11 +112,41 @@ public class AttachmentItem implements IAttachment {
         return true;
     }
 
+    public static class Gui extends AbstractAddAttachmentGui {
+
+        public Gui(Player player) {
+            super(player);
+        }
+
+        @Override
+        public Inventory newInventory() {
+            // TODO: 从语言配置读取标题
+            return Bukkit.createInventory(null, 9, "请在物品栏点击要添加附件的物品");
+        }
+
+        @Override
+        public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
+            event.setCancelled(true);
+            if (!click.isShiftClick() && click.isLeftClick() && action.equals(InventoryAction.PICKUP_ALL)) {
+                if (currentItem != null && !currentItem.getType().equals(Material.AIR) && currentItem.getAmount() > 0) {
+                    AttachmentItem attachment = AttachmentItem.build(currentItem);
+                    if (!attachment.isLegal()) {
+                        t(player, MenuDraftConfig.inst().messageItemBanned);
+                        return;
+                    }
+                    event.setCurrentItem(null);
+                    addAttachment(attachment);
+                    backToDraftGui();
+                }
+            }
+        }
+    }
+
     public static void register() {
         IAttachment.registerAttachment(AttachmentItem.class,
                 // TODO: 从语言配置读取图标
                 (player) -> ItemStackUtil.buildItem(Material.ITEM_FRAME, "物品附件", Lists.newArrayList()),
-                (player) -> { throw new NotImplementedException("TODO"); },
+                Gui::new,
                 (s) -> {
                     if (s.startsWith("item:")) {
                         ItemStack item = ItemStackUtil.itemStackFromBase64(s.substring(5));

@@ -4,21 +4,20 @@ import com.google.common.collect.Lists;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
+import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
+import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.data.Draft;
+import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
 
+import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class AttachmentMoney implements IAttachment {
@@ -83,29 +82,31 @@ public class AttachmentMoney implements IAttachment {
         return money > 0;
     }
 
-    // TODO: 添加金币附件菜单
-    public static class Gui extends AbstractAddAttachmentGui {
-
-        public Gui(Player player) {
-            super(player);
-        }
-
-        @Override
-        public Inventory newInventory() {
-            return null;
-        }
-
-        @Override
-        public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
-            event.setCancelled(true);
-        }
-    }
-
     public static void register() {
         IAttachment.registerAttachment(AttachmentMoney.class,
                 // TODO: 从语言配置读取图标
                 (player) -> ItemStackUtil.buildItem(Material.GOLD_NUGGET, "金币附件", Lists.newArrayList()),
-                Gui::new,
+                (player) -> {
+                    SweetMail plugin = SweetMail.getInstance();
+                    Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
+                    ChatPrompter.prompt(
+                            plugin, player,
+                            Internal.addMoneyPromptTips, Internal.addMoneyPromptCancel,
+                            str -> {
+                                double money = Util.parseDouble(str).orElse(0.0);
+                                if (money <= 0) {
+                                    t(player, Internal.addMoneyFail);
+                                    back.run();
+                                    return;
+                                }
+                                AttachmentMoney attachment = AttachmentMoney.build(money);
+                                Draft draft = DraftManager.inst().getDraft(player);
+                                draft.attachments.add(attachment);
+                                draft.save();
+                                MenuDraftConfig.inst().new Gui(plugin, player).open();
+                            }, back);
+                    return null;
+                },
                 (s) -> {
                     if (s.startsWith("money:")) {
                         Double money = Util.parseDouble(s.substring(6)).orElse(null);

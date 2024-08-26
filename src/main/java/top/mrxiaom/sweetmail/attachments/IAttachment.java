@@ -79,6 +79,13 @@ public interface IAttachment {
         protected static List<String> itemBanName;
         protected static List<String> itemBanLore;
         protected static String messageUseIllegalDeny;
+
+        protected static String addMoneyPromptTips;
+        protected static String addMoneyPromptCancel;
+        protected static String addMoneyFail;
+        protected static String addCommandPromptTips;
+        protected static String addCommandPromptCancel;
+        protected static String addCommandFail;
         public Internal(SweetMail plugin) {
             super(plugin);
             register();
@@ -102,6 +109,13 @@ public interface IAttachment {
             itemBanName = config.getStringList("attachments.item.blacklist.display_name");
             itemBanLore = config.getStringList("attachments.item.blacklist.lore");
             messageUseIllegalDeny = config.getString("messages.draft.attachments.use-illegal-deny", "");
+
+            addMoneyPromptTips = config.getString("messages.draft.attachments.money.add.prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“附件金币数量”&b的值 &7(输入 &ccancel &7取消添加附件)");
+            addMoneyPromptCancel = config.getString("messages.draft.attachments.money.add.prompt-cancel", "cancel");
+            addMoneyFail = config.getString("messages.draft.attachments.money.add.fail", "&7[&e&l邮件&7] &e请输入大于0的实数");
+            addCommandPromptTips = config.getString("messages.draft.attachments.command.prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“控制台命令附件”&b的值 &7(格式 &f图标,显示名称,执行命令&7，如&f PAPER,10金币,money give %player_name% 10 &7。输入 &ccancel &7取消添加附件)");
+            addCommandPromptCancel = config.getString("messages.draft.attachments.command.prompt-cancel", "cancel");
+            addCommandFail = config.getString("messages.draft.attachments.command.add.fail", "&7[&e&l邮件&7] &e格式不正确，应为 &f图标,显示名称,执行命令&e，如&f PAPER,10金币,money give %player_name% 10");
         }
 
         public void useIllegalDeny(CommandSender sender) {

@@ -1,16 +1,23 @@
 package top.mrxiaom.sweetmail.attachments;
 
 import com.google.common.collect.Lists;
-import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
+import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.data.Draft;
+import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.util.List;
+
+import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 
 public class AttachmentCommand implements IAttachment {
     private final String item;
@@ -77,7 +84,27 @@ public class AttachmentCommand implements IAttachment {
         IAttachment.registerAttachment(AttachmentCommand.class,
                 // TODO: 从语言配置读取图标
                 (player) -> ItemStackUtil.buildItem(Material.COMMAND_BLOCK, "控制台命令附件", Lists.newArrayList()),
-                (player) -> { throw new NotImplementedException("TODO"); },
+                (player) -> {
+                    SweetMail plugin = SweetMail.getInstance();
+                    Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
+                    ChatPrompter.prompt(
+                            plugin, player,
+                            Internal.addCommandPromptTips, Internal.addCommandPromptCancel,
+                            str -> {
+                                String[] split = str.split(",", 3);
+                                if (split.length != 3) {
+                                    t(player, Internal.addCommandFail);
+                                    back.run();
+                                    return;
+                                }
+                                AttachmentCommand attachment = AttachmentCommand.build(split[0], split[1], split[2]);
+                                Draft draft = DraftManager.inst().getDraft(player);
+                                draft.attachments.add(attachment);
+                                draft.save();
+                                MenuDraftConfig.inst().new Gui(plugin, player).open();
+                            }, back);
+                    return null;
+                },
                 (s) -> {
                     if (s.startsWith("command:")) {
                         String[] split = s.substring(8).split(",", 3);
