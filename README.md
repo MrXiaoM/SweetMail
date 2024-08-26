@@ -72,8 +72,10 @@
 |     | 管理员命令                                 |                       |                       |
 | ☑️️ | `/mail inbox <all/unread> <玩家>`       | 为某人打开收件箱界面            | `sweetmail.box.other` |
 | ☑️  | `/mail outbox <玩家>`                   | 为某人打开发件箱界面            | `sweetmail.box.other` |
-| ❇️  | `/mail admin inbox <all/unread> <玩家>` | 打开某人的收件箱界面            | `sweetmail.box.other` |
-| ❇️  | `/mail admin outbox <玩家>`             | 打开某人的发件箱界面            | `sweetmail.box.other` |
+| ❇️  | `/mail admin inbox <all/unread> <玩家>` | 打开某人的收件箱界面            | `sweetmail.admin`     |
+| ❇️  | `/mail admin outbox <玩家>`             | 打开某人的发件箱界面            | `sweetmail.admin`     |
+| ☑️  | `/mail admin timed <定时序列>`            | 查看定时发送邮件序列简要信息        | `sweetmail.admin`     |
+| ☑️  | `/mail admin cancel <定时序列>`           | 取消定时发送邮件序列            | `sweetmail.admin`     |
 | ☑️  | `/mail reload database`               | 重载并重新连接数据库            | `sweetmail.admin`     |
 | ☑️  | `/mail reload`                        | 重载配置文件，不重连数据库         | `sweetmail.admin`     |
 

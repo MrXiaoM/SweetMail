@@ -14,7 +14,9 @@ import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuInBoxConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuOutBoxConfig;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
-import top.mrxiaom.sweetmail.func.basic.GuiManager;
+import top.mrxiaom.sweetmail.func.TimerManager;
+import top.mrxiaom.sweetmail.func.data.TimedDraft;
+import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.ArrayList;
@@ -26,13 +28,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public static final String PERM_BOX = "sweetmail.box";
     public static final String PERM_BOX_OTHER = "sweetmail.box.other";
     private static String prefix;
-    public static String prefix() {
-        return prefix;
-    }
     private List<String> helpPlayer;
     private List<String> helpAdmin;
     private String cmdReload;
     private String cmdReloadDatabase;
+    private List<String> cmdTimedInfoDisplay;
+    private String cmdTimedInfoNotFound;
+    private String cmdTimedCancelSuccess;
+    private String cmdTimedCancelFail;
     public CommandMain(SweetMail plugin) {
         super(plugin);
         registerCommand("sweetmail", this);
@@ -46,13 +49,16 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
         prefix = config.getString("messages.prefix", "");
         cmdReload = config.getString("messages.command.reload", "");
         cmdReloadDatabase = config.getString("messages.command.reload-database", "");
+        cmdTimedInfoDisplay = config.getStringList("messages.command.timed.info.display");
+        cmdTimedInfoNotFound = config.getString("messages.command.timed.info.not-found", "");
+        cmdTimedCancelSuccess = config.getString("messages.command.timed.cancel.success", "");
+        cmdTimedCancelFail = config.getString("messages.command.timed.cancel.fail", "");
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         boolean admin = sender.hasPermission(PERM_ADMIN);
         if (args.length > 0) {
-            GuiManager gui = plugin.getGuiManager();
             if ("admin".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length >= 4 && "inbox".equalsIgnoreCase(args[1])) {
                     if (!(sender instanceof Player)) {
@@ -81,6 +87,27 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                             .new Gui(plugin, player, target)
                             .open();
                     return true;
+                }
+                if (args.length >= 3 && "timed".equalsIgnoreCase(args[1])) {
+                    String id = args[2];
+                    TimerManager manager = TimerManager.inst();
+                    TimedDraft timedDraft = manager.getQueue(id);
+                    if (timedDraft == null) return t(sender, prefix + cmdTimedInfoNotFound);
+                    for (String s : Pair.replace(cmdTimedInfoDisplay,
+                            Pair.of("%id%", id),
+                            Pair.of("%sender%", timedDraft.draft.sender),
+                            Pair.of("%senderDisplay%", timedDraft.draft.advSenderDisplay),
+                            Pair.of("%receiver%", timedDraft.draft.receiver),
+                            Pair.of("%advReceivers%", timedDraft.draft.advReceivers))) {
+                        t(sender, prefix + s);
+                    }
+                    return true;
+                }
+                if (args.length >= 3 && "cancel".equalsIgnoreCase(args[1])) {
+                    String id = args[2];
+                    TimerManager manager = TimerManager.inst();
+                    boolean result = manager.cancelQueue(id);
+                    return t(sender, prefix + (result ? cmdTimedCancelSuccess : cmdTimedCancelFail));
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
@@ -190,6 +217,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
                 if (args[1].equalsIgnoreCase("outbox")) {
                     return null;
+                }
+                if (args[1].equalsIgnoreCase("timed") || args[1].equalsIgnoreCase("cancel")) {
+                    return startsWith(TimerManager.inst().getQueueIds(), args[2]);
                 }
             }
             if (args[0].equalsIgnoreCase("inbox") && sender.hasPermission(PERM_BOX_OTHER)) {

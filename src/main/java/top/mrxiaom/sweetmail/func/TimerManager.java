@@ -50,6 +50,18 @@ public class TimerManager extends AbstractPluginHolder {
         return id;
     }
 
+    public List<String> getQueueIds() {
+        return Lists.newArrayList(queue.keySet());
+    }
+
+    public TimedDraft getQueue(String id) {
+        return queue.get(id);
+    }
+
+    public boolean cancelQueue(String id) {
+        return queue.remove(id) != null;
+    }
+
     public String sendInTime(Draft draft, long timestamp) {
         String id = generateId();
         TimedDraft temp = TimedDraft.createFromDraft(id, draft, timestamp);
@@ -78,7 +90,7 @@ public class TimerManager extends AbstractPluginHolder {
         DraftManager manager = DraftManager.inst();
         for (TimedDraft temp : Lists.newArrayList(queue.values())) {
             if (temp.isOutOfTime(time)) {
-                queue.remove(temp.id);
+                cancelQueue(temp.id);
                 flag = true;
                 List<String> receivers = manager.generateReceivers(temp.draft);
                 if (receivers.isEmpty()) {

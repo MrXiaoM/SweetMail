@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import top.mrxiaom.sweetmail.IMail;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
@@ -120,6 +121,7 @@ public class Draft {
         String senderDisplay = advSenderDisplay == null ? "" : advSenderDisplay;
         MailIcon icon = DraftManager.inst().getMailIcon(iconKey);
         String iconKeyMail = icon == null ? iconKey.substring(1) : icon.item;
+        String sender = advSenderDisplay.isEmpty() ? this.sender : IMail.SERVER_SENDER;
         return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments);
     }
 

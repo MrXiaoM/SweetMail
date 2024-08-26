@@ -95,6 +95,19 @@ messages:
   command:
     reload: '配置文件已重载 &7(如需重载数据库，请使用 &f/mail reload database&7)'
     reload-database: '数据库配置已重载，已重新连接数据库'
+    timed:
+      info:
+        display:
+          - '&f定时发送序列: &e%id%'
+          - '&f发送人: &e%sender%'
+          - '&f发送人显示: &e%senderDisplay%'
+          - '&f收件人: &e%receiver%'
+          - '&f泛收件人: &e%advReceivers%'
+          - '&b其它信息请到 timed_draft.yml 查看'
+        not-found: '&c找不到定时发送序列 &e%id%'
+      cancel:
+        success: '成功取消定时发送序列 &e%id%'
+        fail: '&c找不到定时发送序列 &e%id%'
   date-time: 'yyyy年MM月dd日 HH:mm:ss'
   draft:
     online:
