@@ -84,6 +84,17 @@ public class DraftManager extends AbstractPluginHolder {
         return advReceiversBlackList.contains(player);
     }
 
+    public List<String> generateReceivers(Draft draft) {
+        List<String> receivers = new ArrayList<>();
+        if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
+            receivers.addAll(draft.advReceivers());
+        } else if (!draft.receiver.isEmpty()) {
+            receivers.add(draft.receiver);
+        }
+        receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
+        return receivers;
+    }
+
     public static DraftManager inst() {
         return get(DraftManager.class).orElseThrow(IllegalStateException::new);
     }

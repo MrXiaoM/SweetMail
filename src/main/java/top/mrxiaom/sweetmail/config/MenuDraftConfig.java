@@ -366,13 +366,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             t(player, plugin.prefix() + messageCantSendToYourself);
                             return;
                         }
-                        List<String> receivers = new ArrayList<>();
-                        if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
-                            receivers.addAll(draft.advReceivers());
-                        } else if (!draft.receiver.isEmpty()) {
-                            receivers.add(draft.receiver);
-                        }
-                        receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
+                        List<String> receivers = DraftManager.inst().generateReceivers(draft);
                         if (!canSendToYourself) receivers.remove(player.getName());
                         if (receivers.isEmpty()) {
                             t(player, plugin.prefix() + messageNoReceivers);
