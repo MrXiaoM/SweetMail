@@ -27,6 +27,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
@@ -193,51 +196,58 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                                 }
                                 case 3: {
                                     player.closeInventory();
+                                    Consumer<String> receiver1 = timeStr -> {
+                                        Long timestamp = parseTime(timeStr);
+                                        if (timestamp == null) {
+                                            t(player, iconReceiversBadTimeFormat);
+                                        } else {
+                                            draft.advReceivers = "last played in " + timestamp;
+                                            draft.save();
+                                        }
+                                        reopen.run();
+                                    };
                                     ChatPrompter.prompt(
                                             plugin, player,
                                             iconReceiversPrompts3Tips,
                                             iconReceiversPrompts3Cancel,
-                                            timeStr -> {
-                                                Long timestamp = parseTime(timeStr);
-                                                if (timestamp == null) {
-                                                    t(player, iconReceiversBadTimeFormat);
-                                                } else {
-                                                    draft.advReceivers = "last played in " + timestamp;
-                                                    draft.save();
-                                                }
-                                                reopen.run();
-                                            }, reopen);
+                                            receiver1, reopen);
                                     return;
                                 }
                                 case 4: {
                                     player.closeInventory();
+
+                                    AtomicReference<Consumer<Long>> nextPrompt = new AtomicReference<>();
+                                    Consumer<String> receiver1 = timeStr -> {
+                                        Long timestampStart = parseTime(timeStr);
+                                        if (timestampStart == null) {
+                                            t(player, iconReceiversBadTimeFormat);
+                                            reopen.run();
+                                            return;
+                                        }
+                                        nextPrompt.get().accept(timestampStart);
+                                    };
+                                    BiConsumer<String, Long> receiver2 = (timeStr, timestampStart) -> {
+                                        Long timestampEnd = parseTime(timeStr);
+                                        if (timestampEnd == null) {
+                                            t(player, iconReceiversBadTimeFormat);
+                                            reopen.run();
+                                            return;
+                                        }
+                                        draft.advReceivers = "last played from " + timestampStart + " to " + timestampEnd;
+                                        draft.save();
+                                        reopen.run();
+                                    };
+
                                     ChatPrompter.prompt(
                                             plugin, player,
                                             iconReceiversPrompts4TipsStart,
                                             iconReceiversPrompts4Cancel,
-                                            timeStr1 -> {
-                                                Long timestampStart = parseTime(timeStr1);
-                                                if (timestampStart == null) {
-                                                    t(player, iconReceiversBadTimeFormat);
-                                                    reopen.run();
-                                                    return;
-                                                }
-                                                ChatPrompter.prompt(
-                                                        plugin, player,
-                                                        iconReceiversPrompts4TipsEnd,
-                                                        iconReceiversPrompts4Cancel,
-                                                        timeStr2 -> {
-                                                            Long timestampEnd = parseTime(timeStr2);
-                                                            if (timestampEnd == null) {
-                                                                t(player, iconReceiversBadTimeFormat);
-                                                                reopen.run();
-                                                                return;
-                                                            }
-                                                            draft.advReceivers = "last played from " + timestampStart + " to " + timestampEnd;
-                                                            draft.save();
-                                                            reopen.run();
-                                                        }, reopen);
-                                            }, reopen);
+                                            receiver1, reopen);
+                                    nextPrompt.set(timestampStart -> ChatPrompter.prompt(
+                                            plugin, player,
+                                            iconReceiversPrompts4TipsEnd,
+                                            iconReceiversPrompts4Cancel,
+                                            timeStr -> receiver2.accept(timeStr, timestampStart), reopen));
                                     break;
                                 }
                                 default:
