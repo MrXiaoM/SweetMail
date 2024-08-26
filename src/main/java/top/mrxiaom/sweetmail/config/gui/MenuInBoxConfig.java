@@ -360,7 +360,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     if (attachment.isLegal()) {
                                         attachment.use(player);
                                     } else {
-                                        IAttachment.Internal.inst().useIllegalDeny(player);
+                                        IAttachment.Internal.useIllegalDeny(player);
                                     }
                                 }
                             } catch (Throwable t) {
@@ -396,7 +396,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                         if (attachment.isLegal()) {
                                             attachment.use(player);
                                         } else {
-                                            IAttachment.Internal.inst().useIllegalDeny(player);
+                                            IAttachment.Internal.useIllegalDeny(player);
                                         }
                                     }
                                 } catch (Throwable t) {

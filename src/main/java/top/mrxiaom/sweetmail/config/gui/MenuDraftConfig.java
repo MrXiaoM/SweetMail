@@ -20,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.permissions.Permissible;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
@@ -38,6 +37,7 @@ import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.util.*;
 
+import static top.mrxiaom.sweetmail.commands.CommandMain.PERM_ADMIN;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
@@ -210,7 +210,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 );
             }
             case "高": {
-                if (target.hasPermission(CommandMain.PERM_ADMIN)) {
+                if (target.hasPermission(PERM_ADMIN)) {
                     return iconAdvanced.generateIcon(target);
                 } else {
                     Icon icon = otherIcon.get(iconAdvancedRedirectKey);
@@ -334,7 +334,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 }
                 case "高": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
-                        if (player.hasPermission(CommandMain.PERM_ADMIN)) {
+                        if (player.hasPermission(PERM_ADMIN)) {
                             MenuDraftAdvanceConfig.inst()
                                     .new Gui(plugin, player)
                                     .open();
@@ -379,20 +379,22 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                     return;
                 }
                 case "附": {
-                    if (click.isLeftClick() && !click.isShiftClick()) {
+                    if (click.isLeftClick()) {
                         int i = getKeyIndex(c, slot);
                         if (i < draft.attachments.size()) {
                             IAttachment attachment = draft.attachments.remove(i);
                             draft.save();
                             updateAttachmentSlots(view);
-                            if (attachment != null) {
-                                if (attachment.isLegal()) {
-                                    attachment.use(player);
-                                } else {
-                                    IAttachment.Internal.inst().useIllegalDeny(player);
+                            if (!player.hasPermission(PERM_ADMIN) || !click.isShiftClick()) {
+                                if (attachment != null) {
+                                    if (attachment.isLegal()) {
+                                        attachment.use(player);
+                                    } else {
+                                        IAttachment.Internal.useIllegalDeny(player);
+                                    }
                                 }
                             }
-                        } else {
+                        } else if (!click.isShiftClick()) {
                             // 快速添加物品附件
                             if (cursor != null && !cursor.getType().equals(Material.AIR)) {
                                 IAttachment attachment = AttachmentItem.build(cursor);

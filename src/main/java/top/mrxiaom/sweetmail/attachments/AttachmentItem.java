@@ -48,9 +48,10 @@ public class AttachmentItem implements IAttachment {
     @Override
     public ItemStack generateDraftIcon(Player target) {
         ItemStack item = this.item.clone();
-        if (!Internal.loreRemove.isEmpty()) {
+        List<String> loreRemove = Internal.getLoreRemove(target);
+        if (!loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Internal.loreRemove);
+            lore.addAll(loreRemove);
             ItemStackUtil.setItemLore(item, lore);
         }
         return item;

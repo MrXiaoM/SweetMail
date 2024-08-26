@@ -50,9 +50,10 @@ public class AttachmentCommand implements IAttachment {
     public ItemStack generateDraftIcon(Player target) {
         ItemStack item = ItemStackUtil.getItem(this.item);
         ItemStackUtil.setItemDisplayName(item, display);
-        if (!Internal.loreRemove.isEmpty()) {
+        List<String> loreRemove = Internal.getLoreRemove(target);
+        if (!loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Internal.loreRemove);
+            lore.addAll(loreRemove);
             ItemStackUtil.setItemLore(item, lore);
         }
         return item;

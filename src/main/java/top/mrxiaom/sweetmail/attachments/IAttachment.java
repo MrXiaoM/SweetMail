@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
@@ -13,6 +14,8 @@ import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.*;
 import java.util.function.Function;
+
+import static top.mrxiaom.sweetmail.commands.CommandMain.PERM_ADMIN;
 
 public interface IAttachment {
     void use(Player player);
@@ -70,6 +73,7 @@ public interface IAttachment {
         }
         protected static Set<AttachmentInfo<?>> attachments = new HashSet<>();
         protected static List<String> loreRemove;
+        protected static List<String> loreRemoveAdmin;
         protected static String moneyIcon;
         protected static String moneyName;
         protected static List<String> moneyLore;
@@ -91,9 +95,16 @@ public interface IAttachment {
             register();
         }
 
+        public static List<String> getLoreRemove(Permissible target) {
+            return target.hasPermission(PERM_ADMIN)
+                    ? Internal.loreRemoveAdmin
+                    : Internal.loreRemove;
+        }
+
         @Override
         public void reloadConfig(MemoryConfiguration config) {
             loreRemove = config.getStringList("messages.draft.attachments.remove-lore");
+            loreRemoveAdmin = config.getStringList("messages.draft.attachments.remove-lore-admin");
             moneyIcon = config.getString("messages.draft.attachments.money.icon", "GOLD_NUGGET");
             moneyName = config.getString("messages.draft.attachments.money.name", "");
             moneyLore = config.getStringList("messages.draft.attachments.money.lore");
@@ -118,7 +129,7 @@ public interface IAttachment {
             addCommandFail = config.getString("messages.draft.attachments.command.add.fail", "&7[&e&l邮件&7] &e格式不正确，应为 &f图标,显示名称,执行命令&e，如&f PAPER,10金币,money give %player_name% 10");
         }
 
-        public void useIllegalDeny(CommandSender sender) {
+        public static void useIllegalDeny(CommandSender sender) {
             t(sender, messageUseIllegalDeny);
         }
 

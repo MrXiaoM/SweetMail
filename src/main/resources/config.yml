@@ -124,6 +124,10 @@ messages:
       remove-lore:
         - ''
         - '&a左键 &7| &f删除并取出该附件'
+      remove-lore-admin:
+        - ''
+        - '&a左键 &7| &f删除并取出该附件'
+        - '&eShift+左键 &7| &f删除'
       money:
         icon: GOLD_NUGGET
         name: '&e&l金币'

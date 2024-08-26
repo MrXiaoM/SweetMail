@@ -46,10 +46,11 @@ public class AttachmentMoney implements IAttachment {
     public ItemStack generateDraftIcon(Player target) {
         ItemStack item = ItemStackUtil.getItem(Internal.moneyIcon);
         ItemStackUtil.setItemDisplayName(item, toString());
-        if (!Internal.moneyLore.isEmpty() || !Internal.loreRemove.isEmpty()) {
+        List<String> loreRemove = Internal.getLoreRemove(target);
+        if (!Internal.moneyLore.isEmpty() || !loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
             lore.addAll(Internal.moneyLore);
-            lore.addAll(Internal.loreRemove);
+            lore.addAll(loreRemove);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
         }
         return item;
