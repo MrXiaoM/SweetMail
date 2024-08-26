@@ -2,11 +2,17 @@ package top.mrxiaom.sweetmail.attachments;
 
 import com.google.common.collect.Lists;
 import net.milkbowl.vault.economy.Economy;
-import org.apache.commons.lang.NotImplementedException;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
@@ -77,11 +83,29 @@ public class AttachmentMoney implements IAttachment {
         return money > 0;
     }
 
+    // TODO: 添加金币附件菜单
+    public static class Gui extends AbstractAddAttachmentGui {
+
+        public Gui(Player player) {
+            super(player);
+        }
+
+        @Override
+        public Inventory newInventory() {
+            return null;
+        }
+
+        @Override
+        public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
+            event.setCancelled(true);
+        }
+    }
+
     public static void register() {
         IAttachment.registerAttachment(AttachmentMoney.class,
                 // TODO: 从语言配置读取图标
                 (player) -> ItemStackUtil.buildItem(Material.GOLD_NUGGET, "金币附件", Lists.newArrayList()),
-                (player) -> { throw new NotImplementedException("TODO"); },
+                Gui::new,
                 (s) -> {
                     if (s.startsWith("money:")) {
                         Double money = Util.parseDouble(s.substring(6)).orElse(null);
