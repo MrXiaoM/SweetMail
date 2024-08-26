@@ -42,6 +42,22 @@ public class Draft {
         save();
     }
 
+    public Draft deepClone() {
+        Draft draft = new Draft(manager, sender);
+        draft.receiver = receiver;
+        draft.iconKey = iconKey;
+        draft.title = title;
+        if (!content.isEmpty()) draft.content.addAll(content);
+        if (!attachments.isEmpty()) for (IAttachment attachment : attachments) {
+            String serialize = attachment.serialize();
+            IAttachment deserialize = IAttachment.deserialize(serialize);
+            draft.attachments.add(deserialize);
+        }
+        draft.advSenderDisplay = advSenderDisplay;
+        draft.advReceivers = advReceivers;
+        return draft;
+    }
+
     public static Draft loadFromConfig(DraftManager manager, ConfigurationSection config, String sender) {
         Draft draft = new Draft(manager, sender);
         draft.receiver = config.getString("receiver", "");
