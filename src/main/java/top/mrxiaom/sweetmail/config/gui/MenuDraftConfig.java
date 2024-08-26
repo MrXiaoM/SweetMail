@@ -175,7 +175,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 if (!draft.receiver.isEmpty() && item.getItemMeta() instanceof SkullMeta) {
                     OfflinePlayer owner = Util.getOfflinePlayerByNameOrUUID(draft.receiver).orElse(null);
                     if (owner != null) {
-                        item.setItemMeta(ItemStackUtil.setSkullOwner(item.getItemMeta(), owner));
+                        ItemMeta meta = ItemStackUtil.setSkullOwner(item.getItemMeta(), owner);
+                        item.setItemMeta(meta);
                     }
                 }
                 return item;
@@ -319,7 +320,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 draft.content = meta.getPages();
                                 draft.save();
                                 applyIcon(this, view, player, slot);
-                                player.updateInventory();
+                                Util.updateInventory(player);
                             }
                         }
                         if (click.isRightClick()) {
@@ -428,7 +429,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             for (int k = 0; k < inventory.length; k++) {
                 if (inventory[k] == '附') {
                     applyIcon(this, view, player, k);
-                    player.updateInventory();
+                    Util.updateInventory(player);
                 }
             }
         }

@@ -17,6 +17,7 @@ import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.io.File;
@@ -162,7 +163,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
     }
     public void applyIcons(T gui, InventoryView inv, Player target) {
         applyIcons(gui, inv::setItem, target);
-        target.updateInventory();
+        Util.updateInventory(target);
     }
     public void applyIcons(T gui, BiConsumer<Integer, ItemStack> setItem, Player target) {
         for (int i = 0; i < this.inventory.length; i++) {

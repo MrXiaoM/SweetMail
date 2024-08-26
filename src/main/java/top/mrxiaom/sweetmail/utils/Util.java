@@ -112,6 +112,9 @@ public class Util {
             }
             adventure.player(player).openBook(builder);
         }
+
+    public static void updateInventory(Player player) {
+        player.updateInventory();
     }
 
     @SafeVarargs
