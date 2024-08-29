@@ -380,23 +380,26 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 }
                 case "附": {
                     if (click.isLeftClick()) {
+                        boolean hasCursorItem = cursor != null && !cursor.getType().equals(Material.AIR);
                         int i = getKeyIndex(c, slot);
                         if (i < draft.attachments.size()) {
-                            IAttachment attachment = draft.attachments.remove(i);
-                            draft.save();
-                            updateAttachmentSlots(view);
-                            if (!player.hasPermission(PERM_ADMIN) || !click.isShiftClick()) {
-                                if (attachment != null) {
-                                    if (attachment.isLegal()) {
-                                        attachment.use(player);
-                                    } else {
-                                        IAttachment.Internal.useIllegalDeny(player);
+                            if (!hasCursorItem) {
+                                IAttachment attachment = draft.attachments.remove(i);
+                                draft.save();
+                                updateAttachmentSlots(view);
+                                if (!player.hasPermission(PERM_ADMIN) || !click.isShiftClick()) {
+                                    if (attachment != null) {
+                                        if (attachment.isLegal()) {
+                                            attachment.use(player);
+                                        } else {
+                                            IAttachment.Internal.useIllegalDeny(player);
+                                        }
                                     }
                                 }
                             }
                         } else if (!click.isShiftClick() && player.hasPermission(AttachmentItem.PERM)) {
                             // 快速添加物品附件
-                            if (cursor != null && !cursor.getType().equals(Material.AIR)) {
+                            if (hasCursorItem) {
                                 IAttachment attachment = AttachmentItem.build(cursor);
                                 if (!attachment.isLegal()) {
                                     t(player, messageItemBanned);
@@ -423,9 +426,9 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             for (int k = 0; k < inventory.length; k++) {
                 if (inventory[k] == '附') {
                     applyIcon(this, view, player, k);
-                    Util.updateInventory(player);
                 }
             }
+            Util.updateInventory(player);
         }
     }
 }
