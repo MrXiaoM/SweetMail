@@ -110,6 +110,8 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
                         IGui gui = info.addGui.apply(player);
                         if (gui != null) {
                             gui.open();
+                        } else {
+                            player.closeInventory();
                         }
                     }
                     break;
