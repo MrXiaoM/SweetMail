@@ -1,5 +1,8 @@
 package top.mrxiaom.sweetmail.func;
 
+import com.google.common.collect.Lists;
+import com.google.common.io.ByteArrayDataOutput;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -7,8 +10,11 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
+import top.mrxiaom.sweetmail.utils.Util;
 
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class DraftManager extends AbstractPluginHolder {
@@ -18,11 +24,36 @@ public class DraftManager extends AbstractPluginHolder {
     private final Map<String, MailIcon> mailIcons = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private String defaultTitle;
     private final Set<String> advReceiversBlackList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private final List<String> allPlayers = new ArrayList<>();
 
     public DraftManager(SweetMail plugin) {
         super(plugin);
         dataFolder = new File(plugin.getDataFolder(), "draft");
+        if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord", false)) {
+            Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                List<Player> players = Lists.newArrayList(Bukkit.getOnlinePlayers());
+                Player player = players.isEmpty() ? null : players.get(0);
+                if (player == null) return;
+                ByteArrayDataOutput out = Util.newDataOutput();
+                out.writeUTF("PlayerList");
+                out.writeUTF("ALL");
+                player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+            }, 20 * 10L, 20L);
+            registerBungee();
+        }
         register();
+    }
+
+    @Override
+    public void receiveBungee(String subChannel, DataInputStream in) throws IOException {
+        if (!subChannel.equalsIgnoreCase("PlayerList")) return;
+        allPlayers.clear();
+        in.readUTF();
+        Collections.addAll(allPlayers, in.readUTF().split(", "));
+    }
+
+    public List<String> getAllPlayers() {
+        return Collections.unmodifiableList(allPlayers);
     }
 
     public String defaultTitle() {

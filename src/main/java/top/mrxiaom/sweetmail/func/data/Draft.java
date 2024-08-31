@@ -125,19 +125,24 @@ public class Draft {
         return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments);
     }
 
+    /**
+     * 解析 advance receivers
+     */
     public static List<String> generateReceivers(String advReceivers) {
         boolean online = SweetMail.getInstance().isOnlineMode();
         List<String> receivers = new ArrayList<>();
-        // TODO: 解析 advance receivers
         if (advReceivers.equalsIgnoreCase("current online")) {
+            // 在线玩家列表
             for (Player player : Bukkit.getOnlinePlayers()) {
                 receivers.add(player.getName());
             }
         }
         if (advReceivers.equalsIgnoreCase("current online bungeecord")) {
-            // TODO: 从代理端获取玩家列表
+            // 从代理端获取在线玩家列表
+            receivers.addAll(DraftManager.inst().getAllPlayers());
         }
         if (advReceivers.startsWith("last played in ")) {
+            // 多久之前到现在，上过线的玩家
             Long timeRaw = Util.parseLong(advReceivers.substring(15)).orElse(null);
             if (timeRaw != null) {
                 long time = System.currentTimeMillis() - timeRaw;
@@ -149,6 +154,7 @@ public class Draft {
             }
         }
         if (advReceivers.startsWith("last played from ")) {
+            // 在某段时间区间内，上过线的玩家
             String str = advReceivers.substring(17);
             String[] split = str.contains(" to ") ? str.split(" to ", 2) : new String[] {advReceivers};
             if (split.length == 2) {
