@@ -36,6 +36,7 @@ import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static top.mrxiaom.sweetmail.commands.CommandMain.PERM_ADMIN;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
@@ -46,6 +47,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public String iconReceiverPromptTips;
     public String iconReceiverPromptCancel;
     public String iconReceiverWarnNotExists;
+    public String iconReceiverRegex;
     Icon iconIcon;
     public String iconIconTitle;
     public String iconIconTitleCustom;
@@ -121,6 +123,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 iconReceiverPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件接收者”&b的值 &7(输入 &ccancel &7取消设置)");
                 iconReceiverPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
                 iconReceiverWarnNotExists = section.getString(key + ".warn-not-exists", "%name% &7(&c从未加入过游戏&7)");
+                iconReceiverRegex = section.getString(key + ".regex", "^[a-zA-Z0-9_\\u4e00-\\u9fa5]{1,20}");
                 break;
             }
             case "图": {
@@ -248,6 +251,11 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         return null;
     }
 
+    public boolean testUsername(String name) {
+        Pattern regex = Pattern.compile(iconReceiverRegex);
+        return regex.matcher(name).matches();
+    }
+
     public static MenuDraftConfig inst() {
         return get(MenuDraftConfig.class).orElseThrow(IllegalStateException::new);
     }
@@ -281,16 +289,20 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 iconReceiverPromptTips,
                                 iconReceiverPromptCancel,
                                 receiver -> {
-                                    if (plugin.isOnlineMode()) {
+                                    if (testUsername(receiver)) {
                                         OfflinePlayer offline = Util.getOfflinePlayer(receiver).orElse(null);
-                                        if (offline == null) {
+                                        if (offline == null || offline.getName() == null) {
                                             t(player, messageOnlineNoPlayer);
                                             reopen.run();
                                             return;
                                         }
-                                        draft.receiver = offline.getUniqueId().toString();
+                                        if (plugin.isOnlineMode()) {
+                                            draft.receiver = offline.getUniqueId().toString();
+                                        } else {
+                                            draft.receiver = offline.getName();
+                                        }
                                     } else {
-                                        draft.receiver = receiver;
+                                        t(player, messageOnlineNoPlayer);
                                     }
                                     draft.save();
                                     reopen.run();

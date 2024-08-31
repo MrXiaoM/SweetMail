@@ -23,6 +23,7 @@ items:
     prompt-tips: '&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件接收者”&b的值 &7(输入 &ccancel &7取消设置)'
     prompt-cancel: 'cancel'
     warn-not-exists: '%name% &7(&c从未加入过游戏&7)'
+    regex: '^[a-zA-Z0-9_\u4e00-\u9fa5]{1,20}'
   图:
     display: '&e&l图标'
     lore:
