@@ -45,6 +45,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     String iconReceiverUnset;
     public String iconReceiverPromptTips;
     public String iconReceiverPromptCancel;
+    public String iconReceiverWarnNotExists;
     Icon iconIcon;
     public String iconIconTitle;
     public String iconIconTitleCustom;
@@ -119,6 +120,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 iconReceiverUnset = section.getString(key + ".unset", "&7未设置");
                 iconReceiverPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件接收者”&b的值 &7(输入 &ccancel &7取消设置)");
                 iconReceiverPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
+                iconReceiverWarnNotExists = section.getString(key + ".warn-not-exists", "%name% &7(&c从未加入过游戏&7)");
                 break;
             }
             case "图": {
@@ -168,7 +170,15 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         Draft draft = manager.getDraft(target);
         switch (key) {
             case "接": {
-                String receiver = draft.receiver.isEmpty() ? iconReceiverUnset : Util.getPlayerName(draft.receiver);
+                String receiver;
+                if (draft.receiver.isEmpty()) {
+                    receiver = iconReceiverUnset;
+                } else {
+                    String name = Util.getPlayerName(draft.receiver);
+                    receiver = Util.getOfflinePlayer(name)
+                            .map(OfflinePlayer::getName)
+                            .orElseGet(() -> iconReceiverWarnNotExists.replace("%name%", name));
+                }
                 ItemStack item = iconReceiver.generateIcon(
                         target,
                         Pair.of("%receiver%", receiver)
