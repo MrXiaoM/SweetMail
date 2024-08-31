@@ -19,6 +19,13 @@ import java.util.function.Consumer;
 
 public class ChatPrompter implements Listener {
     private static final Set<UUID> processing = new HashSet<>();
+    public static boolean isProcessing(Player player) {
+        return processing.contains(player.getUniqueId());
+    }
+    public static void submit(Player player, String content) {
+        AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(true, player, content, new HashSet<>());
+        Bukkit.getPluginManager().callEvent(event);
+    }
     Player player;
     Consumer<String> success;
     Runnable fail;

@@ -17,6 +17,7 @@ import top.mrxiaom.sweetmail.config.gui.MenuOutBoxConfig;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.data.TimedDraft;
+import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 
@@ -60,6 +61,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         boolean admin = sender.hasPermission(PERM_ADMIN);
         if (args.length > 0) {
+            if (sender instanceof Player) {
+                Player player = (Player) sender;
+                if (ChatPrompter.isProcessing(player)) {
+                    String content = String.join(" ", args);
+                    ChatPrompter.submit(player, content);
+                    return true;
+                }
+            }
             if ("admin".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length >= 4 && "inbox".equalsIgnoreCase(args[1])) {
                     if (!(sender instanceof Player)) {
@@ -199,6 +208,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         boolean admin = sender.hasPermission(PERM_ADMIN);
+        if (args.length > 0 && sender instanceof Player && ChatPrompter.isProcessing((Player) sender)) {
+            return args.length > 1 || args[0].length() < 3 ? emptyList : Util.getOfflinePlayers(args[0]);
+        }
         if (args.length == 1) {
             return startsWith(admin ? listAdminArg0 : listArg0, args[0]);
         }

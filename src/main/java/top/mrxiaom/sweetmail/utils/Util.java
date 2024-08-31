@@ -145,6 +145,17 @@ public class Util {
         return s;
     }
 
+    public static List<String> getOfflinePlayers(String input) {
+        List<String> list = new ArrayList<>();
+        String s = input.toLowerCase();
+        for (String player : players.keySet()) {
+            if (player.toLowerCase().startsWith(s)) {
+                list.add(player);
+            }
+        }
+        return list;
+    }
+
     public static List<OfflinePlayer> getOfflinePlayers() {
         return Lists.newArrayList(players.values());
     }
