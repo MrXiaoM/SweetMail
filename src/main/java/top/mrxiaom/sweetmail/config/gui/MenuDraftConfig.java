@@ -418,8 +418,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             plugin.getEconomy().takeMoney(player, price);
                         }
                         String uuid = plugin.getMailDatabase().generateMailUUID();
-                        if (draft.outdateTime == 0) {
-                            draft.outdateTime = System.currentTimeMillis() + getOutdateDays(player) * 1000L * 3600L * 24L;
+                        if (draft.outdateDays == 0) {
+                            draft.outdateDays = getOutdateDays(player);
                         }
                         Mail mail = draft.createMail(uuid, receivers);
                         plugin.getMailDatabase().sendMail(mail);

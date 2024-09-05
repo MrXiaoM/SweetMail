@@ -25,7 +25,7 @@ public class Draft {
     public List<IAttachment> attachments = new ArrayList<>();
     public String advSenderDisplay = null;
     public String advReceivers = null;
-    public long outdateTime = 0L;
+    public int outdateDays = 0;
     public final DraftManager manager;
     public Draft(DraftManager manager, String sender) {
         this.manager = manager;
@@ -41,6 +41,7 @@ public class Draft {
         attachments = new ArrayList<>();
         advSenderDisplay = null;
         advReceivers = null;
+        outdateDays = 0;
         save();
     }
 
@@ -57,6 +58,7 @@ public class Draft {
         }
         draft.advSenderDisplay = advSenderDisplay;
         draft.advReceivers = advReceivers;
+        draft.outdateDays = outdateDays;
         return draft;
     }
 
@@ -77,6 +79,7 @@ public class Draft {
         draft.attachments = attachments;
         draft.advSenderDisplay = config.getString("advance.sender_display", null);
         draft.advReceivers = config.getString("advance.receivers", null);
+        draft.outdateDays = config.getInt("advance.outdate_days", 0);
         return draft;
     }
 
@@ -101,6 +104,7 @@ public class Draft {
         config.set("attachments", attachmentsList);
         if (advSenderDisplay != null) config.set("advance.sender_display", advSenderDisplay);
         if (advReceivers != null) config.set("advance.receivers", advReceivers);
+        config.set("advance.outdate_days", outdateDays);
     }
 
     public void save() {
@@ -123,6 +127,12 @@ public class Draft {
         MailIcon icon = DraftManager.inst().getMailIcon(iconKey);
         String iconKeyMail = icon == null ? iconKey.substring(1) : icon.item;
         String sender = senderDisplay.isEmpty() ? this.sender : IMail.SERVER_SENDER;
+        long outdateTime;
+        if (outdateDays > 0) {
+            outdateTime = System.currentTimeMillis() + outdateDays * 1000L * 3600L * 24L;
+        } else {
+            outdateTime = 0;
+        }
         return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments, outdateTime);
     }
 

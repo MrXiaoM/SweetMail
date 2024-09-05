@@ -49,6 +49,13 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     Icon iconTimed;
     String iconTimedPromptTips;
     String iconTimedPromptCancel;
+    Icon iconOutdate;
+    String iconOutdatePromptTips;
+    String iconOutdatePromptCancel;
+    String iconOutdatePromptNotInteger;
+    String iconOutdateSet;
+    String iconOutdateUnset;
+    String iconOutdateUnlimited;
     Icon iconBack;
     public MenuDraftAdvanceConfig(SweetMail plugin) {
         super(plugin, "menus/draft_advance.yml");
@@ -88,6 +95,15 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                 iconTimedPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“定时发送时间”&b的值，并立即加入定时发送队列 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消定时发送)");
                 iconTimedPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
             }
+            case "过": {
+                iconOutdate = loadedIcon;
+                iconOutdatePromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“附件过期时间”&b的值 &7(单位为天数。输入 &ccancel &7取消设置)");
+                iconOutdatePromptCancel = section.getString(key + ".prompt-cancel", "cancel");
+                iconOutdatePromptNotInteger = section.getString(key + ".prompt-not-integer", "&e请输入一个整数");
+                iconOutdateSet = section.getString(key + ".set", "%value% 天");
+                iconOutdateUnset = section.getString(key + ".unset", "&7未设置");
+                iconOutdateUnlimited = section.getString(key + ".unlimited", "&b无限制");
+            }
             case "返": {
                 iconBack = loadedIcon;
                 break;
@@ -119,6 +135,13 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
             }
             case "定": {
                 return iconTimed.generateIcon(target);
+            }
+            case "过": {
+                String outdate;
+                if (draft.outdateDays == 0) outdate = iconOutdateUnset;
+                else if (draft.outdateDays < 0) outdate = iconOutdateUnlimited;
+                else outdate = iconOutdateSet.replace("%value%", String.valueOf(draft.outdateDays));
+                return iconOutdate.generateIcon(target, Pair.of("%outdate%", outdate));
             }
             case "返": {
                 return iconBack.generateIcon(target);
@@ -255,6 +278,37 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                             }
                             applyIcon(this, view, player, slot);
                             Util.updateInventory(player);
+                        }
+                    }
+                    return;
+                }
+                case "定": {
+
+                }
+                case "过": {
+                    if (!click.isShiftClick()) {
+                        if (click.isLeftClick()) {
+                            player.closeInventory();
+                            ChatPrompter.prompt(plugin, player,
+                                    iconOutdatePromptTips, iconOutdatePromptCancel,
+                                    receive -> {
+                                        Integer i = Util.parseInt(receive).orElse(null);
+                                        if (i == null) {
+                                            t(player, iconOutdatePromptNotInteger);
+                                        } else {
+                                            draft.outdateDays = i;
+                                        }
+                                        reopen.run();
+                                    }, reopen);
+                        }
+                        if (click.isRightClick()) {
+                            draft.outdateDays = 0;
+                            applyIcons(this, view, player);
+                        }
+                    } else {
+                        if (click.isLeftClick()) {
+                            draft.outdateDays = -1;
+                            applyIcons(this, view, player);
                         }
                     }
                     return;
