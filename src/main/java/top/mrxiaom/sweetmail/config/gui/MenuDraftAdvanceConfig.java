@@ -14,7 +14,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
@@ -22,11 +24,9 @@ import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -49,6 +49,8 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     Icon iconTimed;
     String iconTimedPromptTips;
     String iconTimedPromptCancel;
+    String iconTimedPromptWrongFormat;
+    String iconTimedSuccess;
     Icon iconOutdate;
     String iconOutdatePromptTips;
     String iconOutdatePromptCancel;
@@ -94,6 +96,8 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                 iconTimed = loadedIcon;
                 iconTimedPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“定时发送时间”&b的值，并立即加入定时发送队列 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消定时发送)");
                 iconTimedPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
+                iconTimedPromptWrongFormat = section.getString(key + ".prompt-wrong-format", "&e时间格式不正确");
+                iconTimedSuccess = section.getString(key + ".success", "&a邮件已成功加入到定时发送队列");
             }
             case "过": {
                 iconOutdate = loadedIcon;
@@ -283,7 +287,29 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                     return;
                 }
                 case "定": {
+                    player.closeInventory();
 
+                    ChatPrompter.prompt(plugin, player,
+                            iconTimedPromptTips, iconTimedPromptCancel,
+                            receive -> {
+                                String[] split = receive.split(" ", 2);
+                                LocalDateTime localDateTime;
+                                try {
+                                    LocalDate date = LocalDate.parse(split[0]);
+                                    LocalTime time = split.length > 1 ? LocalTime.parse(split[1]) : LocalTime.of(0, 0, 0);
+                                    localDateTime = date.atTime(time);
+                                } catch (DateTimeParseException ignored) {
+                                    t(player, iconTimedPromptWrongFormat);
+                                    reopen.run();
+                                    return;
+                                }
+                                long time = localDateTime.toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().getId()));
+                                TimerManager.inst().sendInTime(draft, time);
+                                draft.reset();
+                                draft.save();
+                                t(player, iconTimedSuccess);
+                            }, reopen);
+                    return;
                 }
                 case "过": {
                     if (!click.isShiftClick()) {

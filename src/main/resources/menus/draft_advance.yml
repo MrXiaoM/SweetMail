@@ -65,6 +65,8 @@ items:
       - '&f  的结束时间设置定时发送'
     prompt-tips: '&7[&e&l邮件&7] &b请在聊天栏发送&e“定时发送时间”&b的值，并立即加入定时发送队列 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消定时发送)'
     prompt-cancel: 'cancel'
+    prompt-wrong-format: '&e时间格式不正确'
+    success: '&a邮件已成功加入到定时发送队列'
   过:
     material: COMPASS
     display: '&e&l附件过期时间'
