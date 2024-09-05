@@ -100,6 +100,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     IconSlot iconSlot;
     int slotsCount;
     public String messageFail;
+    public String messageOutdated;
     public MenuInBoxConfig(SweetMail plugin) {
         super(plugin, "menus/inbox.yml");
     }
@@ -112,6 +113,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
         messageFail = cfg.getString("messages.inbox.attachments-fail", "");
+        messageOutdated = cfg.getString("messages.inbox.attachments-outdated", "");
 
         titleAll = config.getString("title-all", "&0收件箱 全部 ( %page%/%max_page% 页)");
         titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 ( %page%/%max_page% 页)");
@@ -355,6 +357,10 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             if (mail.used) continue;
                             mail.used = true;
                             dismiss.add(mail.uuid);
+                            if (mail.isOutdated()) {
+                                t(player, plugin.prefix() + messageOutdated);
+                                continue;
+                            }
                             try {
                                 for (IAttachment attachment : mail.attachments) {
                                     if (attachment.isLegal()) {
@@ -391,6 +397,10 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             if (!mail.attachments.isEmpty() && !mail.used) {
                                 mail.used = true;
                                 plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
+                                if (mail.isOutdated()) {
+                                    t(player, plugin.prefix() + messageOutdated);
+                                    return;
+                                }
                                 try {
                                     for (IAttachment attachment : mail.attachments) {
                                         if (attachment.isLegal()) {

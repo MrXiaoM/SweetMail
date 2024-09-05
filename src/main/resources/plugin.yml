@@ -19,5 +19,7 @@ permissions:
     default: true
   sweetmail.price.default:
     default: true
+  sweetmail.outdate.default:
+    default: true
   sweetmail.attachment.item:
     default: true

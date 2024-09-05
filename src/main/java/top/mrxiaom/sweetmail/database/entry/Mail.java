@@ -61,6 +61,10 @@ public class Mail {
         NoticeManager.inst().noticeNew(receivers);
     }
 
+    public boolean isOutdated() {
+        return outdateTime > 0 && System.currentTimeMillis() >= outdateTime;
+    }
+
     public String serialize() {
         JsonObject json = new JsonObject();
 

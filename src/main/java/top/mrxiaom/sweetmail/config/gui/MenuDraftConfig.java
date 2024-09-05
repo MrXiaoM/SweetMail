@@ -71,6 +71,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public boolean canSendToYourself;
 
     Map<String, Double> priceMap = new HashMap<>();
+    Map<String, Integer> outdateDaysMap = new HashMap<>();
     public MenuDraftConfig(SweetMail plugin) {
         super(plugin, "menus/draft.yml");
     }
@@ -92,6 +93,12 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             double price = section.getDouble(key);
             priceMap.put(key, price > 0 ? price : 0);
         }
+        outdateDaysMap.clear();
+        section = cfg.getConfigurationSection("outdate-time");
+        if (section != null) for (String key : section.getKeys(false)) {
+            int days = section.getInt(key);
+            outdateDaysMap.put(key, days);
+        }
     }
 
     public double getPrice(Permissible permissible) {
@@ -103,6 +110,24 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             }
         }
         return 0;
+    }
+
+    public int getOutdateDays(Permissible permissible) {
+        ArrayList<Map.Entry<String, Integer>> list = Lists.newArrayList(outdateDaysMap.entrySet());
+        list.sort(Comparator.comparingInt(Map.Entry::getValue));
+        Collections.reverse(list);
+        int max = 0;
+        for (Map.Entry<String, Integer> entry : list) {
+            if (entry.getValue() <= 0 || entry.getValue() > max) {
+                if (permissible.hasPermission(entry.getKey())) {
+                    if (entry.getValue() <= 0) return entry.getValue();
+                    if (entry.getValue() > max) {
+                        max = entry.getValue();
+                    }
+                }
+            }
+        }
+        return max;
     }
 
     @Override
@@ -393,6 +418,9 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             plugin.getEconomy().takeMoney(player, price);
                         }
                         String uuid = plugin.getMailDatabase().generateMailUUID();
+                        if (draft.outdateTime == 0) {
+                            draft.outdateTime = System.currentTimeMillis() + getOutdateDays(player) * 1000L * 3600L * 24L;
+                        }
                         Mail mail = draft.createMail(uuid, receivers);
                         plugin.getMailDatabase().sendMail(mail);
                         draft.reset();

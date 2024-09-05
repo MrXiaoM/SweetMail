@@ -55,6 +55,17 @@ price:
   svip: 50
   mvp: 30
 
+# 各权限发送邮件，附件的有效时间 (天)
+# 权限为 sweetmail.outdate.键，如 sweetmail.outdate.default
+# 时间长的检查优先级最高，特别地，小于等于0的优先级更高
+# 无法获取到有效时间或时间小于0时永不过期
+# 玩家默认拥有 default 权限
+outdate-time:
+  default: 7
+  vip: 9
+  svip: 12
+  mvp: 14
+
 # 内置附件类型设置
 attachments:
   item:
@@ -150,7 +161,8 @@ messages:
       use-illegal-deny: '&b附件 &e%name% &b的数据不合规，无法领取，请联系管理员。'
     sent: '邮件发送成功!'
   inbox:
-    attachments-fail: '有附件领取失败! 请联系管理员查看后台了解详细'
+    attachments-outdated: '&e该邮件的附件已过期，无法领取'
+    attachments-fail: '&e有附件领取失败! 请联系管理员查看后台了解详细'
   join:
     text: '&e你有 &b%count% &e封未读邮件 &7[&a点击查看&7]'
     text-online: '&e你有一封新的未读邮件 &7[&a点击查看&7]'
