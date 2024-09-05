@@ -62,6 +62,7 @@ public abstract class IMail {
         private String title = "";
         private List<String> content = new ArrayList<>();
         private List<IAttachment> attachments = new ArrayList<>();
+        private long outdateTime = 0L;
         private MailDraft(String sender) {
             this.sender = sender;
         }
@@ -114,6 +115,13 @@ public abstract class IMail {
          */
         public List<IAttachment> getAttachments() {
             return attachments;
+        }
+
+        /**
+         * 获取邮件附件到期时间 (毫秒时间戳)
+         */
+        public long getOutdateTime() {
+            return outdateTime;
         }
 
         /**
@@ -212,6 +220,13 @@ public abstract class IMail {
         public MailDraft addAttachments(IAttachment... attachments) {
             Collections.addAll(this.attachments, attachments);
             return this;
+        }
+
+        /**
+         * 设置邮件附件到期时间 (毫秒时间戳)
+         */
+        public void setOutdateTime(long outdateTime) {
+            this.outdateTime = outdateTime;
         }
 
         /**

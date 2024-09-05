@@ -25,6 +25,7 @@ public class Draft {
     public List<IAttachment> attachments = new ArrayList<>();
     public String advSenderDisplay = null;
     public String advReceivers = null;
+    public long outdateTime = 0L;
     public final DraftManager manager;
     public Draft(DraftManager manager, String sender) {
         this.manager = manager;
@@ -122,7 +123,7 @@ public class Draft {
         MailIcon icon = DraftManager.inst().getMailIcon(iconKey);
         String iconKeyMail = icon == null ? iconKey.substring(1) : icon.item;
         String sender = senderDisplay.isEmpty() ? this.sender : IMail.SERVER_SENDER;
-        return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments);
+        return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments, outdateTime);
     }
 
     /**
