@@ -39,8 +39,7 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public void use(Player player) {
-        Economy economy = SweetMail.getInstance().getEconomy();
-        economy.depositPlayer(player, money);
+        SweetMail.getInstance().getEconomy().giveMoney(player, money);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class AttachmentMoney implements IAttachment {
                                     back.run();
                                     return;
                                 }
-                                plugin.getEconomy().withdrawPlayer(player, money);
+                                plugin.getEconomy().takeMoney(player, money);
                                 AttachmentMoney attachment = AttachmentMoney.build(money);
                                 Draft draft = DraftManager.inst().getDraft(player);
                                 draft.attachments.add(attachment);

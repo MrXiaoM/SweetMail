@@ -2,7 +2,6 @@ package top.mrxiaom.sweetmail;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +24,7 @@ import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.func.data.Draft;
+import top.mrxiaom.sweetmail.utils.EconomyHolder;
 import top.mrxiaom.sweetmail.utils.StringHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
@@ -49,7 +48,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private TextHelper textHelper = null;
     private GuiManager guiManager = null;
     private MailDatabase database = null;
-    private Economy economy;
+    private EconomyHolder economy;
 
     public TextHelper text() {
         return textHelper;
@@ -64,7 +63,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     }
 
     @NotNull
-    public Economy getEconomy() {
+    public EconomyHolder getEconomy() {
         return economy;
     }
     private String prefix;
@@ -99,16 +98,23 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     }
 
     public void loadHooks() {
-        RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
+        if (!Util.isPresent("net.milkbowl.vault.economy.Economy")) {
+            economy = null;
+            getLogger().info("没有安装 Vault");
+        } else {
+            economy = EconomyHolder.inst();
+            if (economy == null) {
+                getLogger().info("已安装 Vault，未发现经济插件");
+            } else {
+                getLogger().info("已安装 Vault，经济插件为 " + economy.economy.getName());
+            }
         }
     }
 
     private void loadBuiltInAttachments() {
         AttachmentItem.register();
         AttachmentCommand.register();
-        AttachmentMoney.register();
+        if (economy != null) AttachmentMoney.register();
     }
 
     @Override
