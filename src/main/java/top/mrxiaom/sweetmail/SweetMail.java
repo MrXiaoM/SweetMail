@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.attachments.AttachmentCommand;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.AttachmentMoney;
@@ -62,7 +63,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return database;
     }
 
-    @NotNull
+    @Nullable
     public EconomyHolder getEconomy() {
         return economy;
     }
