@@ -27,7 +27,7 @@ public class AttachmentItem implements IAttachment {
     private final ItemStack item;
 
     private AttachmentItem(ItemStack item) {
-        this.item = item;
+        this.item = item.clone();
     }
 
     /**
@@ -40,7 +40,8 @@ public class AttachmentItem implements IAttachment {
 
     @Override
     public void use(Player player) {
-        Collection<ItemStack> values = player.getInventory().addItem(item).values();
+        ItemStack itemToAdd = item.clone();
+        Collection<ItemStack> values = player.getInventory().addItem(itemToAdd).values();
         if (!values.isEmpty()) for (ItemStack i : values) {
             player.getWorld().dropItem(player.getLocation(), i);
         }
@@ -60,7 +61,7 @@ public class AttachmentItem implements IAttachment {
 
     @Override
     public ItemStack generateIcon(Player target) {
-        return item;
+        return item.clone();
     }
 
     public String getName() {
