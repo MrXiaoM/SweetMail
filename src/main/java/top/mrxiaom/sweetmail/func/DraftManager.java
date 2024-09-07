@@ -48,8 +48,11 @@ public class DraftManager extends AbstractPluginHolder {
     public void receiveBungee(String subChannel, DataInputStream in) throws IOException {
         if (!subChannel.equalsIgnoreCase("PlayerList")) return;
         allPlayers.clear();
-        in.readUTF();
-        Collections.addAll(allPlayers, in.readUTF().split(", "));
+        try {
+            in.readUTF();
+            Collections.addAll(allPlayers, in.readUTF().split(", "));
+        } catch (Throwable ignored) {
+        }
     }
 
     public List<String> getAllPlayers() {
