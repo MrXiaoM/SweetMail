@@ -15,12 +15,14 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
+import top.mrxiaom.sweetmail.config.gui.entry.IconSlot;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.*;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
+import static top.mrxiaom.sweetmail.config.gui.entry.IconSlot.loadSlot;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
@@ -32,7 +34,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
     Icon iconNextPage;
     Icon iconGetAll;
     String iconGetAllRedirect;
-    MenuInBoxConfig.IconSlot iconSlot;
+    IconSlot iconSlot;
     int slotsCount;
     public MenuOutBoxConfig(SweetMail plugin) {
         super(plugin, "menus/outbox.yml");
@@ -94,7 +96,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 iconGetAllRedirect = section.getString(key + ".redirect");
                 break;
             case "格":
-                iconSlot = MenuInBoxConfig.loadSlot(section, key, loadedIcon);
+                iconSlot = loadSlot(section, key, loadedIcon);
                 break;
         }
     }
@@ -132,7 +134,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
                     String receiver = mail.receivers.size() == 1
                             ? Util.getPlayerName(mail.receivers.get(0))
-                            : iconSlot.receiverAndSoOn
+                            : iconSlot.getReceiverAndSoOnMessage()
                             .replace("%player%", gui.getTarget())
                             .replace("%count%", String.valueOf(mail.receivers.size()));
                     return iconSlot.generateIcon(target, mail, icon,
@@ -145,7 +147,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             Pair.of("%time%", plugin.text().toString(mail.time))
                     );
                 } else {
-                    Icon icon = otherIcon.get(iconSlot.redirect);
+                    Icon icon = otherIcon.get(iconSlot.getRedirect());
                     if (icon != null) {
                         return icon.generateIcon(target);
                     }

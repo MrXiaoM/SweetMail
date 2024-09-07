@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
+import top.mrxiaom.sweetmail.config.gui.entry.IconSlot;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
@@ -25,77 +26,10 @@ import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.util.*;
 
+import static top.mrxiaom.sweetmail.config.gui.entry.IconSlot.loadSlot;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
-    public static class IconSlot {
-        public final Icon base;
-        Map<String, List<String>> loreParts = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-        List<String> loreContent;
-        List<String> attachmentFormat;
-        List<String> attachmentBottomAvailable;
-        List<String> attachmentBottomUnavailable;
-        List<String> loreRead;
-        List<String> loreUnread;
-        String redirect;
-        String receiverAndSoOn;
-        List<String> attachmentAndSoOnLore;
-        int attachmentAndSoOnCount;
-        private IconSlot(Icon base) {
-            this.base = base;
-        }
-
-        @SafeVarargs
-        public final List<String> getIconLore(Player target, MailWithStatus mail, Pair<String, Object>... replacements) {
-            List<String> lore = new ArrayList<>();
-            for (String key : loreContent) {
-                List<String> list = loreParts.get(key);
-                if (list != null && !list.isEmpty()) {
-                    lore.addAll(list);
-                } else {
-                    int attachmentCount = 0;
-                    switch (key) {
-                        case "attachments":
-                            for (IAttachment attachment : mail.attachments) {
-                                lore.addAll(replace(attachmentFormat, Pair.of("%attachment%", attachment.toString())));
-                                if (attachmentAndSoOnCount > 0 && ++attachmentCount > attachmentAndSoOnCount) {
-                                    lore.addAll(replace(attachmentAndSoOnLore, Pair.of("%count%", mail.attachments.size())));
-                                    break;
-                                }
-                            }
-                            break;
-                        case "bottom_attachments":
-                            lore.addAll(mail.used ? attachmentBottomUnavailable : attachmentBottomAvailable);
-                            break;
-                        case "read":
-                            lore.addAll(mail.read ? loreRead : loreUnread);
-                            break;
-                        default:
-                            lore.add(key);
-                            break;
-                    }
-                }
-            }
-
-            return PAPI.setPlaceholders(target, replace(lore, replacements));
-        }
-
-        @SafeVarargs
-        public final ItemStack generateIcon(Player target, MailWithStatus mail, ItemStack icon, Pair<String, Object>... replacements) {
-            if (base.display != null) {
-                ItemStackUtil.setItemDisplayName(icon, PAPI.setPlaceholders(target, replace(base.display, replacements)));
-            }
-            List<String> lore = getIconLore(target, mail, replacements);
-
-            if (!lore.isEmpty()) {
-                ItemStackUtil.setItemLore(icon, lore);
-            }
-            if (base.glow) {
-                ItemStackUtil.setGlow(icon);
-            }
-            return icon;
-        }
-    }
     String titleAll, titleAllOther, titleUnread, titleUnreadOther;
     Icon iconAll;
     Icon iconUnread;
@@ -179,24 +113,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         }
     }
 
-    protected static IconSlot loadSlot(ConfigurationSection section, String key, Icon base) {
-        IconSlot icon = new IconSlot(base);
-        ConfigurationSection section1 = section.getConfigurationSection(key + ".lore-parts");
-        if (section1 != null) for (String k : section1.getKeys(false)) {
-            icon.loreParts.put(k, section1.getStringList(k));
-        }
-        icon.loreContent = section.getStringList(key + ".lore-content");
-        icon.attachmentFormat = section.getStringList(key + ".lore-format.attachment-item");
-        icon.attachmentBottomAvailable = section.getStringList(key + ".lore-format.attachment.available");
-        icon.attachmentBottomUnavailable = section.getStringList(key + ".lore-format.attachment.unavailable");
-        icon.loreRead = section.getStringList(key + ".lore-format.read");
-        icon.loreUnread = section.getStringList(key + ".lore-format.unread");
-        icon.redirect = section.getString(key + ".redirect");
-        icon.receiverAndSoOn = section.getString(key + ".lore-format.and-so-on", "");
-        icon.attachmentAndSoOnLore = section.getStringList(key + ".lore-format.attachment-and-so-on.lore");
-        icon.attachmentAndSoOnCount = section.getInt(key + ".lore-format.attachment-and-so-on.max-count", 7);
-        return icon;
-    }
 
     @Override
     protected ItemStack tryApplyMainIcon(Gui gui, String key, Player target, int iconIndex) {
@@ -231,7 +147,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
                     String receiver = mail.receivers.size() == 1
                             ? Util.getPlayerName(mail.receivers.get(0))
-                            : iconSlot.receiverAndSoOn
+                            : iconSlot.getReceiverAndSoOnMessage()
                             .replace("%player%", gui.getTarget())
                             .replace("%count%", String.valueOf(mail.receivers.size()));
                     return iconSlot.generateIcon(target, mail, icon,
@@ -244,7 +160,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             Pair.of("%time%", plugin.text().toString(mail.time))
                     );
                 } else {
-                    Icon icon = otherIcon.get(iconSlot.redirect);
+                    Icon icon = otherIcon.get(iconSlot.getRedirect());
                     if (icon != null) {
                         return icon.generateIcon(target);
                     }
