@@ -92,6 +92,10 @@ items:
       # attachments部分-显示模板
       attachment-item:
         - '  &8● &e%attachment%'
+      attachment-and-so-on:
+        max-count: 7
+        lore:
+          - '  &8(等 &7%count% &8个附件)'
       # bottom_attachments部分
       attachment:
         # 可领取

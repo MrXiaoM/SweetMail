@@ -39,6 +39,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         List<String> loreUnread;
         String redirect;
         String receiverAndSoOn;
+        List<String> attachmentAndSoOnLore;
+        int attachmentAndSoOnCount;
         private IconSlot(Icon base) {
             this.base = base;
         }
@@ -51,10 +53,15 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 if (list != null && !list.isEmpty()) {
                     lore.addAll(list);
                 } else {
+                    int attachmentCount = 0;
                     switch (key) {
                         case "attachments":
                             for (IAttachment attachment : mail.attachments) {
                                 lore.addAll(replace(attachmentFormat, Pair.of("%attachment%", attachment.toString())));
+                                if (attachmentAndSoOnCount > 0 && ++attachmentCount > attachmentAndSoOnCount) {
+                                    lore.addAll(replace(attachmentAndSoOnLore, Pair.of("%count%", mail.attachments.size())));
+                                    break;
+                                }
                             }
                             break;
                         case "bottom_attachments":
@@ -186,6 +193,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         icon.loreUnread = section.getStringList(key + ".lore-format.unread");
         icon.redirect = section.getString(key + ".redirect");
         icon.receiverAndSoOn = section.getString(key + ".lore-format.and-so-on", "");
+        icon.attachmentAndSoOnLore = section.getStringList(key + ".lore-format.attachment-and-so-on.lore");
+        icon.attachmentAndSoOnCount = section.getInt(key + ".lore-format.attachment-and-so-on.max-count", 7);
         return icon;
     }
 

@@ -61,9 +61,15 @@ items:
       - attachments
       - part2
     lore-format:
+      # %receiver%部分-有多个接收者时显示内容
+      and-so-on: '%player% 等 %count% 名玩家'
+      # attachments部分-显示模板
       attachment-item:
         - '  &8● &e%attachment%'
-      and-so-on: '%player% 等 %count% 名玩家'
+      attachment-and-so-on:
+        max-count: 7
+        lore:
+          - '  &8(等 &7%count% &8个附件)'
 # 非必选物品
 other-items:
   黑:
