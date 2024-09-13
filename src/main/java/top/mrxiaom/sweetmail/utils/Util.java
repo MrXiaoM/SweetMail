@@ -111,6 +111,7 @@ public class Util {
     }
 
     public static void openBook(Player player, Book book) {
+        player.closeInventory();
         adventure.player(player).openBook(book);
     }
 
