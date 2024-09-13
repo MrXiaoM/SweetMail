@@ -3,6 +3,7 @@ package top.mrxiaom.sweetmail.database.entry;
 import com.google.gson.*;
 import net.kyori.adventure.inventory.Book;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.func.NoticeManager;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
@@ -133,9 +134,9 @@ public class Mail {
         return element.getAsString();
     }
 
-    private static Long getLong(JsonObject json, String key, Long defaultValue) {
+    private static Long getLong(JsonObject json, String key, @Nullable Long defaultValue) {
         JsonElement element = json.get(key);
-        return element == null ? defaultValue : element.getAsLong();
+        return element == null ? defaultValue : Long.valueOf(element.getAsLong());
     }
 
     private static List<String> getList(JsonObject json, String key) {
