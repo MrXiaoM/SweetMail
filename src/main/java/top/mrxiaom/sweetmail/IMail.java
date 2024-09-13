@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail;
 
+import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 
@@ -142,6 +143,19 @@ public abstract class IMail {
         }
 
         /**
+         * @see IMail.MailDraft#setReceiver(String)
+         */
+        public MailDraft setReceiverFromPlayer(OfflinePlayer receiver) {
+            String s = SweetMail.getInstance().isOnlineMode()
+                    ? receiver.getUniqueId().toString()
+                    : receiver.getName();
+            if (s != null) {
+                setReceiver(s);
+            }
+            return this;
+        }
+
+        /**
          * 设置邮件接收者列表。<br>
          * 定时发送不支持该选项输入多个接收者，请将第一个元素设为 #advance#，第二个元素设为泛接收者表达式。<br>
          * 表达式具体语法详见 Draft 源码。
@@ -150,6 +164,22 @@ public abstract class IMail {
         public MailDraft setReceivers(List<String> receivers) {
             this.receivers = receivers;
             return this;
+        }
+
+        /**
+         * @see IMail.MailDraft#setReceivers(List)
+         */
+        public MailDraft setReceiversFromPlayers(List<OfflinePlayer> receivers) {
+            List<String> list = new ArrayList<>();
+            for (OfflinePlayer p : receivers) {
+                String s = SweetMail.getInstance().isOnlineMode()
+                        ? p.getUniqueId().toString()
+                        : p.getName();
+                if (s != null) {
+                    list.add(s);
+                }
+            }
+            return setReceivers(list);
         }
 
         /**
