@@ -35,6 +35,10 @@ import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -68,10 +72,12 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public String messageMoneyFormat;
     public String messageOnlineNoPlayer;
     public String messageItemBanned;
+    public String messageDraftOpenTips;
     public boolean canSendToYourself;
 
     Map<String, Double> priceMap = new HashMap<>();
     Map<String, Integer> outdateDaysMap = new HashMap<>();
+    Map<String, Integer> outdateDraftHoursMap = new HashMap<>();
     public MenuDraftConfig(SweetMail plugin) {
         super(plugin, "menus/draft.yml");
     }
@@ -87,6 +93,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         messageMoneyFormat = cfg.getString("messages.draft.money-format", "");
         messageOnlineNoPlayer = cfg.getString("messages.draft.online.no-player", "");
         messageItemBanned = cfg.getString("messages.draft.attachments.item.banned", "");
+        messageDraftOpenTips = cfg.getString("messages.draft.open-tips", "");
         priceMap.clear();
         ConfigurationSection section = cfg.getConfigurationSection("price");
         if (section != null) for (String key : section.getKeys(false)) {
@@ -98,6 +105,12 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         if (section != null) for (String key : section.getKeys(false)) {
             int days = section.getInt(key);
             outdateDaysMap.put(key, days);
+        }
+        outdateDraftHoursMap.clear();
+        section = cfg.getConfigurationSection("outdate-draft");
+        if (section != null) for (String key : section.getKeys(false)) {
+            int hours = section.getInt(key);
+            outdateDraftHoursMap.put(key, hours);
         }
     }
 
@@ -119,7 +132,25 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         int max = 0;
         for (Map.Entry<String, Integer> entry : list) {
             if (entry.getValue() <= 0 || entry.getValue() > max) {
-                if (permissible.hasPermission(entry.getKey())) {
+                if (permissible.hasPermission("sweetmail.outdate." + entry.getKey())) {
+                    if (entry.getValue() <= 0) return entry.getValue();
+                    if (entry.getValue() > max) {
+                        max = entry.getValue();
+                    }
+                }
+            }
+        }
+        return max;
+    }
+
+    public int getDraftOutdateHours(Permissible permissible) {
+        ArrayList<Map.Entry<String, Integer>> list = Lists.newArrayList(outdateDraftHoursMap.entrySet());
+        list.sort(Comparator.comparingInt(Map.Entry::getValue));
+        Collections.reverse(list);
+        int max = 0;
+        for (Map.Entry<String, Integer> entry : list) {
+            if (entry.getValue() <= 0 || entry.getValue() > max) {
+                if (permissible.hasPermission("sweetmail.draft.outdate." + entry.getKey())) {
                     if (entry.getValue() <= 0) return entry.getValue();
                     if (entry.getValue() > max) {
                         max = entry.getValue();
@@ -286,8 +317,30 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     }
 
     public class Gui extends AbstractDraftGui {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         public Gui(SweetMail plugin, Player player) {
             super(plugin, player);
+            checkDraft();
+        }
+
+        public void checkDraft() {
+            int outdateHours = getDraftOutdateHours(player);
+            long now = System.currentTimeMillis();
+            if (outdateHours > 0 && !player.hasPermission("sweetmail.draft.bypass.outdate")) {
+                int outdateTime = outdateHours * 1000 * 3600;
+                if (draft.lastEditTime != null) {
+                    long last = draft.lastEditTime;
+                    if (last + outdateTime > now) {
+                        draft.reset();
+                    }
+                }
+                LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochMilli(now + outdateTime), ZoneId.systemDefault());
+                t(player, messageDraftOpenTips
+                        .replace("%hours%", String.valueOf(outdateHours))
+                        .replace("%time%", time.format(formatter)));
+            }
+            draft.lastEditTime = now;
+            draft.save();
         }
 
 

@@ -26,6 +26,7 @@ public class Draft {
     public String advSenderDisplay = null;
     public String advReceivers = null;
     public int outdateDays = 0;
+    public Long lastEditTime = null;
     public final DraftManager manager;
     public Draft(DraftManager manager, String sender) {
         this.manager = manager;
@@ -42,6 +43,7 @@ public class Draft {
         advSenderDisplay = null;
         advReceivers = null;
         outdateDays = 0;
+        lastEditTime = null;
         save();
     }
 
@@ -59,6 +61,7 @@ public class Draft {
         draft.advSenderDisplay = advSenderDisplay;
         draft.advReceivers = advReceivers;
         draft.outdateDays = outdateDays;
+        draft.lastEditTime = lastEditTime;
         return draft;
     }
 
@@ -80,6 +83,7 @@ public class Draft {
         draft.advSenderDisplay = config.getString("advance.sender_display", null);
         draft.advReceivers = config.getString("advance.receivers", null);
         draft.outdateDays = config.getInt("advance.outdate_days", 0);
+        draft.lastEditTime = config.contains("last-edit") ? config.getLong("last-edit") : null;
         return draft;
     }
 
@@ -105,6 +109,7 @@ public class Draft {
         if (advSenderDisplay != null) config.set("advance.sender_display", advSenderDisplay);
         if (advReceivers != null) config.set("advance.receivers", advReceivers);
         config.set("advance.outdate_days", outdateDays);
+        if (lastEditTime != null) config.set("last-edit", lastEditTime);
     }
 
     public void save() {

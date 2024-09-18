@@ -66,6 +66,22 @@ outdate-time:
   svip: 12
   mvp: 14
 
+# 各权限的草稿能保存的时间 (小时)
+# 权限为 sweetmail.draft.outdate.键，如 sweetmail.draft.outdate.default
+# 拥有权限 sweetmail.draft.bypass.outdate 者可永久保存
+# 玩家在打开草稿编辑器时，会提示可保存时间
+# 玩家下次打开草稿编辑器时如果与上次打开时间相差超过此处设定的值，则重置草稿
+# 每次打开草稿编辑器，都会重置一次可保存时间，举个例子
+# 默认值为 24 小时，玩家在 8:00 打开了草稿编辑器，次日 8:00 过期
+# 如果玩家之后又在 10:00 打开了草稿编辑器，那么变为次日 10:00 过期
+# 无法获取到有效时间或时间小于等于0时永不过期
+# 玩家默认拥有 default 权限
+outdate-draft:
+  default: 10
+  vip: 12
+  svip: 24
+  mvp: 24
+
 # 内置附件类型设置
 attachments:
   item:
@@ -131,6 +147,7 @@ messages:
       - '&a&l已选择'
     no-receivers: '&e你没有设置接收者，无法发送邮件!'
     cant-send-to-yourself: '&e你不能发送邮件给你自己!'
+    open-tips: '&f你的草稿将会保存 &e%hours% &f小时，在&e %time% &f过期，请勿在附件存放贵重物品。草稿过期时间会在重新打开草稿编辑器时刷新。'
     attachments:
       remove-lore:
         - ''
