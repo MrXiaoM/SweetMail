@@ -162,7 +162,7 @@ public class Draft {
             Long timeRaw = Util.parseLong(advReceivers.substring(15)).orElse(null);
             if (timeRaw != null) {
                 List<OfflinePlayer> players = Util.getOfflinePlayers();
-                players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() > timeRaw);
+                players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() < timeRaw);
                 for (OfflinePlayer player : players) {
                     receivers.add(online ? player.getUniqueId().toString() : player.getName());
                 }
