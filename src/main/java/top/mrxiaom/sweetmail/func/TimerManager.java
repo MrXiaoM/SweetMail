@@ -85,24 +85,26 @@ public class TimerManager extends AbstractPluginHolder {
 
     private void everySecond() {
         if (queue.isEmpty()) return;
-        boolean flag = false;
-        long time = System.currentTimeMillis();
-        DraftManager manager = DraftManager.inst();
-        for (TimedDraft temp : Lists.newArrayList(queue.values())) {
-            if (temp.isOutOfTime(time)) {
-                cancelQueue(temp.id);
-                flag = true;
-                List<String> receivers = manager.generateReceivers(temp.draft);
-                if (receivers.isEmpty()) {
-                    warn("定时邮件 " + temp.id + " (by " + temp.senderName + "#" + temp.senderUUID + ") 发送失败: 接收者列表为空");
-                    continue;
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            boolean flag = false;
+            long time = System.currentTimeMillis();
+            DraftManager manager = DraftManager.inst();
+            for (TimedDraft temp : Lists.newArrayList(queue.values())) {
+                if (temp.isOutOfTime(time)) {
+                    cancelQueue(temp.id);
+                    flag = true;
+                    List<String> receivers = manager.generateReceivers(temp.draft);
+                    if (receivers.isEmpty()) {
+                        warn("定时邮件 " + temp.id + " (by " + temp.senderName + "#" + temp.senderUUID + ") 发送失败: 接收者列表为空");
+                        continue;
+                    }
+                    String uuid = plugin.getMailDatabase().generateMailUUID();
+                    Mail mail = temp.draft.createMail(uuid, receivers);
+                    plugin.getMailDatabase().sendMail(mail);
                 }
-                String uuid = plugin.getMailDatabase().generateMailUUID();
-                Mail mail = temp.draft.createMail(uuid, receivers);
-                plugin.getMailDatabase().sendMail(mail);
             }
-        }
-        if (flag) save();
+            if (flag) save();
+        });
     }
 
     public static TimerManager inst() {

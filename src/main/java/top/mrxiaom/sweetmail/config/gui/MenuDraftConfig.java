@@ -461,25 +461,27 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             t(player, plugin.prefix() + messageCantSendToYourself);
                             return;
                         }
-                        List<String> receivers = DraftManager.inst().generateReceivers(draft);
-                        if (!canSendToYourself) receivers.remove(player.getName());
-                        if (receivers.isEmpty()) {
-                            t(player, plugin.prefix() + messageNoReceivers);
-                            return;
-                        }
-                        if (plugin.getEconomy() != null) {
-                            plugin.getEconomy().takeMoney(player, price);
-                        }
-                        String uuid = plugin.getMailDatabase().generateMailUUID();
-                        if (draft.outdateDays == 0) {
-                            draft.outdateDays = getOutdateDays(player);
-                        }
-                        Mail mail = draft.createMail(uuid, receivers);
-                        plugin.getMailDatabase().sendMail(mail);
-                        draft.reset();
-                        draft.save();
-                        player.closeInventory();
-                        t(player, plugin.prefix() + messageSent);
+                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                            List<String> receivers = DraftManager.inst().generateReceivers(draft);
+                            if (!canSendToYourself) receivers.remove(player.getName());
+                            if (receivers.isEmpty()) {
+                                t(player, plugin.prefix() + messageNoReceivers);
+                                return;
+                            }
+                            if (plugin.getEconomy() != null) {
+                                plugin.getEconomy().takeMoney(player, price);
+                            }
+                            String uuid = plugin.getMailDatabase().generateMailUUID();
+                            if (draft.outdateDays == 0) {
+                                draft.outdateDays = getOutdateDays(player);
+                            }
+                            Mail mail = draft.createMail(uuid, receivers);
+                            plugin.getMailDatabase().sendMail(mail);
+                            draft.reset();
+                            draft.save();
+                            player.closeInventory();
+                            t(player, plugin.prefix() + messageSent);
+                        });
                     }
                     return;
                 }
