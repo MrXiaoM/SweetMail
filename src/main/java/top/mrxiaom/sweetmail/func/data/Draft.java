@@ -158,12 +158,11 @@ public class Draft {
             receivers.addAll(DraftManager.inst().getAllPlayers());
         }
         if (advReceivers.startsWith("last played in ")) {
-            // 多久之前到现在，上过线的玩家
+            // 从什么时间到现在，上过线的玩家
             Long timeRaw = Util.parseLong(advReceivers.substring(15)).orElse(null);
             if (timeRaw != null) {
-                long time = System.currentTimeMillis() - timeRaw;
                 List<OfflinePlayer> players = Util.getOfflinePlayers();
-                players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() > time);
+                players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() > timeRaw);
                 for (OfflinePlayer player : players) {
                     receivers.add(online ? player.getUniqueId().toString() : player.getName());
                 }
