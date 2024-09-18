@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.database.impl;
 
+import org.bukkit.Bukkit;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.IMailDatabaseReloadable;
 import top.mrxiaom.sweetmail.database.entry.Mail;
@@ -13,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
@@ -47,31 +49,34 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
 
     @Override
     public void sendMail(Mail mail) {
-        try (Connection conn = getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, ?);"
-            )) {
-                ps.setString(1, mail.uuid);
-                ps.setString(2, mail.sender);
-                byte[] bytes = mail.serialize().getBytes(StandardCharsets.UTF_8);
-                ps.setBytes(3, bytes);
-                ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
-                ps.execute();
-            }
-            try (PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0);"
-            )) {
-                for (String receiver : mail.receivers) {
+        Bukkit.getScheduler().runTaskAsynchronously(SweetMail.getInstance(), () -> {
+            try (Connection conn = getConnection()) {
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, ?);"
+                )) {
                     ps.setString(1, mail.uuid);
-                    ps.setString(2, receiver);
-                    ps.addBatch();
+                    ps.setString(2, mail.sender);
+                    byte[] bytes = mail.serialize().getBytes(StandardCharsets.UTF_8);
+                    ps.setBytes(3, bytes);
+                    ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+                    ps.execute();
                 }
-                ps.executeBatch();
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0) on duplicate key update receiver=?;"
+                )) {
+                    for (String receiver : new HashSet<>(mail.receivers)) {
+                        ps.setString(1, mail.uuid);
+                        ps.setString(2, receiver);
+                        ps.setString(3, receiver);
+                        ps.addBatch();
+                    }
+                    ps.executeBatch();
+                }
+                mail.noticeSent();
+            } catch (SQLException e) {
+                SweetMail.warn(e);
             }
-            mail.noticeSent();
-        } catch (SQLException e) {
-            SweetMail.warn(e);
-        }
+        });
     }
 
     @Override
