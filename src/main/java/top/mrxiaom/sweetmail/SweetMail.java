@@ -73,6 +73,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return prefix;
     }
     private boolean onlineMode;
+    public int bundleMaxSlots;
     public boolean isOnlineMode() {
         return onlineMode;
     }
@@ -164,6 +165,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                 onlineMode = Bukkit.getOnlineMode();
                 break;
         }
+        bundleMaxSlots = config.getInt("bundle-max-slots", 7);
         getLogger().info("插件当前在 " + (onlineMode ? "在线模式": "离线模式") + " 下运行");
         reloadAllConfig(config);
     }

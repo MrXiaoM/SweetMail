@@ -57,9 +57,14 @@ public class ItemStackUtil {
             ItemMeta m = item.getItemMeta();
             if (m instanceof BundleMeta) {
                 BundleMeta meta = (BundleMeta) m;
+                meta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
                 meta.setItems(new ArrayList<>());
+                int count = 0;
                 for (IAttachment attachment : attachments) {
                     meta.addItem(attachment.generateIcon(player));
+                    if (++count >= SweetMail.getInstance().bundleMaxSlots) {
+                        break;
+                    }
                 }
                 item.setItemMeta(meta);
             }
