@@ -145,6 +145,7 @@ public class Draft {
      * 解析 advance receivers
      */
     public static List<String> generateReceivers(String advReceivers) {
+        if (advReceivers == null) return new ArrayList<>();
         boolean online = SweetMail.getInstance().isOnlineMode();
         List<String> receivers = new ArrayList<>();
         if (advReceivers.equalsIgnoreCase("current online")) {

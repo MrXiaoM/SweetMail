@@ -210,9 +210,12 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                             return;
                         }
                         if (click.equals(ClickType.DROP)) {
+                            t(player, "正在计算泛接收人列表，请稍等…");
                             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                                 List<String> receivers = draft.advReceivers();
-                                if (receivers.size() < 16) {
+                                if (receivers.isEmpty()) {
+                                    t(player, "(空)");
+                                } else if (receivers.size() < 16) {
                                     t(player, String.join(", ", receivers));
                                 } else {
                                     List<String> list = Lists.partition(receivers, 16).get(0);
