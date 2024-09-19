@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -14,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
-import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
@@ -207,6 +207,20 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                             draft.save();
                             applyIcon(this, view, player, slot);
                             Util.updateInventory(player);
+                            return;
+                        }
+                        if (click.equals(ClickType.DROP)) {
+                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                List<String> receivers = draft.advReceivers();
+                                if (receivers.size() < 16) {
+                                    t(player, String.join(", ", receivers));
+                                } else {
+                                    List<String> list = Lists.partition(receivers, 16).get(0);
+                                    t(player, String.join(", ", list) + "... (" + receivers.size() + ")");
+                                }
+                            });
+                            player.closeInventory();
+                            return;
                         }
                         if (click.equals(ClickType.NUMBER_KEY)) {
                             int btn = event.getHotbarButton() + 1;
@@ -282,6 +296,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                             }
                             applyIcon(this, view, player, slot);
                             Util.updateInventory(player);
+                            return;
                         }
                     }
                     return;
