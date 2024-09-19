@@ -19,6 +19,7 @@ import top.mrxiaom.sweetmail.attachments.AttachmentMoney;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.MailDatabase;
 import top.mrxiaom.sweetmail.database.entry.*;
+import top.mrxiaom.sweetmail.depend.Placeholder;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.TimerManager;
@@ -109,6 +110,9 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             } else {
                 getLogger().info("已安装 Vault，经济插件为 " + economy.economy.getName());
             }
+        }
+        if (Util.isPresent("me.clip.placeholderapi.expansion.PlaceholderExpansion")) {
+            new Placeholder(this).register();
         }
     }
 
