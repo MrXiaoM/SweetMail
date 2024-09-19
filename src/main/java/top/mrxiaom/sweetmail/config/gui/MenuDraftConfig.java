@@ -467,6 +467,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         if (draft.advReceivers != null && draft.advReceivers.startsWith("last ")) {
                             t(player, plugin.prefix() + messageSendWithAdvReceivers);
                         }
+                        player.closeInventory();
                         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                             List<String> receivers = DraftManager.inst().generateReceivers(draft);
                             if (!canSendToYourself) receivers.remove(player.getName());
@@ -485,7 +486,6 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             plugin.getMailDatabase().sendMail(mail);
                             draft.reset();
                             draft.save();
-                            player.closeInventory();
                             t(player, plugin.prefix() + messageSent);
                         });
                     }
