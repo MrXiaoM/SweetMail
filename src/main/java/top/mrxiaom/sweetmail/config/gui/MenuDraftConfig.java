@@ -67,6 +67,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
 
     public String messageNoReceivers;
     public String messageCantSendToYourself;
+    public String messageSendWithAdvReceivers;
     public String messageSent;
     public String messageNoMoney;
     public String messageMoneyFormat;
@@ -88,6 +89,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         canSendToYourself = cfg.getBoolean("can-send-to-yourself", false);
         messageNoReceivers = cfg.getString("messages.draft.no-receivers", "");
         messageCantSendToYourself = cfg.getString("messages.draft.cant-send-to-yourself", "");
+        messageSendWithAdvReceivers = cfg.getString("messages.draft.send-with-adv-receivers", "");
         messageSent = cfg.getString("messages.draft.sent", "");
         messageNoMoney = cfg.getString("messages.draft.no-money", "");
         messageMoneyFormat = cfg.getString("messages.draft.money-format", "");
@@ -460,6 +462,10 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         if (!canSendToYourself && draft.sender.equalsIgnoreCase(draft.receiver)) {
                             t(player, plugin.prefix() + messageCantSendToYourself);
                             return;
+                        }
+                        // 提醒发送人，计算泛接收人列表的时间可能会很长
+                        if (draft.advReceivers != null && draft.advReceivers.startsWith("last ")) {
+                            t(player, plugin.prefix() + messageSendWithAdvReceivers);
                         }
                         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                             List<String> receivers = DraftManager.inst().generateReceivers(draft);

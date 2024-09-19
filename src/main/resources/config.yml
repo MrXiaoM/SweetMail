@@ -176,6 +176,7 @@ messages:
         prompt-cancel: 'cancel'
         fail: '&7[&e&l邮件&7] &e格式不正确，应为 &f图标,显示名称,执行命令&e，如&f PAPER,10金币,money give %player_name% 10'
       use-illegal-deny: '&b附件 &e%name% &b的数据不合规，无法领取，请联系管理员。'
+    send-with-adv-receivers: '正在发送邮件… &f发送所需时间可能会比较长，请耐心等待，这由服务器的玩家总数决定。'
     sent: '邮件发送成功!'
   inbox:
     attachments-outdated: '&e该邮件的附件已过期，无法领取'
