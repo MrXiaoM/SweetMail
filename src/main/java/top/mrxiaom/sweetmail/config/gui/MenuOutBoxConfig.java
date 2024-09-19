@@ -56,11 +56,12 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         }
     }
 
-    public Inventory createInventory(Player target, boolean other, int page, int maxPage) {
+    public Inventory createInventory(Player player, String target, boolean other, int page, int maxPage) {
         String title = other ? this.titleOther : this.title;
         return Bukkit.createInventory(null, inventory.length,
-                ColorHelper.parseColor(PAPI.setPlaceholders(target, replace(
+                ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(
                         title,
+                        Pair.of("%target%", target),
                         Pair.of("%page%", page),
                         Pair.of("%max_page%", maxPage)
                 )))
@@ -199,7 +200,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 targetKey = target;
             }
             outBox = targetKey == null ? new ListX<>() : plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount());
-            Inventory inv = createInventory(player, !target.equals(player.getName()), page, outBox.getMaxPage(getSlotsCount()));
+            Inventory inv = createInventory(player, target, !target.equals(player.getName()), page, outBox.getMaxPage(getSlotsCount()));
             applyIcons(this, inv, player);
             return inv;
         }

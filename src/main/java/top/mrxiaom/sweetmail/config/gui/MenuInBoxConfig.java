@@ -66,13 +66,14 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         }
     }
 
-    public Inventory createInventory(Player target, boolean unread, boolean other, int page, int maxPage) {
+    public Inventory createInventory(Player player, String target, boolean unread, boolean other, int page, int maxPage) {
         String title = unread
                 ? (other ? titleUnreadOther : titleUnread)
                 : (other ? titleAllOther : titleAll);
         return Bukkit.createInventory(null, inventory.length,
-                ColorHelper.parseColor(PAPI.setPlaceholders(target, replace(
+                ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(
                         title,
+                        Pair.of("%target%", target),
                         Pair.of("%page%", page),
                         Pair.of("%max_page%", maxPage)
                 )))
@@ -213,7 +214,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 targetKey = target;
             }
             inBox = targetKey == null ? new ListX<>() : plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount());
-            Inventory inv = createInventory(player, unread, !target.equals(player.getName()), page, inBox.getMaxPage(getSlotsCount()));
+            Inventory inv = createInventory(player, target, unread, !target.equals(player.getName()), page, inBox.getMaxPage(getSlotsCount()));
             applyIcons(this, inv, player);
             return inv;
         }
