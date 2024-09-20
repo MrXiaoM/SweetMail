@@ -275,7 +275,7 @@ public class Util {
                 case 'd': stringBuilder.append("<light_purple>"); break;
                 case 'e': stringBuilder.append("<yellow>"); break;
                 case 'f': stringBuilder.append("<white>"); break;
-                case 'r': stringBuilder.append("<r><!i>"); break;
+                case 'r': stringBuilder.append("<reset><!i>"); break;
                 case 'l': stringBuilder.append("<b>"); break;
                 case 'm': stringBuilder.append("<st>"); break;
                 case 'o': stringBuilder.append("<i>"); break;
