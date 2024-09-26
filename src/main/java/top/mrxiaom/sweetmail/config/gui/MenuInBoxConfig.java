@@ -301,7 +301,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             }
                         }
                         plugin.getMailDatabase().markUsed(dismiss, targetKey);
-                        applyIcons(this, view, player);
+                        open();
                     }
                     return;
                 }
@@ -341,8 +341,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 }
                                 plugin.getMailDatabase().getInBoxUnused(targetKey);
                                 applyIcons(this, view, player);
-                            } else {
-                                t(player, mail.attachments.size() + " " + mail.used);
                             }
                             return;
                         }
