@@ -47,6 +47,8 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
         }
     }
 
+    protected abstract String insertStatusSentence();
+
     @Override
     public void sendMail(Mail mail) {
         Bukkit.getScheduler().runTaskAsynchronously(SweetMail.getInstance(), () -> {
@@ -61,9 +63,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                     ps.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
                     ps.execute();
                 }
-                try (PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0) on duplicate key update `read`=0;"
-                )) {
+                try (PreparedStatement ps = conn.prepareStatement(insertStatusSentence())) {
                     for (String receiver : new HashSet<>(mail.receivers)) {
                         ps.setString(1, mail.uuid);
                         ps.setString(2, receiver);
