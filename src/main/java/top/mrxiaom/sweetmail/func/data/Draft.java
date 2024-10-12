@@ -172,7 +172,7 @@ public class Draft {
         if (advReceivers.startsWith("last played from ")) {
             // 在某段时间区间内，上过线的玩家
             String str = advReceivers.substring(17);
-            String[] split = str.contains(" to ") ? str.split(" to ", 2) : new String[] {advReceivers};
+            String[] split = str.contains(" to ") ? str.split(" to ", 2) : new String[] { str };
             if (split.length == 2) {
                 Long fromTime = Util.parseLong(split[0]).orElse(null);
                 Long toTime = Util.parseLong(split[1]).orElse(null);
@@ -187,6 +187,16 @@ public class Draft {
                         receivers.add(online ? player.getUniqueId().toString() : player.getName());
                     }
                 }
+            }
+        }
+        if (advReceivers.startsWith("players ")) {
+            // 指定玩家列表
+            String str = advReceivers.substring(8);
+            String[] split = str.contains(",") ? str.split(",") : new String[] { str };
+            for (String s : split) {
+                OfflinePlayer player = Util.getOfflinePlayer(s).orElse(null);
+                if (player == null || player.getName() == null) continue;
+                receivers.add(online ? player.getUniqueId().toString() : player.getName());
             }
         }
         return receivers;

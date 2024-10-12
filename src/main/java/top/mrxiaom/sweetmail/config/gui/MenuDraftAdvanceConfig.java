@@ -44,6 +44,8 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     String iconReceiversPrompts4TipsStart;
     String iconReceiversPrompts4TipsEnd;
     String iconReceiversPrompts4Cancel;
+    String iconReceiversPrompts5Tips;
+    String iconReceiversPrompts5Cancel;
     String iconReceiversUnset;
     String iconReceiversBadTimeFormat;
     Icon iconTimed;
@@ -90,6 +92,8 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                 iconReceiversPrompts4TipsStart = section.getString(key + ".prompts.4.tips-start", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“在某段时间内上过线的玩家”&b的 &e判定起始时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消设置)");
                 iconReceiversPrompts4TipsEnd = section.getString(key + ".prompts.4.tips-end", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“在某段时间内上过线的玩家”&b的 &e判定结束时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消设置)");
                 iconReceiversPrompts4Cancel = section.getString(key + ".prompts.4.cancel", "cancel");
+                iconReceiversPrompts5Tips = section.getString(key + ".prompts.5.tips", "&7[&e&l邮件&7] &b请在聊天栏发送玩家列表，使用逗号分隔 &7(输入 &ccancel &7取消设置)");
+                iconReceiversPrompts5Cancel = section.getString(key + ".prompts.5.cancel", "cancel");
                 iconReceiversUnset = section.getString(key + ".unset", "&7未设置");
                 iconReceiversBadTimeFormat = section.getString(key + ".bad-time-format", "&7[&e&l邮件&7] &f你输入的时间格式不正确!");
                 return true;
@@ -298,6 +302,24 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                                             iconReceiversPrompts4Cancel,
                                             timeStr -> receiver2.accept(timeStr, timestampStart), reopen));
                                     break;
+                                }
+                                case 5: {
+                                    player.closeInventory();
+                                    Consumer<String> receiver1 = str -> {
+                                        String[] split = str.split("[，、；;,]");
+                                        for (int i = 0; i < split.length; i++) {
+                                            split[i] = split[i].trim();
+                                        }
+                                        draft.advReceivers = "players " + String.join(",", split);
+                                        draft.save();
+                                        reopen.run();
+                                    };
+                                    ChatPrompter.prompt(
+                                            plugin, player,
+                                            iconReceiversPrompts3Tips,
+                                            iconReceiversPrompts3Cancel,
+                                            receiver1, reopen);
+                                    return;
                                 }
                                 default:
                                     return;
