@@ -87,31 +87,32 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     }
 
     @Override
-    protected void loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon) {
+    protected boolean loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon) {
         switch (key) {
             case "全":
                 iconAll = loadedIcon;
-                break;
+                return true;
             case "读":
                 iconUnread = loadedIcon;
-                break;
+                return true;
             case "发":
                 iconOut = loadedIcon;
-                break;
+                return true;
             case "上":
                 iconPrevPage = loadedIcon;
-                break;
+                return true;
             case "下":
                 iconNextPage = loadedIcon;
-                break;
+                return true;
             case "领":
                 iconGetAll = loadedIcon;
                 iconGetAllRedirect = section.getString(key + ".redirect");
-                break;
+                return true;
             case "格":
                 iconSlot = loadSlot(section, key, loadedIcon);
-                break;
+                return true;
         }
+        return false;
     }
 
 

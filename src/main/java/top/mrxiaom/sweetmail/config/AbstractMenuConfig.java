@@ -21,6 +21,7 @@ import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +146,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
      * @param key 键
      * @param loadedIcon 已加载的基本图标信息
      */
-    protected abstract void loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon);
+    protected abstract boolean loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon);
 
     /**
      * 生成界面图标
@@ -224,12 +225,24 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         ConfigurationSection section;
         title = ColorHelper.parseColor(config.getString("title", "菜单标题"));
         inventory = String.join("", config.getStringList("inventory")).toCharArray();
+        List<Character> ignored = config.getCharacterList("ignored");
 
+        boolean flag = false;
         clearMainIcons();
         section = config.getConfigurationSection("items");
         if (section != null) for (String key : section.getKeys(false)) {
             Icon icon = Icon.getIcon(section, key, false);
-            loadMainIcon(section, key, icon);
+            if (loadMainIcon(section, key, icon)) {
+                char c = key.charAt(0);
+                if (!contains(inventory, c) && !ignored.contains(c)) {
+                    if (!flag) {
+                        flag = true;
+                        warn("菜单配置 " + configFile.getName() + " 存在缺失的物品，可能由你的菜单配置版本过低导致，具体缺失情况如下，请从默认配置复制相关配置");
+                        warn("https://github.com/MrXiaoM/SweetMail/blob/main/src/main/resources/" + file);
+                    }
+                    warn("[" + configFile.getName() + "] 界面布局 `inventory` 没有添加必选物品 `" + key + "`");
+                }
+            }
         }
 
         otherIcon.clear();
@@ -238,5 +251,12 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             Icon icon = Icon.getIcon(section, key, true);
             otherIcon.put(key, icon);
         }
+    }
+
+    private static boolean contains(char[] chars, char c) {
+        for (char i : chars) {
+            if (i == c) return true;
+        }
+        return false;
     }
 }

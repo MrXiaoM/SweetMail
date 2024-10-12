@@ -173,7 +173,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     }
 
     @Override
-    protected void loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon) {
+    protected boolean loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon) {
         switch (key) {
             case "接": {
                 iconReceiver = loadedIcon;
@@ -182,42 +182,43 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 iconReceiverPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
                 iconReceiverWarnNotExists = section.getString(key + ".warn-not-exists", "%name% &7(&c从未加入过游戏&7)");
                 iconReceiverRegex = section.getString(key + ".regex", "^[a-zA-Z0-9_\\u4e00-\\u9fa5]{1,20}");
-                break;
+                return true;
             }
             case "图": {
                 iconIcon = loadedIcon;
                 iconIconTitle = section.getString(key + ".title", "选择图标");
                 iconIconTitleCustom = section.getString(key + ".title-custom", "选择图标 (可在物品栏选择)");
-                break;
+                return true;
             }
             case "题": {
                 iconTitle = loadedIcon;
                 iconTitlePromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件标题”&b的值 &7(输入 &ccancel &7取消设置)");
                 iconTitlePromptCancel = section.getString(key + ".prompt-cancel", "cancel");
-                break;
+                return true;
             }
             case "文": {
                 iconContent = loadedIcon;
-                break;
+                return true;
             }
             case "高": {
                 iconAdvanced = loadedIcon;
                 iconAdvancedRedirectKey = section.getString(key + ".redirect", "黑");
-                break;
+                return true;
             }
             case "重": {
                 iconReset = loadedIcon;
-                break;
+                return true;
             }
             case "发": {
                 iconSend = loadedIcon;
-                break;
+                return true;
             }
             case "附": {
                 iconAttachment = loadedIcon;
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     @Override

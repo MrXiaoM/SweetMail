@@ -40,10 +40,12 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
     }
 
     @Override
-    protected void loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon) {
+    protected boolean loadMainIcon(ConfigurationSection section, String key, Icon loadedIcon) {
         if (key.equals("返")) {
             iconBack = loadedIcon;
+            return true;
         }
+        return false;
     }
 
     @Override
