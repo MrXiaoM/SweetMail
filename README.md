@@ -124,6 +124,10 @@ void foo() {
 }
 ```
 
+**注册自定义附件类型**
+
+请参考 [AttachmentItem#register](https://github.com/MrXiaoM/SweetMail/blob/main/src/main/java/top/mrxiaom/sweetmail/attachments/AttachmentItem.java)，位于这个类的最后一个方法。
+
 **构建插件**
 
 请使用 `java 17` 执行以下命令。别担心，构建产物的目标版本是 `java 8`。
