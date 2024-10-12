@@ -36,6 +36,15 @@ public interface IAttachment {
         Internal.AttachmentInfo<T> info = new Internal.AttachmentInfo<>(clazz, permission, icon, addGui, deserializer);
         Internal.attachments.add(info);
     }
+    static <T extends IAttachment> boolean unregisterAttachment(Class<T> clazz) {
+        return Internal.attachments.removeIf(it -> it.clazz.getName().equals(clazz.getName()));
+    }
+    static <T extends IAttachment> boolean isRegistered(Class<T> clazz) {
+        for (Internal.AttachmentInfo<?> attachment : getAttachments()) {
+            if (attachment.clazz.getName().equals(clazz.getName())) return true;
+        }
+        return false;
+    }
     static Collection<Internal.AttachmentInfo<?>> getAttachments() {
         return Collections.unmodifiableCollection(Internal.attachments);
     }
