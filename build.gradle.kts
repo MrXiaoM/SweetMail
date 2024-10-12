@@ -10,6 +10,8 @@ java {
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 allprojects {
@@ -84,6 +86,24 @@ tasks {
                 "version" to version,
             ))
             include("plugin.yml")
+        }
+    }
+    javadoc {
+        (options as? StandardJavadocDocletOptions)?.apply {
+            links("https://docs.oracle.com/javase/8/docs/api")
+            links("https://hub.spigotmc.org/javadocs/spigot/")
+            links("https://ci.md-5.net/job/BungeeCord/ws/chat/target/apidocs/")
+
+            locale("zh_CN")
+            encoding("UTF-8")
+            docEncoding("UTF-8")
+            addBooleanOption("keywords", true)
+            addBooleanOption("Xdoclint:none", true)
+
+            val currentJavaVersion = JavaVersion.current()
+            if (currentJavaVersion > JavaVersion.VERSION_1_9) {
+                addBooleanOption("html5", true)
+            }
         }
     }
 }
