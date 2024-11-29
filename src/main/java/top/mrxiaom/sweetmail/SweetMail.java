@@ -91,6 +91,13 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
         IMail.instance = new MailAPI();
         getLogger().info("SweetMail 加载完毕");
+        if (getDescription().getVersion().endsWith("-unstable")) {
+            getLogger().warning("你正在运行 SweetMail 开发版或预览版，可能会存在一些问题。");
+            getLogger().warning("如有问题，请通过以下任一链接向作者反馈。");
+            getLogger().warning("  https://github.com/MrXiaoM/SweetMail/issues");
+            getLogger().warning("  https://www.minebbs.com/members/24586");
+            getLogger().warning("我已默认你已阅读这条消息，如果你不想在日志中看到，请编辑 plugin.yml，删除 -unstable");
+        }
     }
 
     public void loadFunctions() {

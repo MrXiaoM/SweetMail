@@ -4,6 +4,9 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
+var isRelease = gradle.startParameter.taskNames.run {
+    contains("release") || contains("publishToMavenLocal")
+}
 val targetJavaVersion = 8
 java {
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -55,16 +58,15 @@ dependencies {
 
     // Shadow Dependency
     implementation("com.zaxxer:HikariCP:4.0.3") { isTransitive = false }
-    implementation("org.jetbrains:annotations:21.0.0")
+    implementation("org.jetbrains:annotations:24.0.0")
     implementation("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
-    implementation("de.tr7zw:item-nbt-api:2.13.2")
+    implementation("de.tr7zw:item-nbt-api:2.14.0")
 }
 
 tasks {
     shadowJar {
-        archiveClassifier.set("")
         mapOf(
             "org.intellij.lang.annotations" to "annotations.intellij",
             "org.jetbrains.annotations" to "annotations.jetbrains",
@@ -75,6 +77,14 @@ tasks {
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }
     }
+    create("release")
+    withType<Jar> {
+        if (isRelease) {
+            archiveClassifier.set("")
+        } else {
+            archiveClassifier.set("unstable")
+        }
+    }
     build {
         dependsOn(shadowJar)
     }
@@ -82,9 +92,7 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from("LICENSE")
         from(sourceSets.main.get().resources.srcDirs) {
-            expand(mapOf(
-                "version" to version,
-            ))
+            expand("version" to if (isRelease) version else ("$version-unstable"))
             include("plugin.yml")
         }
     }
