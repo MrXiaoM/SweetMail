@@ -96,8 +96,7 @@
 
 **使用接口发送系统邮件**
 
-[![版本号](https://img.shields.io/github/v/release/MrXiaoM/SweetMail
-)](https://github.com/MrXiaoM/SweetMail/releases)
+[![](https://jitpack.io/v/MrXiaoM/SweetMail.svg)](https://jitpack.io/#MrXiaoM/SweetMail)
 ```kotlin
 repositories {
     maven("https://jitpack.io")
