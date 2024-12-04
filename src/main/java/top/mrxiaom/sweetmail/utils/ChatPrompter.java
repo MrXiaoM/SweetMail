@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import top.mrxiaom.sweetmail.SweetMail;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,8 +24,10 @@ public class ChatPrompter implements Listener {
         return processing.contains(player.getUniqueId());
     }
     public static void submit(Player player, String content) {
-        AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(true, player, content, new HashSet<>());
-        Bukkit.getPluginManager().callEvent(event);
+        Bukkit.getScheduler().runTaskAsynchronously(SweetMail.getInstance(), () -> {
+            AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(true, player, content, new HashSet<>());
+            Bukkit.getPluginManager().callEvent(event);
+        });
     }
     Player player;
     Consumer<String> success;
