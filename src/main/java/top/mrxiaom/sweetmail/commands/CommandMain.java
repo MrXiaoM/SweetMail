@@ -27,6 +27,7 @@ import java.util.List;
 public class CommandMain extends AbstractPluginHolder implements CommandExecutor, TabCompleter {
     public static final String PERM_ADMIN = "sweetmail.admin";
     public static final String PERM_DRAFT = "sweetmail.draft";
+    public static final String PERM_DRAFT_OTHER = "sweetmail.draft.other";
     public static final String PERM_BOX = "sweetmail.box";
     public static final String PERM_BOX_OTHER = "sweetmail.box.other";
     private static String prefix;
@@ -123,6 +124,16 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
+                if (args.length >= 2&& sender.hasPermission(PERM_DRAFT_OTHER)) {
+                    Player target = Util.getOnlinePlayer(args[2]).orElse(null);
+                    if (target == null) {
+                        return true;
+                    }
+                    if (plugin.getGuiManager().getOpeningGui(target) != null) return true;
+                    MenuDraftConfig.inst()
+                            .new Gui(plugin, target)
+                            .open();
+                }
                 if (!(sender instanceof Player)) {
                     return true;
                 }
