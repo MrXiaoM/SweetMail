@@ -11,23 +11,19 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import top.mrxiaom.sweetmail.SweetMail;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ChatPrompter implements Listener {
-    private static final Set<UUID> processing = new HashSet<>();
+    private static final Map<UUID, ChatPrompter> processing = new HashMap<>();
     public static boolean isProcessing(Player player) {
-        return processing.contains(player.getUniqueId());
+        return processing.containsKey(player.getUniqueId());
     }
     public static void submit(Player player, String content) {
-        Bukkit.getScheduler().runTaskAsynchronously(SweetMail.getInstance(), () -> {
-            AsyncPlayerChatEvent event = new AsyncPlayerChatEvent(true, player, content, new HashSet<>());
-            Bukkit.getPluginManager().callEvent(event);
-        });
+        ChatPrompter prompter = processing.remove(player.getUniqueId());
+        HandlerList.unregisterAll(prompter);
+        prompter.submitPrompt(content);
     }
     Player player;
     Consumer<String> success;
@@ -45,12 +41,15 @@ public class ChatPrompter implements Listener {
             String message = e.getMessage();
             e.setMessage("");
             e.setFormat("");
+            submitPrompt(message);
+        }
+    }
 
-            if (message.equalsIgnoreCase(cancelPrompt)) {
-                if (fail != null) fail.run();
-            } else {
-                if (success != null) success.accept(message);
-            }
+    private void submitPrompt(String message) {
+        if (message.equalsIgnoreCase(cancelPrompt)) {
+            if (fail != null) fail.run();
+        } else {
+            if (success != null) success.accept(message);
         }
     }
 
@@ -79,7 +78,7 @@ public class ChatPrompter implements Listener {
     }
 
     public static void prompt(JavaPlugin plugin, Player player, String tips, String cancelPrompt, Consumer<String> successCallback, Runnable failCallback) {
-        if (processing.contains(player.getUniqueId())) return;
+        if (processing.containsKey(player.getUniqueId())) return;
         ChatPrompter prompter = new ChatPrompter();
         prompter.player = player;
         prompter.cancelPrompt = cancelPrompt;
@@ -87,6 +86,6 @@ public class ChatPrompter implements Listener {
         prompter.fail = failCallback;
         ColorHelper.t(player, tips);
         Bukkit.getPluginManager().registerEvents(prompter, plugin);
-        processing.add(player.getUniqueId());
+        processing.put(player.getUniqueId(), prompter);
     }
 }
