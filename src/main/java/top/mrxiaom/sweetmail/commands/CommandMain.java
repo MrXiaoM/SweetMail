@@ -124,20 +124,17 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
-                if (args.length >= 2&& sender.hasPermission(PERM_DRAFT_OTHER)) {
-                    Player target = Util.getOnlinePlayer(args[2]).orElse(null);
-                    if (target == null) {
+                Player player;
+                if (args.length >= 2 && sender.hasPermission(PERM_DRAFT_OTHER)) {
+                    player = Util.getOnlinePlayer(args[2]).orElse(null);
+                    if (player == null) {
                         return true;
                     }
-                    if (plugin.getGuiManager().getOpeningGui(target) != null) return true;
-                    MenuDraftConfig.inst()
-                            .new Gui(plugin, target)
-                            .open();
-                }
-                if (!(sender instanceof Player)) {
+                } else if (sender instanceof Player) {
+                    player = (Player) sender;
+                } else {
                     return true;
                 }
-                Player player = (Player) sender;
                 if (plugin.getGuiManager().getOpeningGui(player) != null) return true;
                 MenuDraftConfig.inst()
                         .new Gui(plugin, player)
@@ -149,21 +146,17 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 if (!type.equals("unread") && !type.equals("all")) {
                     return true;
                 }
+                Player player;
                 if (args.length >= 3 && sender.hasPermission(PERM_BOX_OTHER)) {
-                    Player target = Util.getOnlinePlayer(args[2]).orElse(null);
-                    if (target == null) {
+                    player = Util.getOnlinePlayer(args[2]).orElse(null);
+                    if (player == null) {
                         return true;
                     }
-                    if (plugin.getGuiManager().getOpeningGui(target) != null) return true;
-                    MenuInBoxConfig.inst()
-                            .new Gui(plugin, target, target.getName(), type.equals("unread"))
-                            .open();
+                } else if (sender instanceof Player) {
+                    player = (Player) sender;
+                } else {
                     return true;
                 }
-                if (!(sender instanceof Player)) {
-                    return true;
-                }
-                Player player = (Player) sender;
                 if (plugin.getGuiManager().getOpeningGui(player) != null) return true;
                 MenuInBoxConfig.inst()
                         .new Gui(plugin, player, player.getName(), type.equals("unread"))
@@ -171,21 +164,17 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 return true;
             }
             if ("outbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
+                Player player;
                 if (args.length >= 2 && sender.hasPermission(PERM_BOX_OTHER)) {
-                    Player target = Util.getOnlinePlayer(args[1]).orElse(null);
-                    if (target == null) {
+                    player = Util.getOnlinePlayer(args[1]).orElse(null);
+                    if (player == null) {
                         return true;
                     }
-                    if (plugin.getGuiManager().getOpeningGui(target) != null) return true;
-                    MenuOutBoxConfig.inst()
-                            .new Gui(plugin, target, target.getName())
-                            .open();
+                } else if (sender instanceof Player) {
+                    player = (Player) sender;
+                } else {
                     return true;
                 }
-                if (!(sender instanceof Player)) {
-                    return true;
-                }
-                Player player = (Player) sender;
                 if (plugin.getGuiManager().getOpeningGui(player) != null) return true;
                 MenuOutBoxConfig.inst()
                         .new Gui(plugin, player, player.getName())
