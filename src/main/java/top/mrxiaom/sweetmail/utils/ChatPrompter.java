@@ -22,8 +22,10 @@ public class ChatPrompter implements Listener {
     }
     public static void submit(Player player, String content) {
         ChatPrompter prompter = processing.remove(player.getUniqueId());
-        HandlerList.unregisterAll(prompter);
-        prompter.submitPrompt(content);
+        if (prompter != null) {
+            HandlerList.unregisterAll(prompter);
+            prompter.submitPrompt(content);
+        }
     }
     Player player;
     Consumer<String> success;
