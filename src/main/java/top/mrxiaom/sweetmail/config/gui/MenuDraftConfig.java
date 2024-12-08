@@ -24,6 +24,7 @@ import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.events.PlayerMailSentEvent;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
@@ -485,6 +486,10 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             }
                             Mail mail = draft.createMail(uuid, receivers);
                             plugin.getMailDatabase().sendMail(mail);
+                            if (draft.advSenderDisplay != null) {
+                                PlayerMailSentEvent e = new PlayerMailSentEvent(player, draft.deepClone(), mail);
+                                Bukkit.getPluginManager().callEvent(e);
+                            }
                             draft.reset();
                             draft.save();
                             t(player, plugin.prefix() + messageSent);

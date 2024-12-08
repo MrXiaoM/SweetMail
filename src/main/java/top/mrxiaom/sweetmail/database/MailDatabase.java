@@ -1,11 +1,13 @@
 package top.mrxiaom.sweetmail.database;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.database.impl.MySQLDatabase;
 import top.mrxiaom.sweetmail.database.impl.SQLiteDatabase;
+import top.mrxiaom.sweetmail.events.MailSentEvent;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.utils.ListX;
 
@@ -40,6 +42,10 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
     @Override
     public void sendMail(Mail mail) {
         database.sendMail(mail);
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            MailSentEvent event = new MailSentEvent(mail);
+            Bukkit.getPluginManager().callEvent(event);
+        });
     }
 
     @Override
