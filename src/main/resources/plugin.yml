@@ -8,6 +8,7 @@ softdepend:
   - PlaceholderAPI
   - MythicMobs
   - ItemsAdder
+  - NBTAPI
 authors: [ MrXiaoM ]
 commands:
   sweetmail:
