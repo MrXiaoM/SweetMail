@@ -228,4 +228,23 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
         }
     }
 
+    @Override
+    public void deleteMail(String uuid) {
+        try (Connection conn = getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "DELETE FROM `" + TABLE_BOX + "` WHERE `uuid`=?;"
+            )) {
+                ps.setString(1, uuid);
+                ps.execute();
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "DELETE FROM `" + TABLE_STATUS + "` WHERE `uuid`=?;"
+            )) {
+                ps.setString(1, uuid);
+                ps.execute();
+            }
+        } catch (SQLException e) {
+            SweetMail.warn(e);
+        }
+    }
 }

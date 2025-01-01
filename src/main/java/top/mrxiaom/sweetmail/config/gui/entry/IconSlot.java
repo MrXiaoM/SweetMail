@@ -49,7 +49,13 @@ public class IconSlot {
         for (String key : loreContent) {
             List<String> list = loreParts.get(key);
             if (list != null && !list.isEmpty()) {
-                lore.addAll(list);
+                for (String s : list) {
+                    if (s.startsWith("!!") && target.hasPermission("sweetmail.admin")) {
+                        lore.add(s.substring(2));
+                    } else {
+                        lore.add(s);
+                    }
+                }
             } else {
                 int attachmentCount = 0;
                 switch (key) {

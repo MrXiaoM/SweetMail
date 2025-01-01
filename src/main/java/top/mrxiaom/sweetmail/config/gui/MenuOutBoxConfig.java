@@ -36,6 +36,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
     String iconGetAllRedirect;
     IconSlot iconSlot;
     int slotsCount;
+    String messageDeleted;
     public MenuOutBoxConfig(SweetMail plugin) {
         super(plugin, "menus/outbox.yml");
     }
@@ -47,6 +48,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
+        messageDeleted = cfg.getString("messages.outbox.deleted", "");
 
         title = config.getString("title", "&0发件箱 ( %page%/%max_page% 页)");
         titleOther = config.getString("title-other", "&0%target% 的发件箱 ( %page%/%max_page% 页)");
@@ -259,6 +261,17 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             MenuViewAttachmentsConfig.inst()
                                     .new Gui(this, player, mail)
                                     .open();
+                            return;
+                        }
+                        if (click.equals(ClickType.DROP) && player.hasPermission("sweetmail.admin")) {
+                            player.closeInventory();
+                            plugin.getMailDatabase().deleteMail(mail.uuid);
+                            String sender = mail.senderDisplay.trim().isEmpty()
+                                    ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
+                            t(player, plugin.prefix() + messageDeleted
+                                    .replace("%player%", sender)
+                                    .replace("%title%", mail.title)
+                                    .replace("%uuid%", mail.uuid));
                             return;
                         }
                     }

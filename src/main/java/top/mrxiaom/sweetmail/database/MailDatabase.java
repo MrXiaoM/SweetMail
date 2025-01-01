@@ -112,6 +112,11 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
         database.markUsed(uuidList, receiver);
     }
 
+    @Override
+    public void deleteMail(String uuid) {
+        database.deleteMail(uuid);
+    }
+
     public MailDatabase reload() {
         if (!configFile.exists()) {
             plugin.saveResource("database.yml", true);

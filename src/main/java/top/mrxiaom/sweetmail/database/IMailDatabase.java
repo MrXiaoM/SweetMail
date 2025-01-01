@@ -53,4 +53,10 @@ public interface IMailDatabase {
      * @param receiver 接收邮件的玩家
      */
     void markUsed(List<String> uuidList, String receiver);
+
+    /**
+     * 彻底删除邮件
+     * @param uuid 邮件 UUID
+     */
+    void deleteMail(String uuid);
 }
