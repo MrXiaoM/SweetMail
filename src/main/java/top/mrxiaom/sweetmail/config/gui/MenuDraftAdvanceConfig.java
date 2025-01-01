@@ -32,6 +32,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
+import static top.mrxiaom.sweetmail.utils.Util.toTimestamp;
 
 public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceConfig.Gui> {
     Icon iconSenderDisplay;
@@ -348,7 +349,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                                     reopen.run();
                                     return;
                                 }
-                                long time = localDateTime.toEpochSecond(ZoneOffset.of(ZoneId.systemDefault().getId()));
+                                long time = toTimestamp(localDateTime);
                                 TimerManager.inst().sendInTime(draft, time);
                                 draft.reset();
                                 draft.save();
@@ -408,7 +409,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                 ? LocalTime.parse(split[1])
                 : LocalTime.of(0, 0, 0);
             LocalDateTime time = localDate.atTime(localTime);
-            return time.toEpochSecond(ZoneOffset.UTC) * 1000L;
+            return toTimestamp(time);
         } catch (DateTimeParseException e) {
             return null;
         }

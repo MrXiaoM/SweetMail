@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static top.mrxiaom.sweetmail.utils.Util.toTimestamp;
+
 public class TimerManager extends AbstractPluginHolder {
     private final File file;
     private final Map<String, TimedDraft> queue = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -87,7 +89,7 @@ public class TimerManager extends AbstractPluginHolder {
         if (queue.isEmpty()) return;
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             boolean flag = false;
-            long time = System.currentTimeMillis();
+            long time = toTimestamp(LocalDateTime.now());
             DraftManager manager = DraftManager.inst();
             for (TimedDraft temp : Lists.newArrayList(queue.values())) {
                 if (temp.isOutOfTime(time)) {

@@ -27,6 +27,9 @@ import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
@@ -132,6 +135,11 @@ public class Util {
                 player.sendMessage(s.substring(9));
             }
         }
+    }
+
+    public static long toTimestamp(LocalDateTime time) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        return time.toEpochSecond(zoneId.getRules().getOffset(Instant.EPOCH)) * 1000L;
     }
 
     public static ByteArrayDataOutput newDataOutput() {
