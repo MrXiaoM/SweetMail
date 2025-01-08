@@ -50,8 +50,10 @@ public class IconSlot {
             List<String> list = loreParts.get(key);
             if (list != null && !list.isEmpty()) {
                 for (String s : list) {
-                    if (s.startsWith("!!") && target.hasPermission("sweetmail.admin")) {
-                        lore.add(s.substring(2));
+                    if (s.startsWith("!!")) {
+                        if (target.hasPermission("sweetmail.admin")) {
+                            lore.add(s.substring(2));
+                        }
                     } else {
                         lore.add(s);
                     }
