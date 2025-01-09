@@ -130,7 +130,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             case "下":
                 return iconNextPage.generateIcon(target);
             case "领":
-                String targetKey = plugin.isOnlineMode() ? target.getUniqueId().toString() : target.getName();
+                String targetKey = plugin.getPlayerKey(target);
                 if (plugin.getMailDatabase().hasUnUsed(targetKey)) {
                     return iconGetAll.generateIcon(target);
                 } else {
@@ -209,8 +209,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             String targetKey;
             if (plugin.isOnlineMode()) {
                 OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
-                if (offline == null) targetKey = null;
-                else targetKey = offline.getUniqueId().toString();
+                targetKey = plugin.getPlayerKey(offline);
             } else {
                 targetKey = target;
             }
@@ -272,8 +271,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         String targetKey;
                         if (plugin.isOnlineMode()) {
                             OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
-                            if (offline == null) targetKey = null;
-                            else targetKey = offline.getUniqueId().toString();
+                            targetKey = plugin.getPlayerKey(offline);
                         } else {
                             targetKey = target;
                         }
@@ -313,8 +311,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     String targetKey;
                     if (plugin.isOnlineMode()) {
                         OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
-                        if (offline == null) targetKey = null;
-                        else targetKey = offline.getUniqueId().toString();
+                        targetKey = plugin.getPlayerKey(offline);
                     } else {
                         targetKey = target;
                     }

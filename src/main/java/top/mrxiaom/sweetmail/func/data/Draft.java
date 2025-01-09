@@ -146,7 +146,7 @@ public class Draft {
      */
     public static List<String> generateReceivers(String advReceivers) {
         if (advReceivers == null) return new ArrayList<>();
-        boolean online = SweetMail.getInstance().isOnlineMode();
+        SweetMail plugin = SweetMail.getInstance();
         List<String> receivers = new ArrayList<>();
         if (advReceivers.equalsIgnoreCase("current online")) {
             // 在线玩家列表
@@ -165,7 +165,7 @@ public class Draft {
                 List<OfflinePlayer> players = Util.getOfflinePlayers();
                 players.removeIf(it -> it == null || it.getName() == null || it.getLastPlayed() < timeRaw);
                 for (OfflinePlayer player : players) {
-                    receivers.add(online ? player.getUniqueId().toString() : player.getName());
+                    receivers.add(plugin.getPlayerKey(player));
                 }
             }
         }
@@ -184,7 +184,7 @@ public class Draft {
                         return lastPlayed < fromTime || lastPlayed >= toTime;
                     });
                     for (OfflinePlayer player : players) {
-                        receivers.add(online ? player.getUniqueId().toString() : player.getName());
+                        receivers.add(plugin.getPlayerKey(player));
                     }
                 }
             }
@@ -196,7 +196,7 @@ public class Draft {
             for (String s : split) {
                 OfflinePlayer player = Util.getOfflinePlayer(s).orElse(null);
                 if (player == null || player.getName() == null) continue;
-                receivers.add(online ? player.getUniqueId().toString() : player.getName());
+                receivers.add(plugin.getPlayerKey(player));
             }
         }
         return receivers;

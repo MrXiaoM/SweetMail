@@ -49,7 +49,7 @@ public class Util {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
                     players.put(player.getName(), player);
-                    players.put(player.getUniqueId().toString(), player);
+                    playersByUUID.put(player.getUniqueId().toString().replace("-", ""), player);
                 }
             }
         });
@@ -57,7 +57,7 @@ public class Util {
             @EventHandler
             public void onJoin(PlayerJoinEvent e) {
                 players.put(e.getPlayer().getName(), e.getPlayer());
-                players.put(e.getPlayer().getUniqueId().toString(), e.getPlayer());
+                playersByUUID.put(e.getPlayer().getUniqueId().toString().replace("-", ""), e.getPlayer());
             }
         }, plugin);
         PAPI.init();
@@ -149,7 +149,7 @@ public class Util {
     public static String getPlayerName(String s) {
         if (SweetMail.getInstance().isOnlineMode()) {
             OfflinePlayer offline = playersByUUID.get(s);
-            return offline == null ? s : offline.getName() == null ? s : offline.getName();
+            return offline == null || offline.getName() == null ? s : offline.getName();
         }
         return s;
     }
@@ -188,7 +188,7 @@ public class Util {
         boolean online = SweetMail.getInstance().isOnlineMode();
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (online) {
-                if (player.getUniqueId().toString().equals(name)) return Optional.of(player);
+                if (player.getUniqueId().toString().replace("-", "").equals(name)) return Optional.of(player);
             } else {
                 if (player.getName().equalsIgnoreCase(name)) return Optional.of(player);
             }

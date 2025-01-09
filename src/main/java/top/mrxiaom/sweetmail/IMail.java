@@ -172,9 +172,7 @@ public abstract class IMail {
         public MailDraft setReceiversFromPlayers(List<OfflinePlayer> receivers) {
             List<String> list = new ArrayList<>();
             for (OfflinePlayer p : receivers) {
-                String s = SweetMail.getInstance().isOnlineMode()
-                        ? p.getUniqueId().toString()
-                        : p.getName();
+                String s = SweetMail.getInstance().getPlayerKey(p);
                 if (s != null) {
                     list.add(s);
                 }

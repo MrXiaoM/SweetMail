@@ -3,6 +3,7 @@ package top.mrxiaom.sweetmail;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -76,6 +77,12 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public int bundleMaxSlots;
     public boolean isOnlineMode() {
         return onlineMode;
+    }
+    public String getPlayerKey(OfflinePlayer player) {
+        if (player == null) return null;
+        return SweetMail.getInstance().isOnlineMode()
+                ? player.getUniqueId().toString().replace("-", "")
+                : player.getName();
     }
     @Override
     public void onEnable() {

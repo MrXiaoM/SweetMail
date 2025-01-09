@@ -373,16 +373,13 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 receiver -> {
                                     if (testUsername(receiver)) {
                                         OfflinePlayer offline = Util.getOfflinePlayer(receiver).orElse(null);
-                                        if (offline == null || offline.getName() == null) {
+                                        String id = plugin.getPlayerKey(offline);
+                                        if (id == null) {
                                             t(player, messageOnlineNoPlayer);
                                             reopen.run();
                                             return;
                                         }
-                                        if (plugin.isOnlineMode()) {
-                                            draft.receiver = offline.getUniqueId().toString();
-                                        } else {
-                                            draft.receiver = offline.getName();
-                                        }
+                                        draft.receiver = id;
                                     } else {
                                         t(player, messageOnlineNoPlayer);
                                     }

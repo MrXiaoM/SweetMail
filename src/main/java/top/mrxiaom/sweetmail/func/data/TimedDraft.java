@@ -34,6 +34,7 @@ public class TimedDraft {
         long time = parentSection.getLong(id + ".time");
         ConfigurationSection draftSection = parentSection.getConfigurationSection(id + ".draft");
         if (senderUUID == null || senderName == null || draftSection == null) return null;
+        senderUUID = senderUUID.replace("-", "");
         String sender = SweetMail.getInstance().isOnlineMode() ? senderUUID : senderName;
         Draft draft = Draft.loadFromConfig(DraftManager.inst(), draftSection, sender);
         return new TimedDraft(id, senderUUID, senderName, draft, time);
@@ -46,6 +47,7 @@ public class TimedDraft {
                 : Util.getOfflinePlayerByNameOrUUID(draft.sender)
                     .map(OfflinePlayer::getUniqueId)
                     .map(UUID::toString)
+                    .map(s -> s.replace("-", ""))
                     .orElseThrow(IllegalStateException::new);
         String senderName = draft.advSenderDisplay != null && !draft.advSenderDisplay.isEmpty()
                 ? draft.advSenderDisplay
