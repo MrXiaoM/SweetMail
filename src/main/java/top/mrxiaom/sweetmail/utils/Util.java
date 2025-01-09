@@ -107,7 +107,7 @@ public class Util {
         List<Component> bookPages = pages.isEmpty() ? Lists.newArrayList(Component.empty()) : Util.legacy(pages);
         Component bookAuthor = Util.legacy(author);
         return Book.builder()
-                .title(Util.legacy(title))
+                .title(Component.text("SweetMail"))
                 .pages(bookPages)
                 .author(bookAuthor)
                 .build();
