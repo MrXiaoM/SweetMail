@@ -15,7 +15,10 @@ public class Placeholder extends PlaceholderExpansion {
 
     @Override
     public boolean register() {
-        unregister(); // prevent hot load
+        try {
+            unregister(); // prevent hot load
+        } catch (Throwable ignored) {
+        }
         return super.register();
     }
 
