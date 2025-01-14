@@ -151,6 +151,7 @@ messages:
     no-receivers: '&e你没有设置接收者，无法发送邮件!'
     cant-send-to-yourself: '&e你不能发送邮件给你自己!'
     open-tips: '&f你的草稿将会保存 &e%hours% &f小时，在&e %time% &f过期，请勿在附件存放贵重物品。草稿过期时间会在重新打开草稿编辑器时刷新。'
+    outdate-tips: '&f你的草稿上次在&e %time% &f编辑，现已过期自动重置。'
     attachments:
       remove-lore:
         - ''

@@ -75,6 +75,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public String messageOnlineNoPlayer;
     public String messageItemBanned;
     public String messageDraftOpenTips;
+    public String messageDraftOutdateTips;
     public boolean canSendToYourself;
 
     Map<String, Double> priceMap = new HashMap<>();
@@ -97,6 +98,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         messageOnlineNoPlayer = cfg.getString("messages.draft.online.no-player", "");
         messageItemBanned = cfg.getString("messages.draft.attachments.item.banned", "");
         messageDraftOpenTips = cfg.getString("messages.draft.open-tips", "");
+        messageDraftOutdateTips = cfg.getString("messages.draft.outdate-tips", "");
         priceMap.clear();
         ConfigurationSection section = cfg.getConfigurationSection("price");
         if (section != null) for (String key : section.getKeys(false)) {
@@ -335,6 +337,9 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 if (draft.lastEditTime != null) {
                     long last = draft.lastEditTime;
                     if (last + outdateTime > now) {
+                        LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochMilli(last), ZoneId.systemDefault());
+                        info("玩家 " + player.getName() + " 的草稿已过期重置");
+                        t(player, messageDraftOutdateTips.replace("%time%", time.format(formatter)));
                         draft.reset();
                     }
                 }
@@ -445,6 +450,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 }
                 case "重": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
+                        info("玩家 " + player.getName() + " 手动重置了草稿");
                         draft.reset();
                         draft.save();
                         reopen.run();
