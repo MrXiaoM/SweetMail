@@ -404,7 +404,13 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     public static Long parseTime(String s) {
         String[] split = s.split(" ", 2);
         try {
-            LocalDate localDate = LocalDate.parse(split[0]);
+            String[] dateSplit = split[0].split("-", 3);
+            if (dateSplit.length != 3) return null;
+            Integer year = Util.parseInt(dateSplit[0]).orElse(null);
+            Integer month = Util.parseInt(dateSplit[1]).orElse(null);
+            Integer date = Util.parseInt(dateSplit[2]).orElse(null);
+            if (year == null || month == null || date == null) return null;
+            LocalDate localDate = LocalDate.of(year, month, date);
             LocalTime localTime = split.length > 1
                 ? LocalTime.parse(split[1])
                 : LocalTime.of(0, 0, 0);
