@@ -57,7 +57,8 @@ dependencies {
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
     // Shadow Dependency
-    implementation("com.zaxxer:HikariCP:4.0.3") { isTransitive = false }
+    implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("org.slf4j:slf4j-nop:2.0.16")
     implementation("org.jetbrains:annotations:24.0.0")
     implementation("net.kyori:adventure-api:4.17.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
@@ -72,6 +73,7 @@ tasks {
             "org.jetbrains.annotations" to "annotations.jetbrains",
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "com.zaxxer.hikari" to "hikari",
+            "org.slf4j" to "slf4j",
             "net.kyori" to "kyori",
         ).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
