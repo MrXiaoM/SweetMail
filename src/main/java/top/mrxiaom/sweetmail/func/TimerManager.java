@@ -28,6 +28,7 @@ public class TimerManager extends AbstractPluginHolder {
         super(plugin);
         file = new File(plugin.getDataFolder(), "timed_draft.yml");
         Bukkit.getScheduler().runTaskTimer(plugin, this::everySecond, 20L, 20L);
+        register();
     }
 
     @Override
