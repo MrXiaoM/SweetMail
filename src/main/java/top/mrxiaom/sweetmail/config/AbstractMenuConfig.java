@@ -35,6 +35,8 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         public final boolean glow;
         @Nullable
         public final String display;
+        @Nullable
+        public final Integer customModel;
         public final List<String> lore;
         List<String> leftClick = null;
         List<String> rightClick = null;
@@ -42,10 +44,11 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         List<String> shiftRightClick = null;
         List<String> dropClick = null;
 
-        private Icon(String material, boolean glow, @Nullable String display, List<String> lore) {
+        private Icon(String material, boolean glow, @Nullable String display, @Nullable Integer customModel, List<String> lore) {
             this.material = material;
             this.glow = glow;
             this.display = display;
+            this.customModel = customModel;
             this.lore = lore;
         }
 
@@ -53,6 +56,9 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         public final ItemStack generateIcon(OfflinePlayer target, ItemStack item, Pair<String, Object>... replacements) {
             if (display != null) {
                 ItemStackUtil.setItemDisplayName(item, PAPI.setPlaceholders(target, replace(display, replacements)));
+            }
+            if (customModel != null) {
+                ItemStackUtil.setCustomModelData(item, customModel);
             }
             if (!lore.isEmpty()) {
                 ItemStackUtil.setItemLore(item, PAPI.setPlaceholders(target, replace(lore, replacements)));
@@ -106,8 +112,11 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             String material = section.getString(key + ".material", "STONE");
             boolean glow = section.getBoolean(key + ".glow", false);
             String display = section.getString(key + ".display", null);
+            Integer customModel = section.contains(key + ".custom-model")
+                    ? section.getInt(key + ".custom-model")
+                    : null;
             List<String> lore = section.getStringList(key + ".lore");
-            Icon icon = new Icon(material, glow, display, lore);
+            Icon icon = new Icon(material, glow, display, customModel, lore);
             if (commands) {
                 icon.leftClick = section.getStringList(key + ".left-click-commands");
                 icon.rightClick = section.getStringList(key + ".right-click-commands");
