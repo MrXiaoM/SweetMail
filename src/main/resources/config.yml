@@ -185,6 +185,7 @@ messages:
   inbox:
     attachments-outdated: '&e该邮件的附件已过期，无法领取'
     attachments-fail: '&e有附件领取失败! 请联系管理员查看后台了解详细'
+    read-all: '&a所有未读邮件已标为已读'
   outbox:
     deleted: '&a你已成功删除 %player% 的邮件 %title%&7 (%uuid%)'
   join:

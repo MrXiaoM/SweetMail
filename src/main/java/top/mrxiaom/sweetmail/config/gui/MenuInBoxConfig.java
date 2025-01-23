@@ -42,6 +42,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     int slotsCount;
     public String messageFail;
     public String messageOutdated;
+    public String messageReadAll;
     public MenuInBoxConfig(SweetMail plugin) {
         super(plugin, "menus/inbox.yml");
     }
@@ -55,6 +56,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         super.reloadConfig(cfg);
         messageFail = cfg.getString("messages.inbox.attachments-fail", "");
         messageOutdated = cfg.getString("messages.inbox.attachments-outdated", "");
+        messageReadAll = cfg.getString("messages.inbox.read-all", "");
 
         titleAll = config.getString("title-all", "&0收件箱 全部 ( %page%/%max_page% 页)");
         titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 ( %page%/%max_page% 页)");
@@ -233,10 +235,25 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     return;
                 }
                 case "读": {
-                    if (!click.isShiftClick() && click.isLeftClick()) {
-                        if (unread) return;
-                        unread = true;
-                        plugin.getGuiManager().openGui(this);
+                    if (!click.isShiftClick()) {
+                        if (click.isLeftClick()) {
+                            if (unread) return;
+                            unread = true;
+                            plugin.getGuiManager().openGui(this);
+                            return;
+                        }
+                        if (click.isRightClick()) {
+                            String targetKey;
+                            if (plugin.isOnlineMode()) {
+                                OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
+                                targetKey = plugin.getPlayerKey(offline);
+                            } else {
+                                targetKey = target;
+                            }
+                            plugin.getMailDatabase().markAllRead(targetKey);
+                            t(player, plugin.prefix() + messageReadAll);
+                            return;
+                        }
                     }
                     return;
                 }
