@@ -52,8 +52,9 @@ public class MySQLDatabase extends AbstractSQLDatabase {
     }
 
     @Override
-    protected String insertStatusSentence() {
-        return "INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0) on duplicate key update `read`=0;";
+    protected String insertStatusSentence(boolean attachments) {
+        int used = attachments ? 0 : 1;
+        return "INSERT INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, " + used + ") on duplicate key update `read`=0, `used`=" + used + ";";
     }
 
     @Override

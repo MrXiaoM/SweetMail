@@ -47,8 +47,9 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
     }
 
     @Override
-    protected String insertStatusSentence() {
-        return "INSERT OR REPLACE INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, 0);";
+    protected String insertStatusSentence(boolean attachments) {
+        int used = attachments ? 0 : 1;
+        return "INSERT OR REPLACE INTO `" + TABLE_STATUS + "`(`uuid`,`receiver`,`read`,`used`) VALUES(?, ?, 0, " + used + ");";
     }
 
     @Override
