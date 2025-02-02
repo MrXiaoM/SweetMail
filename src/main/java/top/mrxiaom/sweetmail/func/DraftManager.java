@@ -122,10 +122,10 @@ public class DraftManager extends AbstractPluginHolder {
         List<String> receivers = new ArrayList<>();
         if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
             receivers.addAll(draft.advReceivers());
+            receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
         } else if (!draft.receiver.isEmpty()) {
             receivers.add(draft.receiver);
         }
-        receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
         return receivers;
     }
 
