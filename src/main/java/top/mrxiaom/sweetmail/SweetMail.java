@@ -27,12 +27,17 @@ import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.func.data.Draft;
+import top.mrxiaom.sweetmail.utils.ClassLoaderWrapper;
 import top.mrxiaom.sweetmail.utils.EconomyHolder;
 import top.mrxiaom.sweetmail.utils.StringHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
 
@@ -43,15 +48,46 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return instance;
     }
     public static void warn(Throwable t) {
-        warn(StringHelper.stackTraceToString(t));
+        getInstance().warn(StringHelper.stackTraceToString(t));
     }
-    public static void warn(String s) {
-        getInstance().getLogger().warning(s);
+    public void info(String s) {
+        getLogger().log(Level.INFO, s);
+    }
+    public void warn(String s) {
+        getLogger().log(Level.WARNING, s);
+    }
+    public void warn(String msg, Throwable t) {
+        getLogger().log(Level.WARNING, msg, t);
     }
     private TextHelper textHelper = null;
     private GuiManager guiManager = null;
     private MailDatabase database = null;
     private EconomyHolder economy;
+    private final ClassLoaderWrapper classLoader;
+    public SweetMail() {
+        this.classLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
+        loadLibraries();
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    protected void loadLibraries() {
+        File librariesFolder = new File(getDataFolder(), "libraries");
+        if (!librariesFolder.exists()) {
+            librariesFolder.mkdirs();
+            return;
+        }
+        File[] files = librariesFolder.listFiles();
+        if (files != null) for (File file : files) {
+            if (file.isDirectory()) continue;
+            try {
+                URL url = file.toURI().toURL();
+                this.classLoader.addURL(url);
+                info("已加载依赖库 " + file.getName());
+            } catch (Throwable t) {
+                warn("无法加载依赖库 " + file.getName(), t);
+            }
+        }
+    }
 
     public TextHelper text() {
         return textHelper;
@@ -90,6 +126,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
         loadHooks();
         loadFunctions();
+        if (!database.ok()) return;
         loadBuiltInAttachments();
         reloadConfig();
 

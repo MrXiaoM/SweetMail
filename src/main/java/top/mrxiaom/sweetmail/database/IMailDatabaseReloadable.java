@@ -4,5 +4,6 @@ import org.bukkit.configuration.MemoryConfiguration;
 
 public interface IMailDatabaseReloadable extends IMailDatabase{
     void reload(MemoryConfiguration config);
+    boolean ok();
     void onDisable();
 }

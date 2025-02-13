@@ -10,3 +10,4 @@ database:
   pass: root
   database: minecraft
   table_prefix: sweetmail_
+  mysql_version: 8

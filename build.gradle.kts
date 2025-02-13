@@ -56,6 +56,8 @@ dependencies {
     compileOnly("io.lumine:Mythic:5.6.2") // 不要再升级 Mythic5 了，再升级就要 java 21 才能编译了
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
+    compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
+
     // Shadow Dependency
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.slf4j:slf4j-nop:2.0.16")

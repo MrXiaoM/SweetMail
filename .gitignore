@@ -115,5 +115,5 @@ gradle-app.setting
 run/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+!gradle/wrapper/*.jar
 !libs/*.jar

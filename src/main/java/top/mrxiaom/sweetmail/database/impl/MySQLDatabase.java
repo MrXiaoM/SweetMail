@@ -11,19 +11,45 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MySQLDatabase extends AbstractSQLDatabase {
-    HikariDataSource dataSource = null;
+    private final SweetMail plugin;
+    private HikariDataSource dataSource = null;
+    private boolean ok = false;
+    public MySQLDatabase(SweetMail plugin) {
+        this.plugin = plugin;
+    }
+
+    protected static String checkDriver(String driver) {
+        return Util.isPresent(driver) ? driver : null;
+    }
+    @Override
     public void reload(MemoryConfiguration config) {
         onDisable();
+        int mysqlVersion = config.getInt("database.mysql_version", 8);
 
-        if (!Util.isPresent("com.mysql.cj.jdbc.Driver")) {
-            SweetMail.warn("预料中的错误: 未找到 MySQL JDBC: com.mysql.cj.jdbc.Driver");
-            SweetMail.warn("正在卸载插件，请使用最新版 Spigot 或其衍生服务端");
-            Bukkit.getPluginManager().disablePlugin(SweetMail.getInstance());
-            return;
+        String driver;
+        if (mysqlVersion == 8) {
+            if (!Util.isPresent("com.mysql.cj.jdbc.Driver")) {
+                plugin.warn("预料中的错误: 未找到 MySQL JDBC 8: com.mysql.cj.jdbc.Driver");
+                plugin.warn("正在卸载插件，请手动下载以下依赖，放置到插件配置 libraries 文件夹，并重启服务器");
+                plugin.warn("https://mirrors.huaweicloud.com/repository/maven/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar");
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                return;
+            }
+            driver = checkDriver("com.mysql.cj.jdbc.Driver");
+        } else {
+            if (!Util.isPresent("com.mysql.jdbc.Driver")) {
+                plugin.warn("预料中的错误: 未找到 MySQL JDBC 5: com.mysql.jdbc.Driver");
+                plugin.warn("正在卸载插件，请手动下载以下依赖，放置到插件配置 libraries 文件夹，并重启服务器");
+                plugin.warn("https://mirrors.huaweicloud.com/repository/maven/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar");
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                return;
+            }
+            driver = checkDriver("com.mysql.jdbc.Driver");
         }
-
+        if (driver == null) return;
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        hikariConfig.setDriverClassName(driver);
+        plugin.getLogger().info("使用数据库驱动 " + hikariConfig.getDriverClassName());
         hikariConfig.setAutoCommit(true);
         hikariConfig.setMaxLifetime(120000L);
         hikariConfig.setIdleTimeout(10000L);
@@ -35,20 +61,28 @@ public class MySQLDatabase extends AbstractSQLDatabase {
         String user = config.getString("database.user", "root");
         String pass = config.getString("database.pass", "root");
         String database = config.getString("database.database", "minecraft");
-        String prefix = config.getString("database.table_prefix", "sweetmail_");
-        TABLE_BOX = prefix + "box";
-        TABLE_STATUS = prefix + "status";
         hikariConfig.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database + "?useSSL=false&allowPublicKeyRetrieval=true&verifyServerCertificate=false&serverTimezone=UTC");
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(pass);
+        hikariConfig.setConnectionTestQuery("SELECT NOW();");
+
+        String prefix = config.getString("database.table_prefix", "sweetmail_");
+        TABLE_BOX = prefix + "box";
+        TABLE_STATUS = prefix + "status";
         dataSource = new HikariDataSource(hikariConfig);
 
         createTables();
+        ok = true;
     }
 
     @Override
     protected Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    @Override
+    public boolean ok() {
+        return ok;
     }
 
     @Override
@@ -59,6 +93,7 @@ public class MySQLDatabase extends AbstractSQLDatabase {
 
     @Override
     public void onDisable() {
+        ok = false;
         if (dataSource != null) {
             dataSource.close();
             dataSource = null;

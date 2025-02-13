@@ -15,23 +15,28 @@ import java.io.File;
 import java.util.*;
 
 public class MailDatabase extends AbstractPluginHolder implements IMailDatabase {
-    File configFile;
+    private final File configFile;
     YamlConfiguration config;
-    MySQLDatabase mysql = new MySQLDatabase();
-    SQLiteDatabase sqlite = new SQLiteDatabase();
-    IMailDatabaseReloadable[] databases = new IMailDatabaseReloadable[] {
-            mysql, sqlite
-    };
+    private final MySQLDatabase mysql;
+    private final SQLiteDatabase sqlite;
+    private final IMailDatabaseReloadable[] databases;
     IMailDatabaseReloadable database = null;
-    Set<String> canUsePlayers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private final Set<String> canUsePlayers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     public MailDatabase(SweetMail plugin) {
         super(plugin);
+        mysql = new MySQLDatabase(plugin);
+        sqlite = new SQLiteDatabase(plugin);
+        databases = new IMailDatabaseReloadable[] { mysql, sqlite };
         this.configFile = new File(plugin.getDataFolder(), "database.yml");
         register();
     }
 
     public boolean hasUnUsed(String player) {
         return canUsePlayers.contains(player);
+    }
+
+    public boolean ok() {
+        return database != null && database.ok();
     }
 
     public String generateMailUUID() {
