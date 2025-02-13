@@ -195,7 +195,9 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         @Override
         public Inventory newInventory() {
             String targetKey;
-            if (plugin.isOnlineMode()) {
+            if (target.equalsIgnoreCase("#Server#")) {
+                targetKey = "#Server#";
+            } else if (plugin.isOnlineMode()) {
                 OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
                 targetKey = plugin.getPlayerKey(offline);
             } else {
