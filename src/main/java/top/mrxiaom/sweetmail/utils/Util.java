@@ -118,6 +118,7 @@ public class Util {
         adventure.player(player).openBook(book);
     }
 
+    @SuppressWarnings({"UnstableApiUsage"})
     public static void updateInventory(Player player) {
         player.updateInventory();
     }
