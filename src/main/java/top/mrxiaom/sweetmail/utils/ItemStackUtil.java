@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static top.mrxiaom.sweetmail.utils.Util.miniMessage;
+import static top.mrxiaom.sweetmail.utils.Util.*;
 
 @SuppressWarnings({"deprecation", "unused"})
 public class ItemStackUtil {
@@ -193,10 +194,18 @@ public class ItemStackUtil {
     }
 
     public static void setItemDisplayName(ItemStack item, String name) {
-        if (item == null) return;
+        if (item == null || item.getType().equals(Material.AIR)) return;
         Component displayName = miniMessage(name);
         String json = serializer().serialize(displayName);
-        setItemDisplayNameRaw(item, json);
+        if (useComponent) {
+            setItemDisplayNameRaw(item, json);
+        } else {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName(json);
+                item.setItemMeta(meta);
+            }
+        }
     }
 
     public static void setItemDisplayNameRaw(ItemStack item, String json) {
@@ -217,13 +226,21 @@ public class ItemStackUtil {
     }
 
     public static void setItemLore(ItemStack item, List<String> lore) {
-        if (item == null) return;
+        if (item == null || item.getType().equals(Material.AIR)) return;
         List<String> json = new ArrayList<>();
         for (String s : lore) {
             Component line = miniMessage(s);
             json.add(serializer().serialize(line));
         }
-        setItemLoreRaw(item, json);
+        if (useComponent) {
+            setItemLoreRaw(item, json);
+        } else {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setLore(json);
+                item.setItemMeta(meta);
+            }
+        }
     }
 
     public static void setItemLoreRaw(ItemStack item, List<String> json) {
@@ -274,7 +291,7 @@ public class ItemStackUtil {
         } else {
             Integer customModelData = null;
             String material = str;
-            Byte dataValue = null;
+            Integer dataValue = null;
             if (str.contains("#")) {
                 String customModel = str.substring(str.indexOf("#") + 1);
                 customModelData = Util.parseInt(customModel).orElseThrow(
@@ -282,18 +299,107 @@ public class ItemStackUtil {
                 );
                 material = str.replace("#" + customModel, "");
             }
-            else if (str.contains(":")) {
-                String data = str.substring(str.indexOf(":"));
-                dataValue = Util.parseByte(data.substring(1)).orElse(null);
-                material = str.replace(data, "");
+            if (material.contains(":")) {
+                String data = material.substring(str.indexOf(":"));
+                dataValue = Util.parseInt(data.substring(1)).orElse(null);
+                material = material.replace(data, "");
             }
-            Material m = Util.valueOr(Material.class, material, Material.PAPER);
-            ItemStack item = dataValue == null ? new ItemStack(m) : new ItemStack(m, 0, (short) 0, dataValue);
+            ItemStack item = parseMaterial(material.toUpperCase(), dataValue);
             if (customModelData != null) setCustomModelData(item, customModelData);
             return item;
         }
     }
 
+    private static final String[] materialColors = new String[] {
+            "STAINED_GLASS", "STAINED_GLASS_PANE", "WOOL", "BANNER", "CARPET"
+    };
+    private static final String[] dataValueColors = new String[] {
+            "WHITE", "ORANGE", "MAGENTA", "LIGHT_BLUE", "YELLOW", "LIME", "PINK", "GRAY",
+            "LIGHT_GRAY", "CYAN", "PURPLE", "BLUE", "BROWN", "GREEN", "RED", "BLACK"
+    };
+    @SuppressWarnings("ConstantValue")
+    public static ItemStack parseMaterial(String str, @Nullable Integer dataValue) {
+        Class<Material> m = Material.class;
+        // 高版本与低版本同名的物品，或者低版本的物品
+        Material material = valueOr(m, str, null);
+        if (dataValue != null) {
+            if (material == null) {
+                return new ItemStack(Material.PAPER);
+            }
+            return legacy(material, dataValue);
+        }
+        if (material != null) {
+            return new ItemStack(material);
+        }
+        // 带颜色的物品
+        if (str.endsWith("_CONCRETE") || str.endsWith("_TERRACOTTA")) {
+            material = valueOr(m, "STAINED_HARDENED_CLAY", null);
+        } else if (str.contains("BANNER") && !str.contains("PATTERN")) {
+            material = valueOr(m, "STAINED_BANNER", null);
+        } else if (str.endsWith("DYE")) {
+            material = valueOr(m, "INK_SACK", null);
+        } else for (String mc : materialColors) {
+            if (str.endsWith(mc)) {
+                material = valueOr(m, mc, null);
+                break;
+            }
+        }
+        if (material != null) {
+            Integer data = null;
+            boolean reverse = str.endsWith("DYE");
+            for (int i = 0; i < dataValueColors.length; i++) {
+                if (str.startsWith(dataValueColors[i])) {
+                    data = reverse ? (15 - i) : i;
+                    break;
+                }
+            }
+            return legacy(material, data);
+        }
+        // 头颅
+        if (material == null && (str.equals("SKELETON_SKULL") || str.equals("SKELETON_WALL_SKULL"))) {
+            material = valueOr(m, "SKULL_ITEM", null);
+            if (material != null) return legacy(material, 0);
+        }
+        if (material == null && (str.equals("WITHER_SKELETON_SKULL") || str.equals("WITHER_SKELETON_WALL_SKULL"))) {
+            material = valueOr(m, "SKULL_ITEM", null);
+            if (material != null) return legacy(material, 1);
+        }
+        if (material == null && (str.equals("ZOMBIE_HEAD") || str.equals("ZOMBIE_WALL_HEAD"))) {
+            material = valueOr(m, "SKULL_ITEM", null);
+            if (material != null) return legacy(material, 2);
+        }
+        if (material == null && (str.equals("PLAYER_HEAD") || str.equals("PLAYER_WALL_HEAD"))) {
+            material = valueOr(m, "SKULL_ITEM", null);
+            if (material != null) return legacy(material, 3);
+        }
+        if (material == null && (str.equals("CREEPER_HEAD") || str.equals("CREEPER_WALL_HEAD"))) {
+            material = valueOr(m, "SKULL_ITEM", null);
+            if (material != null) return legacy(material, 4);
+        }
+        // 其它杂项物品
+        if (material == null && str.equals("CLOCK")) material = valueOr(m, "WATCH", null);
+        if (material == null && str.contains("BED")) material = valueOr(m, "BED", null);
+        if (material == null && str.equals("CRAFT_TABLE")) material = valueOr(m, "WORKBENCH", null);
+        if (material == null && str.contains("_DOOR") && !str.contains("IRON")) material = valueOr(m, "WOODEN_DOOR", null);
+        if (material == null && str.startsWith("WOODEN_")) material = valueOr(m, str.replace("WOODEN_", "WOOD_"), null);
+        if (material == null && str.equals("IRON_BARS")) material = valueOr(m, "IRON_FENCE", null);
+        if (material == null && str.equals("BUNDLE")) material = valueOr(m, "FEATHER", null);
+        if (material == null && str.equals("ENDER_EYE")) material = valueOr(m, "EYE_OF_ENDER", null);
+        if (material == null && str.equals("COMMAND_BLOCK")) material = valueOr(m, "COMMAND", null);
+        if (material == null && str.equals("COMMAND_BLOCK_MINECART")) material = valueOr(m, "COMMAND_MINECART", null);
+        if (material == null && str.equals("CHAIN_COMMAND_BLOCK")) material = valueOr(m, "COMMAND_CHAIN", null);
+        if (material == null && str.equals("REPEATING_COMMAND_BLOCK")) material = valueOr(m, "COMMAND_REPEATING", null);
+        // TODO: 支持更多新旧版本的物品转换
+        return new ItemStack(material != null ? material : Material.PAPER);
+    }
+
+    public static ItemStack legacy(Material material, @Nullable Integer data) {
+        if (data != null) {
+            return new ItemStack(material, 1, data.shortValue());
+        } else {
+            return new ItemStack(material);
+        }
+    }
     @NotNull
     public static ItemMeta getItemMeta(@NotNull ItemStack item) {
         ItemMeta meta = item.getItemMeta();
