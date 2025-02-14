@@ -5,9 +5,12 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTType;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
+import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -39,9 +42,41 @@ import static top.mrxiaom.sweetmail.utils.Util.miniMessage;
 public class ItemStackUtil {
     private static boolean supportTranslationKey;
     private static boolean supportBundle;
+    private static boolean useComponent;
     protected static void init() {
         supportTranslationKey = Util.isPresent("org.bukkit.Translatable");
         supportBundle = Util.isPresent("org.bukkit.inventory.meta.BundleMeta");
+
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
+            useComponent = true;
+        } else {
+            ItemStack item = new ItemStack(Material.STONE);
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                String testDisplayName = "§a§l测试§e§l文本";
+                meta.setDisplayName(testDisplayName);
+                item.setItemMeta(meta);
+                NBT.get(item, nbt -> {
+                    ReadableNBT display = nbt.getCompound("display");
+                    if (display == null) {
+                        useComponent = false;
+                        return;
+                    }
+                    String name = display.getString("Name");
+                    useComponent = !name.equals(testDisplayName);
+                });
+            } else {
+                useComponent = false;
+            }
+        }
+    }
+
+    public static ComponentSerializer<Component, ?, String> serializer() {
+        if (useComponent) {
+            return GsonComponentSerializer.gson();
+        } else {
+            return LegacyComponentSerializer.legacySection();
+        }
     }
 
     public static String miniTranslate(ItemStack item) {
@@ -160,7 +195,7 @@ public class ItemStackUtil {
     public static void setItemDisplayName(ItemStack item, String name) {
         if (item == null) return;
         Component displayName = miniMessage(name);
-        String json = GsonComponentSerializer.gson().serialize(displayName);
+        String json = serializer().serialize(displayName);
         setItemDisplayNameRaw(item, json);
     }
 
@@ -186,7 +221,7 @@ public class ItemStackUtil {
         List<String> json = new ArrayList<>();
         for (String s : lore) {
             Component line = miniMessage(s);
-            json.add(GsonComponentSerializer.gson().serialize(line));
+            json.add(serializer().serialize(line));
         }
         setItemLoreRaw(item, json);
     }

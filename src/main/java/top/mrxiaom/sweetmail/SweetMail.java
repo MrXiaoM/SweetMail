@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.TabCompleter;
@@ -120,6 +121,15 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                 ? player.getUniqueId().toString().replace("-", "")
                 : player.getName();
     }
+
+    @Override
+    public void onLoad() {
+        MinecraftVersion.replaceLogger(getLogger());
+        MinecraftVersion.disableUpdateCheck();
+        MinecraftVersion.disableBStats();
+        MinecraftVersion.getVersion();
+    }
+
     @Override
     public void onEnable() {
         Util.init(instance = this);
