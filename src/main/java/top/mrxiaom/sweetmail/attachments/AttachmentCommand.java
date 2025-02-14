@@ -85,7 +85,7 @@ public class AttachmentCommand implements IAttachment {
     public static void register() {
         IAttachment.registerAttachment(AttachmentCommand.class, PERM,
                 // TODO: 从语言配置读取图标
-                (player) -> ItemStackUtil.buildItem(Material.COMMAND_BLOCK, "控制台命令附件", Lists.newArrayList()),
+                (player) -> ItemStackUtil.buildItem("COMMAND_BLOCK", "控制台命令附件", Lists.newArrayList()),
                 (player) -> {
                     SweetMail plugin = SweetMail.getInstance();
                     Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();

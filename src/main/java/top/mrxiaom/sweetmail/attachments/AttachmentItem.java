@@ -148,7 +148,7 @@ public class AttachmentItem implements IAttachment {
     public static void register() {
         IAttachment.registerAttachment(AttachmentItem.class, PERM,
                 // TODO: 从语言配置读取图标
-                (player) -> ItemStackUtil.buildItem(Material.ITEM_FRAME, "物品附件", Lists.newArrayList()),
+                (player) -> ItemStackUtil.buildItem("ITEM_FRAME", "物品附件", Lists.newArrayList()),
                 Gui::new,
                 (s) -> {
                     if (s.startsWith("item:")) {

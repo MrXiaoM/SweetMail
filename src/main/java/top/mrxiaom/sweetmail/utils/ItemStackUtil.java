@@ -260,12 +260,12 @@ public class ItemStackUtil {
         }
     }
 
-    public static ItemStack buildItem(Material material, String name, List<String> lore) {
+    public static ItemStack buildItem(String material, String name, List<String> lore) {
         return buildItem(material, null, name, lore);
     }
-    public static ItemStack buildItem(Material material, Integer customModelData, String name, List<String> lore) {
-        if (material.equals(Material.AIR)) return new ItemStack(material);
-        ItemStack item = new ItemStack(material, 1);
+    public static ItemStack buildItem(String material, Integer customModelData, String name, List<String> lore) {
+        if (material.equalsIgnoreCase("AIR")) return new ItemStack(Material.AIR);
+        ItemStack item = getItem(material);
         setItemDisplayName(item, name);
         setItemLore(item, lore);
         if (customModelData != null) setCustomModelData(item, customModelData);
