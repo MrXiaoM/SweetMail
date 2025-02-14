@@ -85,9 +85,8 @@ public class AttachmentMoney implements IAttachment {
 
     public static void register() {
         IAttachment.registerAttachment(AttachmentMoney.class, PERM,
-                // TODO: 从语言配置读取图标
-                (player) -> ItemStackUtil.buildItem("GOLD_NUGGET", "金币附件", Lists.newArrayList()),
-                (player) -> {
+                Internal::attachmentMoney,
+                (player) -> { // addGui
                     SweetMail plugin = SweetMail.getInstance();
                     Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
                     ChatPrompter.prompt(
@@ -114,7 +113,7 @@ public class AttachmentMoney implements IAttachment {
                             }, back);
                     return null;
                 },
-                (s) -> {
+                (s) -> { // deserializer
                     if (s.startsWith("money:")) {
                         Double money = Util.parseDouble(s.substring(6)).orElse(null);
                         if (money != null) {

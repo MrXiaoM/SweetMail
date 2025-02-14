@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
+import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.*;
@@ -89,6 +90,7 @@ public interface IAttachment {
         protected static String moneyIcon;
         protected static String moneyName;
         protected static List<String> moneyLore;
+        protected static String itemTitle;
         protected static String itemDisplay;
         protected static String itemDisplayWithAmount;
         protected static List<Material> itemBanMaterials;
@@ -103,6 +105,16 @@ public interface IAttachment {
         protected static String addCommandPromptTips;
         protected static String addCommandPromptCancel;
         protected static String addCommandFail;
+
+        protected static String attachmentItemMaterial;
+        protected static String attachmentItemDisplay;
+        protected static List<String> attachmentItemLore;
+        protected static String attachmentMoneyMaterial;
+        protected static String attachmentMoneyDisplay;
+        protected static List<String> attachmentMoneyLore;
+        protected static String attachmentCommandMaterial;
+        protected static String attachmentCommandDisplay;
+        protected static List<String> attachmentCommandLore;
         public Internal(SweetMail plugin) {
             super(plugin);
             register();
@@ -121,6 +133,7 @@ public interface IAttachment {
             moneyIcon = config.getString("messages.draft.attachments.money.icon", "GOLD_NUGGET");
             moneyName = config.getString("messages.draft.attachments.money.name", "");
             moneyLore = config.getStringList("messages.draft.attachments.money.lore");
+            itemTitle = config.getString("messages.draft.attachments.item.title", "请在物品栏点击要添加附件的物品");
             itemDisplay = config.getString("messages.draft.attachments.item.display", "");
             itemDisplayWithAmount = config.getString("messages.draft.attachments.item.display-with-amount", "");
             itemBanMaterials = new ArrayList<>();
@@ -141,6 +154,28 @@ public interface IAttachment {
             addCommandPromptTips = config.getString("messages.draft.attachments.command.prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“控制台命令附件”&b的值 &7(格式 &f图标,显示名称,执行命令&7，如&f PAPER,10金币,money give %player_name% 10 &7。输入 &ccancel &7取消添加附件)");
             addCommandPromptCancel = config.getString("messages.draft.attachments.command.prompt-cancel", "cancel");
             addCommandFail = config.getString("messages.draft.attachments.command.add.fail", "&7[&e&l邮件&7] &e格式不正确，应为 &f图标,显示名称,执行命令&e，如&f PAPER,10金币,money give %player_name% 10");
+
+            attachmentItemMaterial = config.getString("attachments.item.material", "ITEM_FRAME");
+            attachmentItemDisplay = config.getString("attachments.item.display", "物品附件");
+            attachmentItemLore = config.getStringList("attachments.item.lore");
+            attachmentMoneyMaterial = config.getString("attachments.money.material", "GOLD_NUGGET");
+            attachmentMoneyDisplay = config.getString("attachments.money.display", "金币附件");
+            attachmentMoneyLore = config.getStringList("attachments.money.lore");
+            attachmentCommandMaterial = config.getString("attachments.command.material", "COMMAND_BLOCK");
+            attachmentCommandDisplay = config.getString("attachments.command.display", "控制台命令附件");
+            attachmentCommandLore = config.getStringList("attachments.command.lore");
+        }
+
+        protected static ItemStack attachmentItem(Player player) {
+            return ItemStackUtil.buildItem(attachmentItemMaterial, attachmentItemDisplay, attachmentItemLore);
+        }
+
+        protected static ItemStack attachmentMoney(Player player) {
+            return ItemStackUtil.buildItem(attachmentMoneyMaterial, attachmentMoneyDisplay, attachmentMoneyLore);
+        }
+
+        protected static ItemStack attachmentCommand(Player player) {
+            return ItemStackUtil.buildItem(attachmentCommandMaterial, attachmentCommandDisplay, attachmentCommandLore);
         }
 
         public static void useIllegalDeny(CommandSender sender) {

@@ -84,9 +84,8 @@ public class AttachmentCommand implements IAttachment {
 
     public static void register() {
         IAttachment.registerAttachment(AttachmentCommand.class, PERM,
-                // TODO: 从语言配置读取图标
-                (player) -> ItemStackUtil.buildItem("COMMAND_BLOCK", "控制台命令附件", Lists.newArrayList()),
-                (player) -> {
+                Internal::attachmentCommand,
+                (player) -> { // addGui
                     SweetMail plugin = SweetMail.getInstance();
                     Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
                     ChatPrompter.prompt(
@@ -107,7 +106,7 @@ public class AttachmentCommand implements IAttachment {
                             }, back);
                     return null;
                 },
-                (s) -> {
+                (s) -> { // deserializer
                     if (s.startsWith("command:")) {
                         String[] split = s.substring(8).split(",", 3);
                         if (split.length == 3) {

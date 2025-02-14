@@ -124,7 +124,7 @@ public class AttachmentItem implements IAttachment {
         @Override
         public Inventory newInventory() {
             // TODO: 从语言配置读取标题
-            return Bukkit.createInventory(null, 9, "请在物品栏点击要添加附件的物品");
+            return Bukkit.createInventory(null, 9, Internal.itemTitle);
         }
 
         @Override
@@ -147,10 +147,8 @@ public class AttachmentItem implements IAttachment {
 
     public static void register() {
         IAttachment.registerAttachment(AttachmentItem.class, PERM,
-                // TODO: 从语言配置读取图标
-                (player) -> ItemStackUtil.buildItem("ITEM_FRAME", "物品附件", Lists.newArrayList()),
-                Gui::new,
-                (s) -> {
+                Internal::attachmentItem, Gui::new,
+                (s) -> { // deserializer
                     if (s.startsWith("item:")) {
                         ItemStack item = ItemStackUtil.itemStackFromBase64(s.substring(5));
                         if (item != null) {
