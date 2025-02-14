@@ -9,6 +9,7 @@ softdepend:
   - MythicMobs
   - ItemsAdder
 authors: [ MrXiaoM ]
+folia-supported: true
 commands:
   sweetmail:
     description: SweetMail main command.
