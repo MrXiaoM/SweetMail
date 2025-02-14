@@ -30,7 +30,7 @@ public class MySQLDatabase extends AbstractSQLDatabase {
         if (mysqlVersion == 8) {
             if (!Util.isPresent("com.mysql.cj.jdbc.Driver")) {
                 plugin.warn("预料中的错误: 未找到 MySQL JDBC 8: com.mysql.cj.jdbc.Driver");
-                plugin.warn("正在卸载插件，请手动下载以下依赖，放置到插件配置 libraries 文件夹，并重启服务器");
+                plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
                 plugin.warn("https://mirrors.huaweicloud.com/repository/maven/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar");
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 return;
@@ -39,7 +39,7 @@ public class MySQLDatabase extends AbstractSQLDatabase {
         } else {
             if (!Util.isPresent("com.mysql.jdbc.Driver")) {
                 plugin.warn("预料中的错误: 未找到 MySQL JDBC 5: com.mysql.jdbc.Driver");
-                plugin.warn("正在卸载插件，请手动下载以下依赖，放置到插件配置 libraries 文件夹，并重启服务器");
+                plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
                 plugin.warn("https://mirrors.huaweicloud.com/repository/maven/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar");
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 return;

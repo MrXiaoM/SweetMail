@@ -26,7 +26,7 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
 
         if (!Util.isPresent("org.sqlite.JDBC")) {
             plugin.warn("预料中的错误: 未找到 SQLite JDBC: org.sqlite.JDBC");
-            plugin.warn("正在卸载插件，请手动下载以下依赖，放置到插件配置 libraries 文件夹，并重启服务器");
+            plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
             plugin.warn("https://mirrors.huaweicloud.com/repository/maven/org/xerial/sqlite-jdbc/3.49.0.0/sqlite-jdbc-3.49.0.0.jar");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return;
