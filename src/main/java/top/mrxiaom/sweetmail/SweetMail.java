@@ -209,7 +209,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                     warn("============================================================");
                     warn("SweetMail 与 CMI 存在兼容性问题，本插件的 /mail 命令被 CMI 覆盖。");
                     warn("● 如果想禁用 CMI 的命令，编辑 /plugins/CMI/Settings/Alias.yml");
-                    warn("● 如果想忽略这个警告，在 config.yml 添加 check-compatible.cmi: false");
+                    warn("● 如果想忽略这个警告，在 config.yml 设置 check-compatible.cmi: false");
                     warn("============================================================");
                 }
             }
@@ -222,7 +222,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                     warn("============================================================");
                     warn("SweetMail 与 Essentials 存在兼容性问题，本插件的 /mail 命令被 Essentials 覆盖。");
                     warn("● 如果想禁用 Essentials 的命令，编辑插件 jar 内的 plugin.yml，删除 commands 下的 mail");
-                    warn("● 如果想忽略这个警告，在 config.yml 添加 check-compatible.essentials: false");
+                    warn("● 如果想忽略这个警告，在 config.yml 设置 check-compatible.essentials: false");
                     warn("============================================================");
                 }
             }
