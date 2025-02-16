@@ -489,10 +489,10 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             }
                             Mail mail = draft.createMail(uuid, receivers);
                             plugin.getMailDatabase().sendMail(mail);
-                            if (draft.advSenderDisplay != null) {
+                            if (draft.advSenderDisplay == null) Bukkit.getScheduler().runTask(plugin, () -> {
                                 PlayerMailSentEvent e = new PlayerMailSentEvent(player, draft.deepClone(), mail);
                                 Bukkit.getPluginManager().callEvent(e);
-                            }
+                            });
                             draft.reset();
                             draft.save();
                             t(player, plugin.prefix() + messageSent);
