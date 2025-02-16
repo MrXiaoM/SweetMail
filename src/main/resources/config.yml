@@ -27,6 +27,11 @@ bungeecord:
   # 子服2的接收方标识码为 'server3,' 则它不接收消息
   receiver-key: 'default'
 
+# 是否检查插件兼容性
+check-compatible:
+  cmi: true
+  essentials: true
+
 # 收纳袋图标最多显示的物品数量
 bundle-max-slots: 7
 

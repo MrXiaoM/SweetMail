@@ -5,11 +5,15 @@ import com.google.common.io.ByteStreams;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -115,6 +119,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public boolean isOnlineMode() {
         return onlineMode;
     }
+    private boolean checkCMI, checkEssentials;
     public String getPlayerKey(OfflinePlayer player) {
         if (player == null) return null;
         return SweetMail.getInstance().isOnlineMode()
@@ -140,17 +145,25 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         loadBuiltInAttachments();
         reloadConfig();
 
+        FileConfiguration config = getConfig();
+        checkCMI = config.getBoolean("check-compatible.cmi", true);
+        checkEssentials = config.getBoolean("check-compatible.essentials", true);
+        Bukkit.getPluginManager().registerEvents(this, this);
+
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
         IMail.instance = new MailAPI();
         getLogger().info("SweetMail 加载完毕");
         if (getDescription().getVersion().endsWith("-unstable")) {
-            getLogger().warning("你正在运行 SweetMail 开发版或预览版，可能会存在一些问题。");
-            getLogger().warning("如有问题，请通过以下任一链接向作者反馈。");
-            getLogger().warning("  https://github.com/MrXiaoM/SweetMail/issues");
-            getLogger().warning("  https://www.minebbs.com/members/24586");
-            getLogger().warning("我已默认你已阅读这条消息，如果你不想在日志中看到，请编辑 plugin.yml，删除 -unstable");
+            warn("你正在运行 SweetMail 开发版或预览版，可能会存在一些问题。");
+            warn("如有问题，请通过以下任一链接向作者反馈。");
+            warn("  https://github.com/MrXiaoM/SweetMail/issues");
+            warn("  https://www.minebbs.com/members/24586");
+            warn("我已默认你已阅读这条消息，如果你不想在日志中看到，请编辑 plugin.yml，删除 -unstable");
+        }
+        if (!Bukkit.getOnlinePlayers().isEmpty()) {
+            checkCompatible(null);
         }
     }
 
@@ -164,13 +177,13 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public void loadHooks() {
         if (!Util.isPresent("net.milkbowl.vault.economy.Economy")) {
             economy = null;
-            getLogger().info("没有安装 Vault");
+            warn("没有安装 Vault");
         } else {
             economy = EconomyHolder.inst();
             if (economy == null) {
-                getLogger().info("已安装 Vault，未发现经济插件");
+                warn("已安装 Vault，未发现经济插件");
             } else {
-                getLogger().info("已安装 Vault，经济插件为 " + economy.economy.getName());
+                info("已安装 Vault，经济插件为 " + economy.economy.getName());
             }
         }
         if (Util.isPresent("me.clip.placeholderapi.expansion.PlaceholderExpansion")) {
@@ -182,6 +195,38 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         AttachmentItem.register();
         AttachmentCommand.register();
         if (economy != null) AttachmentMoney.register();
+    }
+
+    @EventHandler
+    public void checkCompatible(ServerLoadEvent e) {
+        if (checkCMI){
+            Plugin plugin = Bukkit.getPluginManager().getPlugin("CMI");
+            if (plugin instanceof JavaPlugin) {
+                File plugins = getDataFolder().getParentFile();
+                File alias = new File(plugins, "CMI/Settings/Alias.yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(alias);
+                if (config.getBoolean("Alias./mail.Enabled", false)) {
+                    warn("============================================================");
+                    warn("SweetMail 与 CMI 存在兼容性问题，本插件的 /mail 命令被 CMI 覆盖。");
+                    warn("● 如果想禁用 CMI 的命令，编辑 /plugins/CMI/Settings/Alias.yml");
+                    warn("● 如果想忽略这个警告，在 config.yml 添加 check-compatible.cmi: false");
+                    warn("============================================================");
+                }
+            }
+        }
+        if (checkEssentials) {
+            Plugin plugin = Bukkit.getPluginManager().getPlugin("Essentials");
+            if (plugin instanceof JavaPlugin) {
+                PluginCommand conflict = ((JavaPlugin) plugin).getCommand("mail");
+                if (conflict != null) {
+                    warn("============================================================");
+                    warn("SweetMail 与 Essentials 存在兼容性问题，本插件的 /mail 命令被 Essentials 覆盖。");
+                    warn("● 如果想禁用 Essentials 的命令，编辑插件 jar 内的 plugin.yml，删除 commands 下的 mail");
+                    warn("● 如果想忽略这个警告，在 config.yml 添加 check-compatible.essentials: false");
+                    warn("============================================================");
+                }
+            }
+        }
     }
 
     @Override
@@ -227,7 +272,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                 break;
         }
         bundleMaxSlots = config.getInt("bundle-max-slots", 7);
-        getLogger().info("插件当前在 " + (onlineMode ? "在线模式": "离线模式") + " 下运行");
+        info("插件当前在 " + (onlineMode ? "在线模式": "离线模式") + " 下运行");
         reloadAllConfig(config);
     }
 
