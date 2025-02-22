@@ -11,8 +11,8 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
     protected final Player player;
     protected final Draft draft;
     protected Runnable reopen = () ->
-            Bukkit.getScheduler().runTask(plugin,
-                    () -> plugin.getGuiManager().openGui(this));
+            plugin.getScheduler().runNextTick(
+                    (t_) -> plugin.getGuiManager().openGui(this));
     public AbstractDraftGui(SweetMail plugin, Player player) {
         super(plugin);
         this.player = player;

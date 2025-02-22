@@ -54,7 +54,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
 
     @Override
     public void sendMail(Mail mail) {
-        Bukkit.getScheduler().runTaskAsynchronously(SweetMail.getInstance(), () -> {
+        SweetMail.getInstance().getScheduler().runAsync((t_) -> {
             try (Connection conn = getConnection()) {
                 try (PreparedStatement ps = conn.prepareStatement(
                         "INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, ?);"

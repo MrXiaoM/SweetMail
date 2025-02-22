@@ -90,7 +90,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
         if (!noticeBungee || players.isEmpty()) return;
         Player player = Util.getAnyPlayerOrNull();
         if (player == null) return;
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runAsync((t_) -> {
             ByteArrayDataOutput out = Util.newDataOutput();
             out.writeUTF("Forward");
             out.writeUTF("ALL");

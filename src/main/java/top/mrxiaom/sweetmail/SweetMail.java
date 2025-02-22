@@ -2,6 +2,8 @@ package top.mrxiaom.sweetmail;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.PlatformScheduler;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -69,9 +71,15 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private MailDatabase database = null;
     private EconomyHolder economy;
     private final ClassLoaderWrapper classLoader;
+    public final FoliaLib foliaLib;
     public SweetMail() {
         this.classLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
+        this.foliaLib = new FoliaLib(this);
         loadLibraries();
+    }
+
+    public PlatformScheduler getScheduler() {
+        return foliaLib.getScheduler();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -235,7 +243,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
         HandlerList.unregisterAll((Plugin) this);
-        Bukkit.getScheduler().cancelTasks(this);
+        getScheduler().cancelAllTasks();
         Util.onDisable();
     }
 

@@ -47,7 +47,7 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
     @Override
     public void sendMail(Mail mail) {
         database.sendMail(mail);
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        plugin.getScheduler().runNextTick((t_) -> {
             MailSentEvent event = new MailSentEvent(mail);
             Bukkit.getPluginManager().callEvent(event);
         });

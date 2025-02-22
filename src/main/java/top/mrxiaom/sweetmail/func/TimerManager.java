@@ -27,7 +27,7 @@ public class TimerManager extends AbstractPluginHolder {
     public TimerManager(SweetMail plugin) {
         super(plugin);
         file = new File(plugin.getDataFolder(), "timed_draft.yml");
-        Bukkit.getScheduler().runTaskTimer(plugin, this::everySecond, 20L, 20L);
+        plugin.getScheduler().runTimer(this::everySecond, 20L, 20L);
         register();
     }
 

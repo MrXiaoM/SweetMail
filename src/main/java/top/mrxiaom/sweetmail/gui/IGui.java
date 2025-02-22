@@ -25,6 +25,6 @@ public interface IGui {
 
     default void open() {
         SweetMail plugin = SweetMail.getInstance();
-        Bukkit.getScheduler().runTask(plugin, () -> plugin.getGuiManager().openGui(this));
+        plugin.getScheduler().runNextTick((t_) -> plugin.getGuiManager().openGui(this));
     }
 }

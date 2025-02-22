@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.utils.comp.IA;
@@ -40,12 +39,12 @@ public class Util {
     private static MiniMessage miniMessage;
     public static Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    public static void init(JavaPlugin plugin) {
+    public static void init(SweetMail plugin) {
         adventure = BukkitAudiences.builder(plugin).build();
         miniMessage = MiniMessage.builder()
                 .postProcessor(it -> it.decoration(TextDecoration.ITALIC, false))
                 .build();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runAsync((t_) -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
                     players.put(player.getName(), player);

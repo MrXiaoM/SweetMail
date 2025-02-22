@@ -66,6 +66,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
     implementation("de.tr7zw:item-nbt-api:2.14.1")
+    implementation("com.github.technicallycoded:FoliaLib:0.4.3")
 }
 
 tasks {
@@ -77,6 +78,7 @@ tasks {
             "com.zaxxer.hikari" to "hikari",
             "org.slf4j" to "slf4j",
             "net.kyori" to "kyori",
+            "com.tcoded.folialib" to "folialib",
         ).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }

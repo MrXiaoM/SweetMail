@@ -30,7 +30,7 @@ public class DraftManager extends AbstractPluginHolder {
         super(plugin);
         dataFolder = new File(plugin.getDataFolder(), "draft");
         if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord", false)) {
-            Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            plugin.getScheduler().runTimer(() -> {
                 List<Player> players = Lists.newArrayList(Bukkit.getOnlinePlayers());
                 Player player = players.isEmpty() ? null : players.get(0);
                 if (player == null) return;

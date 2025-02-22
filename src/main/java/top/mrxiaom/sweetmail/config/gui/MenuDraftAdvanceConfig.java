@@ -221,7 +221,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                         }
                         if (click.equals(ClickType.DROP)) {
                             t(player, "正在计算泛接收人列表，请稍等…");
-                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                            plugin.getScheduler().runAsync((t_) -> {
                                 List<String> receivers = draft.advReceivers();
                                 if (receivers.isEmpty()) {
                                     t(player, "(空)");
