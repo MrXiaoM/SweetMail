@@ -77,19 +77,19 @@ public class Mail {
 
         JsonArray receiversArray = new JsonArray();
         for (String s : receivers) {
-            receiversArray.add(s);
+            receiversArray.add(new JsonPrimitive(s));
         }
         json.add("receivers", receiversArray);
 
         JsonArray contentArray = new JsonArray();
         for (String s : content) {
-            contentArray.add(s);
+            contentArray.add(new JsonPrimitive(s));
         }
         json.add("content", contentArray);
 
         JsonArray attachmentsArray = new JsonArray();
         for (IAttachment attachment : attachments) {
-            attachmentsArray.add(attachment.serialize());
+            attachmentsArray.add(new JsonPrimitive(attachment.serialize()));
         }
         json.add("attachments", attachmentsArray);
         json.addProperty("outdateTime", outdateTime);
