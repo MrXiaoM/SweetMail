@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.func;
 
 import com.google.common.collect.Lists;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -88,7 +87,7 @@ public class TimerManager extends AbstractPluginHolder {
 
     private void everySecond() {
         if (queue.isEmpty()) return;
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        plugin.getScheduler().runAsync((t_) -> {
             boolean flag = false;
             long time = toTimestamp(LocalDateTime.now());
             DraftManager manager = DraftManager.inst();
