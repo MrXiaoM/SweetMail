@@ -77,6 +77,7 @@ items:
     # attachments (附件列表)
     # bottom_attachments (附件领取选项)
     # content (邮件正文)
+    # content;前缀 (邮件正文，但每一行都添加前缀)
     lore-content:
       - read
       - part1

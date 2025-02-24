@@ -79,6 +79,15 @@ public class IconSlot {
                         }
                         break;
                     default:
+                        if (key.startsWith("content;")) {
+                            String prefix = key.substring(8);
+                            for (String page : mail.content) {
+                                for (String s : page.split("\n")) {
+                                    lore.add(prefix + s);
+                                }
+                            }
+                            break;
+                        }
                         lore.add(key);
                         break;
                 }
