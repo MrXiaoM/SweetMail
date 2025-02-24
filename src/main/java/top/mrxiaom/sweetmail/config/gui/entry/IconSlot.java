@@ -77,6 +77,7 @@ public class IconSlot {
                         for (String page : mail.content) {
                             lore.addAll(Arrays.asList(page.split("\n")));
                         }
+                        break;
                     default:
                         lore.add(key);
                         break;
