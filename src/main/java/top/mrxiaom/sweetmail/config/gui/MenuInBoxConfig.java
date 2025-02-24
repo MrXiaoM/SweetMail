@@ -364,7 +364,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             return;
                         }
                         // 查看正文
-                        Util.openBook(player, mail.generateBook());
+                        plugin.getBookImpl().openBook(player, mail);
                         return;
                     }
                     if (!click.isShiftClick() && click.isRightClick()) {

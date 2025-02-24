@@ -25,6 +25,8 @@ import top.mrxiaom.sweetmail.attachments.AttachmentCommand;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.AttachmentMoney;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.book.DefaultBook;
+import top.mrxiaom.sweetmail.book.IBook;
 import top.mrxiaom.sweetmail.database.MailDatabase;
 import top.mrxiaom.sweetmail.database.entry.*;
 import top.mrxiaom.sweetmail.depend.Placeholder;
@@ -71,11 +73,20 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private MailDatabase database = null;
     private EconomyHolder economy;
     private final ClassLoaderWrapper classLoader;
+    private IBook bookImpl = new DefaultBook();
     public final FoliaLib foliaLib;
     public SweetMail() {
         this.classLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
         this.foliaLib = new FoliaLib(this);
         loadLibraries();
+    }
+
+    public IBook getBookImpl() {
+        return bookImpl;
+    }
+
+    public void setBookImpl(IBook bookImpl) {
+        this.bookImpl = bookImpl;
     }
 
     public PlatformScheduler getScheduler() {

@@ -255,7 +255,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         if (i < 0 || i >= outBox.size()) return;
                         MailWithStatus mail = outBox.get(i);
                         if (click.isLeftClick()) {
-                            Util.openBook(player, mail.generateBook());
+                            plugin.getBookImpl().openBook(player, mail);
                             return;
                         }
                         if (click.isRightClick()) {
