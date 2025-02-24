@@ -510,13 +510,13 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 draft.save();
                                 updateAttachmentSlots(view);
                                 if (!player.hasPermission(PERM_ADMIN) || !click.isShiftClick()) {
-                                    if (attachment != null) {
+                                    if (attachment != null) plugin.getScheduler().runNextTick((t_) -> {
                                         if (attachment.isLegal()) {
                                             attachment.use(player);
                                         } else {
                                             IAttachment.Internal.useIllegalDeny(player);
                                         }
-                                    }
+                                    });
                                 }
                             }
                         } else if (!click.isShiftClick() && player.hasPermission(AttachmentItem.PERM)) {

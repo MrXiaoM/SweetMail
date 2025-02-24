@@ -303,18 +303,20 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 t(player, plugin.prefix() + messageOutdated);
                                 continue;
                             }
-                            try {
-                                for (IAttachment attachment : mail.attachments) {
-                                    if (attachment.isLegal()) {
-                                        attachment.use(player);
-                                    } else {
-                                        IAttachment.Internal.useIllegalDeny(player);
+                            plugin.getScheduler().runNextTick((t_) -> {
+                                try {
+                                    for (IAttachment attachment : mail.attachments) {
+                                        if (attachment.isLegal()) {
+                                            attachment.use(player);
+                                        } else {
+                                            IAttachment.Internal.useIllegalDeny(player);
+                                        }
                                     }
+                                } catch (Throwable t) {
+                                    warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
+                                    t(player, plugin.prefix() + messageFail);
                                 }
-                            } catch (Throwable t) {
-                                warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                                t(player, plugin.prefix() + messageFail);
-                            }
+                            });
                         }
                         plugin.getMailDatabase().markUsed(dismiss, targetKey);
                         open();
@@ -342,18 +344,20 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     t(player, plugin.prefix() + messageOutdated);
                                     return;
                                 }
-                                try {
-                                    for (IAttachment attachment : mail.attachments) {
-                                        if (attachment.isLegal()) {
-                                            attachment.use(player);
-                                        } else {
-                                            IAttachment.Internal.useIllegalDeny(player);
+                                plugin.getScheduler().runNextTick((t_) -> {
+                                    try {
+                                        for (IAttachment attachment : mail.attachments) {
+                                            if (attachment.isLegal()) {
+                                                attachment.use(player);
+                                            } else {
+                                                IAttachment.Internal.useIllegalDeny(player);
+                                            }
                                         }
+                                    } catch (Throwable t) {
+                                        warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
+                                        t(player, plugin.prefix() + messageFail);
                                     }
-                                } catch (Throwable t) {
-                                    warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                                    t(player, plugin.prefix() + messageFail);
-                                }
+                                });
                                 plugin.getMailDatabase().getInBoxUnused(targetKey);
                                 applyIcons(this, view, player);
                             }
