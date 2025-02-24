@@ -75,7 +75,8 @@ items:
     # 除了上面 lore-parts 定义的以外，还可以使用
     # read (已读)
     # attachments (附件列表)
-    # bottom_attachments (附件已领取)
+    # bottom_attachments (附件领取选项)
+    # content (邮件正文)
     lore-content:
       - read
       - part1

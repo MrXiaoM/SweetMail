@@ -59,6 +59,10 @@ items:
       - '&a左键&7 | &f查看邮件内容'
       - '&b右键&7 | &f查看附件'
       - '!!&eQ键&7 | &f删除邮件 &c(无需确认且不可逆)'
+    # lore 组成部分
+    # 除了上面 lore-parts 定义的以外，还可以使用
+    # attachments (附件列表)
+    # content (邮件正文)
     lore-content:
       - part1
       - attachments

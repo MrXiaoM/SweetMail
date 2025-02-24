@@ -10,10 +10,7 @@ import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
@@ -76,6 +73,10 @@ public class IconSlot {
                     case "read":
                         lore.addAll(mail.read ? loreRead : loreUnread);
                         break;
+                    case "content":
+                        for (String page : mail.content) {
+                            lore.addAll(Arrays.asList(page.split("\n")));
+                        }
                     default:
                         lore.add(key);
                         break;
