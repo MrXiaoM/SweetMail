@@ -78,7 +78,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         title,
                         Pair.of("%target%", target),
                         Pair.of("%page%", page),
-                        Pair.of("%max_page%", maxPage)
+                        Pair.of("%max_page%", maxPage > 0 ? maxPage : "?")
                 )))
         );
     }
@@ -216,8 +216,12 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             } else {
                 targetKey = target;
             }
-            inBox = targetKey == null ? new ListX<>() : plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount());
-            Inventory inv = createInventory(player, target, unread, !target.equals(player.getName()), page, inBox.getMaxPage(getSlotsCount()));
+            inBox = targetKey != null
+                    ? plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount())
+                    : new ListX<>(-1);
+            boolean other = !target.equals(player.getName());
+            int maxPage = inBox.getMaxPage(getSlotsCount());
+            Inventory inv = createInventory(player, target, unread, other, page, maxPage);
             applyIcons(this, inv, player);
             return inv;
         }
@@ -276,7 +280,8 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 }
                 case "下": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
-                        if (page >= inBox.getMaxPage(getSlotsCount())) return;
+                        int maxPage = inBox.getMaxPage(getSlotsCount());
+                        if (maxPage > 0 && page >= maxPage) return;
                         page++;
                         plugin.getGuiManager().openGui(this);
                     }

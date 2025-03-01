@@ -65,7 +65,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         title,
                         Pair.of("%target%", target),
                         Pair.of("%page%", page),
-                        Pair.of("%max_page%", maxPage)
+                        Pair.of("%max_page%", maxPage > 0 ? maxPage : "?")
                 )))
         );
     }
@@ -203,8 +203,12 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             } else {
                 targetKey = target;
             }
-            outBox = targetKey == null ? new ListX<>() : plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount());
-            Inventory inv = createInventory(player, target, !target.equals(player.getName()), page, outBox.getMaxPage(getSlotsCount()));
+            outBox = targetKey != null
+                    ? plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount())
+                    : new ListX<>(-1);
+            boolean other = !target.equals(player.getName());
+            int maxPage = outBox.getMaxPage(getSlotsCount());
+            Inventory inv = createInventory(player, target, other, page, maxPage);
             applyIcons(this, inv, player);
             return inv;
         }
@@ -243,7 +247,8 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 }
                 case "下": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
-                        if (page >= outBox.getMaxPage(getSlotsCount())) return;
+                        int maxPage = outBox.getMaxPage(getSlotsCount());
+                        if (maxPage > 0 && page >= maxPage) return;
                         page++;
                         plugin.getGuiManager().openGui(this);
                     }
