@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.commands;
 
 import com.google.common.collect.Lists;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,17 +12,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.IMail;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.config.TemplateConfig;
+import top.mrxiaom.sweetmail.config.entry.Template;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuInBoxConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuOutBoxConfig;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.data.TimedDraft;
-import top.mrxiaom.sweetmail.utils.ChatPrompter;
-import top.mrxiaom.sweetmail.utils.Pair;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class CommandMain extends AbstractPluginHolder implements CommandExecutor, TabCompleter {
@@ -181,6 +184,30 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                         .open();
                 return true;
             }
+            if ("send".equalsIgnoreCase(args[0]) && admin) {
+                Template template = TemplateConfig.inst().get(args[1]);
+                if (template == null) {
+                    return t(sender, "&e邮件模板 " + args[1] + " 不存在");
+                }
+                OfflinePlayer player = Util.getOfflinePlayer(args[2]).orElse(null);
+                if (player == null) {
+                    return t(sender, "&e玩家 " + args[2] + " 不存在");
+                }
+                Result<Args> result = Args.parse(Util.consumeString(args, 3));
+                if (result.getError() != null) {
+                    String err = result.getError();
+                    return t(sender, "&e参数错误 " + err);
+                }
+                Args params = result.getValue();
+                String uuid = plugin.getMailDatabase().generateMailUUID();
+                Result<Mail> mail = template.createMail(uuid, player, params);
+                if (mail.getError() != null) {
+                    String err = mail.getError();
+                    return t(sender, "&e邮件发送失败: " + err);
+                }
+                plugin.getMailDatabase().sendMail(mail.getValue());
+                return t(sender, "&a成功向 " + player.getName() + " 发送邮件模板 " + template.id + " " + params);
+            }
             if ("reload".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length > 1 && "database".equalsIgnoreCase(args[1])) {
                     plugin.getMailDatabase().reload();
@@ -201,9 +228,10 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
 
     private static final List<String> emptyList = Lists.newArrayList();
     private static final List<String> listArg0 = Lists.newArrayList("draft", "inbox", "outbox");
-    private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "reload");
+    private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "send", "reload");
     private static final List<String> listArg1Admin = Lists.newArrayList("inbox", "outbox");
     private static final List<String> listArgInBox = Lists.newArrayList("all", "unread");
+    private static final List<String> listVarArgSend = Lists.newArrayList("键=值");
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
@@ -215,43 +243,59 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             return startsWith(admin ? listAdminArg0 : listArg0, args[0]);
         }
         if (args.length == 2) {
-            if (admin && args[0].equalsIgnoreCase("admin")) {
-                return startsWith(listArg1Admin, args[1]);
+            if (admin) {
+                if ("admin".equalsIgnoreCase(args[0])) {
+                    return startsWith(listArg1Admin, args[1]);
+                }
+                if ("send".equalsIgnoreCase(args[0])) {
+                    return startsWith(TemplateConfig.inst().keys(), args[1]);
+                }
             }
-            if (args[0].equalsIgnoreCase("inbox") && sender.hasPermission(PERM_BOX_OTHER)) {
+            if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX_OTHER)) {
                 return startsWith(listArgInBox, args[1]);
             }
-            if (args[0].equalsIgnoreCase("outbox") && sender.hasPermission(PERM_BOX_OTHER)) {
+            if ("outbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX_OTHER)) {
                 return null;
             }
         }
         if (args.length == 3) {
-            if (admin && args[0].equalsIgnoreCase("admin")) {
-                if (args[1].equalsIgnoreCase("inbox")) {
-                    return startsWith(listArgInBox, args[2]);
+            if (admin) {
+                if ("admin".equalsIgnoreCase(args[0])) {
+                    if ("inbox".equalsIgnoreCase(args[1])) {
+                        return startsWith(listArgInBox, args[2]);
+                    }
+                    if ("outbox".equalsIgnoreCase(args[1])) {
+                        return null;
+                    }
+                    if ("timed".equalsIgnoreCase(args[1])
+                            || "cancel".equalsIgnoreCase(args[1])) {
+                        return startsWith(TimerManager.inst().getQueueIds(), args[2]);
+                    }
                 }
-                if (args[1].equalsIgnoreCase("outbox")) {
+                if ("send".equalsIgnoreCase(args[0])) {
                     return null;
                 }
-                if (args[1].equalsIgnoreCase("timed") || args[1].equalsIgnoreCase("cancel")) {
-                    return startsWith(TimerManager.inst().getQueueIds(), args[2]);
-                }
             }
-            if (args[0].equalsIgnoreCase("inbox") && sender.hasPermission(PERM_BOX_OTHER)) {
+            if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX_OTHER)) {
                 return null;
             }
         }
         if (args.length == 4) {
-            if (admin && args[0].equalsIgnoreCase("admin")) {
-                if (args[1].equalsIgnoreCase("inbox")) {
-                    return null;
+            if (admin) {
+                if ("admin".equalsIgnoreCase(args[0])) {
+                    if ("inbox".equalsIgnoreCase(args[1])) {
+                        return null;
+                    }
                 }
             }
+        }
+        if (args.length > 3 && admin && "send".equalsIgnoreCase(args[0])) {
+            return listVarArgSend;
         }
         return emptyList;
     }
 
-    public List<String> startsWith(List<String> list, String s) {
+    public List<String> startsWith(Collection<String> list, String s) {
         String s1 = s.toLowerCase();
         List<String> stringList = new ArrayList<>(list);
         stringList.removeIf(it -> !it.toLowerCase().startsWith(s1));

@@ -10,9 +10,9 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.commands.CommandMain;
-import top.mrxiaom.sweetmail.config.*;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.commands.CommandMain;
+import top.mrxiaom.sweetmail.config.TemplateConfig;
 import top.mrxiaom.sweetmail.config.gui.*;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 
@@ -40,7 +40,7 @@ public abstract class AbstractPluginHolder {
     public static void loadModules(SweetMail plugin) {
         List<Class<?>> classes = Lists.newArrayList(
                 CommandMain.class,
-                MainConfig.class, MenuDraftConfig.class, MenuDraftAdvanceConfig.class,
+                TemplateConfig.class, MenuDraftConfig.class, MenuDraftAdvanceConfig.class,
                 MenuInBoxConfig.class, MenuOutBoxConfig.class, MenuViewAttachmentsConfig.class,
                 MenuAddAttachmentConfig.class,
                 DraftManager.class, NoticeManager.class, IAttachment.Internal.class,
