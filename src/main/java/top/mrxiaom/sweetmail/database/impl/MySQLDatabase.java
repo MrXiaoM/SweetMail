@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.utils.Util;
 
@@ -24,40 +25,44 @@ public class MySQLDatabase extends AbstractSQLDatabase {
         return schema;
     }
 
-    protected static String checkDriver(String driver) {
-        return Util.isPresent(driver) ? driver : null;
+    @Nullable
+    private String decideDriver(MemoryConfiguration config, int mysqlVersion) {
+        String driverClass;
+        if (mysqlVersion == 8) {
+            driverClass = config.getString("database.driver", "com.mysql.cj.jdbc.Driver");
+            if (!Util.isPresent(driverClass)) {
+                plugin.warn("预料中的错误: 未找到 MySQL JDBC 8: " + driverClass);
+                plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
+                plugin.warn("https://mirrors.huaweicloud.com/repository/maven/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar");
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                return null;
+            }
+        } else {
+            driverClass = config.getString("database.driver", "com.mysql.jdbc.Driver");
+            if (!Util.isPresent(driverClass)) {
+                plugin.warn("预料中的错误: 未找到 MySQL JDBC 5: " + driverClass);
+                plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
+                plugin.warn("https://mirrors.huaweicloud.com/repository/maven/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar");
+                Bukkit.getPluginManager().disablePlugin(plugin);
+                return null;
+            }
+        }
+        return checkDriver(driverClass);
     }
+
     @Override
     public void reload(MemoryConfiguration config) {
         onDisable();
         int mysqlVersion = config.getInt("database.mysql_version", 8);
 
-        String driver;
-        if (mysqlVersion == 8) {
-            if (!Util.isPresent("com.mysql.cj.jdbc.Driver")) {
-                plugin.warn("预料中的错误: 未找到 MySQL JDBC 8: com.mysql.cj.jdbc.Driver");
-                plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
-                plugin.warn("https://mirrors.huaweicloud.com/repository/maven/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar");
-                Bukkit.getPluginManager().disablePlugin(plugin);
-                return;
-            }
-            driver = checkDriver("com.mysql.cj.jdbc.Driver");
-        } else {
-            if (!Util.isPresent("com.mysql.jdbc.Driver")) {
-                plugin.warn("预料中的错误: 未找到 MySQL JDBC 5: com.mysql.jdbc.Driver");
-                plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
-                plugin.warn("https://mirrors.huaweicloud.com/repository/maven/mysql/mysql-connector-java/5.1.49/mysql-connector-java-5.1.49.jar");
-                Bukkit.getPluginManager().disablePlugin(plugin);
-                return;
-            }
-            driver = checkDriver("com.mysql.jdbc.Driver");
-        }
+        String driver = decideDriver(config, mysqlVersion);
         if (driver == null) return;
         if (mysqlVersion == 8) {
             schema = StatementSchemaWithAs.INSTANCE;
         } else {
             // TODO: 不使用 WITH AS 语法，重写数据库语句
             schema = StatementSchemaLegacy.INSTANCE;
+            plugin.getLogger().warning("TODO: 本插件使用了 WITH AS 语句，暂不支持 MySQL 5.x");
         }
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(driver);

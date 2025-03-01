@@ -7,6 +7,7 @@ import top.mrxiaom.sweetmail.database.IMailDatabaseReloadable;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.utils.ListX;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,6 +25,10 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     protected String TABLE_BOX, TABLE_STATUS;
     protected abstract Connection getConnection() throws SQLException;
     protected abstract IStatementSchema schema();
+
+    protected static String checkDriver(String driver) {
+        return Util.isPresent(driver) ? driver : null;
+    }
 
     protected void createTables() {
         try (Connection conn = getConnection()) {
