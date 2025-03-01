@@ -1,7 +1,10 @@
 package top.mrxiaom.sweetmail.func;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -12,9 +15,7 @@ import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.Util;
 
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 public class DraftManager extends AbstractPluginHolder {
@@ -25,33 +26,31 @@ public class DraftManager extends AbstractPluginHolder {
     private String defaultTitle;
     private final Set<String> advReceiversBlackList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private final List<String> allPlayers = new ArrayList<>();
-
+    private WrappedTask bungeeTimer;
     public DraftManager(SweetMail plugin) {
         super(plugin);
         dataFolder = new File(plugin.getDataFolder(), "draft");
-        if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord", false)) {
-            plugin.getScheduler().runTimer(() -> {
-                List<Player> players = Lists.newArrayList(Bukkit.getOnlinePlayers());
-                Player player = players.isEmpty() ? null : players.get(0);
-                if (player == null) return;
-                ByteArrayDataOutput out = Util.newDataOutput();
-                out.writeUTF("PlayerList");
-                out.writeUTF("ALL");
-                player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
-            }, 20 * 10L, 20L);
-            registerBungee();
-        }
         register();
     }
 
     @Override
-    public void receiveBungee(String subChannel, DataInputStream in) throws IOException {
-        if (!subChannel.equalsIgnoreCase("PlayerList")) return;
-        allPlayers.clear();
+    public void onDisable() {
+        if (bungeeTimer != null) {
+            allPlayers.clear();
+            bungeeTimer.cancel();
+            bungeeTimer = null;
+        }
+    }
+
+    public void receiveBungee(ByteArrayDataInput in) {
+        if (bungeeTimer == null) return;
         try {
-            in.readUTF();
-            Collections.addAll(allPlayers, in.readUTF().split(", "));
-        } catch (Throwable ignored) {
+            if (in.readUTF().equals("ALL")) {
+                allPlayers.clear();
+                Collections.addAll(allPlayers, in.readUTF().split(", "));
+            }
+        } catch (Throwable t) {
+            warn(t);
         }
     }
 
@@ -85,6 +84,18 @@ public class DraftManager extends AbstractPluginHolder {
         advReceiversBlackList.clear();
         advReceiversBlackList.addAll(config.getStringList("blacklist-players"));
         defaultTitle = config.getString("default.title", "未命名邮件");
+
+        onDisable();
+        if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord", false)) {
+            bungeeTimer = plugin.getScheduler().runTimer(() -> {
+                Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
+                if (player == null) return;
+                ByteArrayDataOutput out = Util.newDataOutput();
+                out.writeUTF("PlayerList");
+                out.writeUTF("ALL");
+                player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+            }, Bukkit.getOnlinePlayers().isEmpty() ? 200L : 10L, 60L);
+        }
     }
 
     public Draft getDraft(Player player) {

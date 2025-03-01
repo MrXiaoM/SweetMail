@@ -264,10 +264,14 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         if (!channel.equals("BungeeCord")) return;
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
         String subChannel = in.readUTF();
-        short len = in.readShort();
-        byte[] bytes = new byte[len];
-        in.readFully(bytes);
-        AbstractPluginHolder.receiveFromBungee(subChannel, bytes);
+        if (subChannel.equals("PlayerList")) {
+            DraftManager.inst().receiveBungee(in);
+        } else {
+            short len = in.readShort();
+            byte[] bytes = new byte[len];
+            in.readFully(bytes);
+            AbstractPluginHolder.receiveFromBungee(subChannel, bytes);
+        }
     }
 
     @Override
