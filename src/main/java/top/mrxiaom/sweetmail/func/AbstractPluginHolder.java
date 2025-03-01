@@ -19,6 +19,7 @@ import top.mrxiaom.sweetmail.utils.ColorHelper;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,10 +57,11 @@ public abstract class AbstractPluginHolder {
 
     public static void receiveFromBungee(String subChannel, byte[] bytes) {
         for (AbstractPluginHolder holder : registeredBungeeHolders.values()) {
-            try (DataInputStream msgIn = new DataInputStream(new ByteArrayInputStream(bytes))) {
+            try (InputStream in = new ByteArrayInputStream(bytes);
+                    DataInputStream msgIn = new DataInputStream(in)) {
                 holder.receiveBungee(subChannel, msgIn);
             } catch (Throwable t) {
-                SweetMail.getInstance().getLogger().warning(stackTraceToString(t));
+                SweetMail.warn(t);
             }
         }
     }
