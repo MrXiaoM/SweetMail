@@ -3,7 +3,6 @@ package top.mrxiaom.sweetmail.func;
 import com.google.common.io.ByteArrayDataOutput;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

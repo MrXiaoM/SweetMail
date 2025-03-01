@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.func;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.tcoded.folialib.wrapper.task.WrappedTask;
@@ -17,6 +16,8 @@ import top.mrxiaom.sweetmail.utils.Util;
 
 import java.io.File;
 import java.util.*;
+
+import static top.mrxiaom.sweetmail.utils.Util.mkdirs;
 
 public class DraftManager extends AbstractPluginHolder {
 
@@ -65,7 +66,7 @@ public class DraftManager extends AbstractPluginHolder {
     @Override
     public void reloadConfig(MemoryConfiguration config) {
         if (!dataFolder.exists()) {
-            dataFolder.mkdirs();
+            mkdirs(dataFolder);
         }
         config.addDefault("preset-icons", null);
         draftMap.clear();

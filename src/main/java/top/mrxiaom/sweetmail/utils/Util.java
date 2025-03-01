@@ -21,10 +21,7 @@ import top.mrxiaom.sweetmail.utils.comp.IA;
 import top.mrxiaom.sweetmail.utils.comp.Mythic;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -63,6 +60,10 @@ public class Util {
         IA.init();
         Mythic.load();
         ItemStackUtil.init();
+    }
+
+    public static boolean mkdirs(File folder) {
+        return folder.mkdirs();
     }
 
     public static void onDisable() {

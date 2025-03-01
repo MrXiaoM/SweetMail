@@ -28,7 +28,7 @@ import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.book.DefaultBook;
 import top.mrxiaom.sweetmail.book.IBook;
 import top.mrxiaom.sweetmail.database.MailDatabase;
-import top.mrxiaom.sweetmail.database.entry.*;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.depend.Placeholder;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
+import static top.mrxiaom.sweetmail.utils.Util.mkdirs;
 
 public class SweetMail extends JavaPlugin implements Listener, TabCompleter, PluginMessageListener {
     private static SweetMail instance;
@@ -93,11 +94,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return foliaLib.getScheduler();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     protected void loadLibraries() {
         File librariesFolder = new File(getDataFolder(), "libraries");
         if (!librariesFolder.exists()) {
-            librariesFolder.mkdirs();
+            mkdirs(librariesFolder);
             return;
         }
         File[] files = librariesFolder.listFiles();

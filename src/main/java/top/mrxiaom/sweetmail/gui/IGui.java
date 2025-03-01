@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.gui;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;

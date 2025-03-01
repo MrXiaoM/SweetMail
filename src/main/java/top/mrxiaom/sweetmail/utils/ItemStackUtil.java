@@ -33,11 +33,10 @@ import top.mrxiaom.sweetmail.utils.comp.Mythic;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import static top.mrxiaom.sweetmail.utils.Util.*;
+import static top.mrxiaom.sweetmail.utils.Util.miniMessage;
+import static top.mrxiaom.sweetmail.utils.Util.valueOr;
 
 @SuppressWarnings({"deprecation", "unused"})
 public class ItemStackUtil {
@@ -157,11 +156,10 @@ public class ItemStackUtil {
 
     public static String itemStackToBase64(ItemStack item) {
         if (item == null) return "";
-        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            try (BukkitObjectOutputStream out = new BukkitObjectOutputStream(output)) {
-                out.writeObject(item);
-                return Base64Coder.encodeLines(output.toByteArray());
-            }
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream();
+            BukkitObjectOutputStream out = new BukkitObjectOutputStream(output)) {
+            out.writeObject(item);
+            return Base64Coder.encodeLines(output.toByteArray());
         } catch (Throwable t) {
             SweetMail.warn(t);
             return "";
@@ -170,10 +168,9 @@ public class ItemStackUtil {
 
     public static ItemStack itemStackFromBase64(String s) {
         if (s.trim().isEmpty()) return null;
-        try (ByteArrayInputStream in = new ByteArrayInputStream(Base64Coder.decodeLines(s))) {
-            try (BukkitObjectInputStream out = new BukkitObjectInputStream(in)) {
-                return (ItemStack) out.readObject();
-            }
+        try (ByteArrayInputStream in = new ByteArrayInputStream(Base64Coder.decodeLines(s));
+             BukkitObjectInputStream out = new BukkitObjectInputStream(in)) {
+            return (ItemStack) out.readObject();
         } catch (Throwable t) {
             SweetMail.warn(t);
             return null;
