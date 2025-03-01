@@ -60,9 +60,7 @@ public class MySQLDatabase extends AbstractSQLDatabase {
         if (mysqlVersion == 8) {
             schema = StatementSchemaWithAs.INSTANCE;
         } else {
-            // TODO: 不使用 WITH AS 语法，重写数据库语句
             schema = StatementSchemaLegacy.INSTANCE;
-            plugin.getLogger().warning("TODO: 本插件使用了 WITH AS 语句，暂不支持 MySQL 5.x");
         }
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(driver);

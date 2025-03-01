@@ -19,12 +19,8 @@ public class StatementSchemaLegacy implements IStatementSchema {
     @Override
     public void getOutBox(Connection conn, String tableBox, ListX<MailWithStatus> mailList, String player, int page, int perPage) throws SQLException, IOException {
         int offset = (page - 1) * perPage;
-        // TODO: 不使用 WITH AS 语法，重写数据库语句
         try (PreparedStatement ps = conn.prepareStatement(
-                "WITH join_result AS (" +
-                "  SELECT * FROM `" + tableBox + "` WHERE `sender` = ?" +
-                ")" +
-                "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
+                "SELECT * FROM `" + tableBox + "` WHERE `sender` = ? " +
                 "ORDER BY `time` DESC " +
                 "LIMIT " + offset + ", " + perPage + ";"
         )) {
@@ -43,27 +39,16 @@ public class StatementSchemaLegacy implements IStatementSchema {
         String conditions = unread
                 ? "`receiver` = ? AND (`read` = 0 OR `used` = 0)"
                 : "`receiver` = ?";
-        // TODO: 不使用 WITH AS 语法，重写数据库语句
         try (PreparedStatement ps = conn.prepareStatement(
-                "WITH join_result AS (" +
-                "  SELECT A.`uuid`, `sender`, `data`, `time`, `receiver`, `read`, `used` FROM (" +
-                "    `" + tableBox + "` AS A" +
-                "    JOIN" +
-                "    (SELECT * FROM `" + tableStatus + "` WHERE " + conditions + ") AS B" +
-                "    ON A.`uuid` = B.`uuid`" +
-                "  )" +
-                ")" +
-                "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
-                "ORDER BY `used` ASC, `time` DESC " +
+                "SELECT * FROM " +
+                "(`" + tableBox + "` NATURAL JOIN (SELECT * FROM `" + tableStatus + "` WHERE " + conditions + ") as A) " +
+                "ORDER BY `used` DESC, `time` DESC " +
                 "LIMIT " + offset + ", " + perPage + ";"
         )) {
             ps.setString(1, player);
             try (ResultSet result = ps.executeQuery()) {
                 while (result.next()) {
                     mailList.add(resolveResult(result, false));
-                    if (mailList.getMaxCount() == 0) {
-                        mailList.setMaxCount(result.getInt("mail_count"));
-                    }
                 }
             }
         }
