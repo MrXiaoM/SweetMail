@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
@@ -60,6 +61,35 @@ public class Util {
         IA.init();
         Mythic.load();
         ItemStackUtil.init();
+    }
+
+    public static List<Character> toCharList(String s) {
+        List<Character> list = new ArrayList<>();
+        char[] array = s.toCharArray();
+        for (char c : array) {
+            list.add(c);
+        }
+        return list;
+    }
+
+    public static Duration parseDuration(String s) {
+        try {
+            s = s.toUpperCase().replace("D","DT");
+            if (!s.contains("DT")) s = "T" + s;
+            if (s.endsWith("T")) s = s.substring(0, s.length() - 1);
+            return Duration.parse("P" + s);
+        } catch (DateTimeParseException ignored){
+            return null;
+        }
+    }
+
+    public static String consumeString(String[] array, int startIndex) {
+        if (startIndex >= array.length) return "";
+        StringBuilder sb = new StringBuilder(array[startIndex]);
+        for (int i = startIndex + 1; i < array.length; i++) {
+            sb.append(" ").append(array[i]);
+        }
+        return sb.toString();
     }
 
     public static boolean mkdirs(File folder) {

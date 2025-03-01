@@ -47,9 +47,29 @@ public class Pair<K, V> {
         return newList;
     }
 
+    public static List<String> replace(List<String> list, List<Pair<String, Object>> replacements) {
+        if (replacements.isEmpty()) return new ArrayList<>(list);
+        List<String> newList = new ArrayList<>();
+        for (String s : list) {
+            newList.add(replace(s, replacements));
+        }
+        return newList;
+    }
+
     @SafeVarargs
     public static String replace(String s, Pair<String, Object>... replacements) {
         if (replacements.length == 0) return s;
+        String str = s;
+        for (Pair<String, Object> pair : replacements) {
+            if (str.contains(pair.key)) {
+                str = str.replace(pair.key, String.valueOf(pair.value));
+            }
+        }
+        return str;
+    }
+
+    public static String replace(String s, List<Pair<String, Object>> replacements) {
+        if (replacements.isEmpty()) return s;
         String str = s;
         for (Pair<String, Object> pair : replacements) {
             if (str.contains(pair.key)) {
