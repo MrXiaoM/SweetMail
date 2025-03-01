@@ -10,4 +10,6 @@ database:
   pass: root
   database: minecraft
   table_prefix: sweetmail_
+  # 若使用 MySQL 5.x，
+  # 收件箱、发件箱将无法显示最大页数
   mysql_version: 8

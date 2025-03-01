@@ -75,6 +75,7 @@ items:
     # 除了上面 lore-parts 定义的以外，还可以使用
     # read (已读)
     # attachments (附件列表)
+    # attachments_outdate (附件到期时间提示)
     # bottom_attachments (附件领取选项)
     # content (邮件正文)
     # content;前缀 (邮件正文，但每一行都添加前缀)
