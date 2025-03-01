@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
+import com.meowj.langutils.lang.LanguageHelper;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTType;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
@@ -35,14 +36,15 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.*;
 
-import static top.mrxiaom.sweetmail.utils.Util.miniMessage;
-import static top.mrxiaom.sweetmail.utils.Util.valueOr;
+import static top.mrxiaom.sweetmail.utils.Util.*;
 
 @SuppressWarnings({"deprecation", "unused"})
 public class ItemStackUtil {
     private static boolean supportTranslationKey;
     private static boolean supportBundle;
     private static boolean useComponent;
+    private static boolean supportLangUtils;
+    public static String locale = "zh_CN";
     protected static void init() {
         supportTranslationKey = Util.isPresent("org.bukkit.Translatable");
         supportBundle = Util.isPresent("org.bukkit.inventory.meta.BundleMeta");
@@ -69,6 +71,7 @@ public class ItemStackUtil {
                 useComponent = false;
             }
         }
+        supportLangUtils = isPresent("com.meowj.langutils.lang.LanguageHelper");
     }
 
     public static ComponentSerializer<Component, ?, String> serializer() {
@@ -80,10 +83,13 @@ public class ItemStackUtil {
     }
 
     public static String miniTranslate(ItemStack item) {
-        if (supportTranslationKey) {
+        if (supportTranslationKey && useComponent) {
             return "<translate:" + item.getTranslationKey() + ">";
         }
-        return item.getType().name(); // TODO: 在不支持 Translatable 的服务端获取物品翻译键
+        if (supportLangUtils) {
+            return LanguageHelper.getItemName(item, locale);
+        }
+        return item.getType().name();
     }
 
     public static ItemStack resolveBundle(Player player, ItemStack item, List<IAttachment> attachments) {

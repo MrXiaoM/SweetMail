@@ -93,6 +93,8 @@ outdate-draft:
 # 内置附件类型设置
 attachments:
   item:
+    # LangUtils 物品名所使用的语言的配置
+    locale: zh_CN
     material: ITEM_FRAME
     display: '物品附件'
     lore: []

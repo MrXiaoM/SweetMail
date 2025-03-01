@@ -36,10 +36,7 @@ import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.func.data.Draft;
-import top.mrxiaom.sweetmail.utils.ClassLoaderWrapper;
-import top.mrxiaom.sweetmail.utils.EconomyHolder;
-import top.mrxiaom.sweetmail.utils.StringHelper;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.*;
 
 import java.io.File;
 import java.net.URL;
@@ -295,6 +292,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                 break;
         }
         bundleMaxSlots = config.getInt("bundle-max-slots", 7);
+        ItemStackUtil.locale = config.getString("attachments.item.locale", "zh_CN");
         info("插件当前在 " + (onlineMode ? "在线模式": "离线模式") + " 下运行");
         reloadAllConfig(config);
     }

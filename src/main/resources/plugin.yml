@@ -8,6 +8,7 @@ softdepend:
   - PlaceholderAPI
   - MythicMobs
   - ItemsAdder
+  - LangUtils
 authors: [ MrXiaoM ]
 folia-supported: true
 commands:
