@@ -23,6 +23,7 @@ import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     protected String TABLE_BOX, TABLE_STATUS;
     protected abstract Connection getConnection() throws SQLException;
+    protected abstract IStatementSchema schema();
 
     protected void createTables() {
         try (Connection conn = getConnection()) {
@@ -85,21 +86,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public ListX<MailWithStatus> getOutBox(String player, int page, int perPage) {
         ListX<MailWithStatus> mailList = new ListX<>();
         try (Connection conn = getConnection()) {
-            int offset = (page - 1) * perPage;
-            try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
-                    "  SELECT * FROM `" + TABLE_BOX + "` WHERE `sender` = ?" +
-                    ")" +
-                    "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
-                    "ORDER BY `time` DESC " +
-                    "LIMIT " + offset + ", " + perPage + ";"
-            )) {
-                ps.setString(1, player);
-                try (ResultSet result = ps.executeQuery()) {
-                    while (result.next()) {
-                        mailList.add(resolveResult(result, true));
-                    }
-                }
-            }
+            schema().getOutBox(conn, TABLE_BOX, mailList, player, page, perPage);
         } catch (SQLException | IOException e) {
             handleException(e);
         }
@@ -110,32 +97,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public ListX<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage) {
         ListX<MailWithStatus> mailList = new ListX<>();
         try (Connection conn = getConnection()) {
-            int offset = (page - 1) * perPage;
-            String conditions = unread
-                    ? "`receiver` = ? AND (`read` = 0 OR `used` = 0)"
-                    : "`receiver` = ?";
-            try (PreparedStatement ps = conn.prepareStatement("WITH join_result AS (" +
-                    "  SELECT A.`uuid`, `sender`, `data`, `time`, `receiver`, `read`, `used` FROM (" +
-                    "    `" + TABLE_BOX + "` AS A" +
-                    "    JOIN" +
-                    "    (SELECT * FROM `" + TABLE_STATUS + "` WHERE " + conditions + ") AS B" +
-                    "    ON A.`uuid` = B.`uuid`" +
-                    "  )" +
-                    ")" +
-                    "SELECT * FROM (join_result JOIN (SELECT count(*) AS 'mail_count' FROM join_result) AS C) " +
-                    "ORDER BY `used` ASC, `time` DESC " +
-                    "LIMIT " + offset + ", " + perPage + ";"
-            )) {
-                ps.setString(1, player);
-                try (ResultSet result = ps.executeQuery()) {
-                    while (result.next()) {
-                        mailList.add(resolveResult(result, false));
-                        if (mailList.getMaxCount() == 0) {
-                            mailList.setMaxCount(result.getInt("mail_count"));
-                        }
-                    }
-                }
-            }
+            schema().getInBox(conn, TABLE_BOX, TABLE_STATUS, mailList, unread, player, page, perPage);
         } catch (SQLException | IOException e) {
             handleException(e);
         }
@@ -146,27 +108,14 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     public List<MailWithStatus> getInBoxUnused(String player) {
         List<MailWithStatus> mailList = new ArrayList<>();
         try (Connection conn = getConnection()) {
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM (" +
-                    "  `" + TABLE_BOX + "` as A" +
-                    "  JOIN" +
-                    "  (SELECT * FROM `" + TABLE_STATUS + "` WHERE `receiver` = ? AND `used` = 0) as B" +
-                    "  ON A.`uuid` = B.`uuid`" +
-                    ") " +
-                    "ORDER BY `time` DESC;")) {
-                ps.setString(1, player);
-                try (ResultSet result = ps.executeQuery()) {
-                    while (result.next()) {
-                        mailList.add(resolveResult(result, false));
-                    }
-                }
-            }
+            schema().getInBoxUnused(conn, TABLE_BOX, TABLE_STATUS, mailList, player);
         } catch (SQLException | IOException e) {
             handleException(e);
         }
         return mailList;
     }
 
-    private MailWithStatus resolveResult(ResultSet result, boolean outbox) throws IOException, SQLException {
+    public static MailWithStatus resolveResult(ResultSet result, boolean outbox) throws IOException, SQLException {
         String dataJson;
         try (InputStream in = result.getBinaryStream("data")) {
             try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {

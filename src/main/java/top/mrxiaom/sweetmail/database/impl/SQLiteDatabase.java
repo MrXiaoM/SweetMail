@@ -16,8 +16,14 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
     private final SweetMail plugin;
     private HikariDataSource dataSource = null;
     private boolean ok;
+    private IStatementSchema schema;
     public SQLiteDatabase(SweetMail plugin) {
         this.plugin = plugin;
+    }
+
+    @Override
+    protected IStatementSchema schema() {
+        return schema;
     }
 
     @Override
@@ -32,6 +38,7 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
             return;
         }
         if (checkDriver("org.sqlite.JDBC") == null) return;
+        schema = StatementSchemaWithAs.INSTANCE;
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName("org.sqlite.JDBC");
         hikariConfig.setAutoCommit(true);

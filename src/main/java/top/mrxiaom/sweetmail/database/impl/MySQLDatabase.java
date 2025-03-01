@@ -14,8 +14,14 @@ public class MySQLDatabase extends AbstractSQLDatabase {
     private final SweetMail plugin;
     private HikariDataSource dataSource = null;
     private boolean ok = false;
+    private IStatementSchema schema;
     public MySQLDatabase(SweetMail plugin) {
         this.plugin = plugin;
+    }
+
+    @Override
+    protected IStatementSchema schema() {
+        return schema;
     }
 
     protected static String checkDriver(String driver) {
@@ -47,6 +53,12 @@ public class MySQLDatabase extends AbstractSQLDatabase {
             driver = checkDriver("com.mysql.jdbc.Driver");
         }
         if (driver == null) return;
+        if (mysqlVersion == 8) {
+            schema = StatementSchemaWithAs.INSTANCE;
+        } else {
+            // TODO: 不使用 WITH AS 语法，重写数据库语句
+            schema = StatementSchemaLegacy.INSTANCE;
+        }
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(driver);
         plugin.getLogger().info("使用数据库驱动 " + hikariConfig.getDriverClassName());
