@@ -10,6 +10,9 @@ import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
@@ -19,10 +22,10 @@ public class IconSlot {
     Map<String, List<String>> loreParts = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     List<String> loreContent;
     List<String> attachmentFormat;
-    List<String> attachmentBottomAvailable;
-    List<String> attachmentBottomUnavailable;
-    List<String> loreRead;
-    List<String> loreUnread;
+    List<String> attachmentBottomAvailable, attachmentBottomUnavailable;
+    DateTimeFormatter formatter;
+    List<String> attachmentOutdateTime, attachmentOutdateInfinite;
+    List<String> loreRead, loreUnread;
     String redirect;
     String receiverAndSoOn;
     List<String> attachmentAndSoOnLore;
@@ -64,6 +67,16 @@ public class IconSlot {
                             if (attachmentAndSoOnCount > 0 && ++attachmentCount > attachmentAndSoOnCount) {
                                 lore.addAll(replace(attachmentAndSoOnLore, Pair.of("%count%", mail.attachments.size())));
                                 break;
+                            }
+                        }
+                        break;
+                    case "attachments_outdate":
+                        if (!mail.attachments.isEmpty()) {
+                            if (mail.outdateTime > 0) {
+                                LocalDateTime time = new Timestamp(mail.outdateTime).toLocalDateTime();
+                                lore.addAll(replace(attachmentOutdateTime, Pair.of("%time%", time.format(formatter))));
+                            } else {
+                                lore.addAll(attachmentOutdateInfinite);
                             }
                         }
                         break;
@@ -120,6 +133,14 @@ public class IconSlot {
             icon.loreParts.put(k, section1.getStringList(k));
         }
         icon.loreContent = section.getStringList(key + ".lore-content");
+        String outdateTimeFormat = section.getString(key + ".lore-format.attachments_outdate.format", "yyyy年MM月dd日 HH:mm:ss");
+        try {
+            icon.formatter = DateTimeFormatter.ofPattern(outdateTimeFormat);
+        } catch (Throwable t) {
+            icon.formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        }
+        icon.attachmentOutdateTime = section.getStringList(key + ".lore-format.attachments_outdate.time");
+        icon.attachmentOutdateInfinite = section.getStringList(key + ".lore-format.attachments_outdate.infinite");
         icon.attachmentFormat = section.getStringList(key + ".lore-format.attachment-item");
         icon.attachmentBottomAvailable = section.getStringList(key + ".lore-format.attachment.available");
         icon.attachmentBottomUnavailable = section.getStringList(key + ".lore-format.attachment.unavailable");

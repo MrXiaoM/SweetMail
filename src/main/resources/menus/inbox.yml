@@ -82,6 +82,7 @@ items:
       - read
       - part1
       - attachments
+      - attachments_outdate
       - part2
       - bottom_attachments
     # lore-content 中的配置
@@ -108,6 +109,15 @@ items:
           - '&eShift+左键&7 | &f领取附件'
         # 已领取过
         unavailable: []
+      # attachments_outdate部分
+      attachments_outdate:
+        # 时间格式
+        format: 'yyyy年MM月dd日 HH:mm:ss'
+        # 附件到期时间 已设置
+        time:
+          - '&f附件有效期至 &e%time%'
+        # 附件到期时间 永久
+        infinite: []
 # 非必选物品
 other-items:
   黑:
