@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.utils;
 
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Util.toCharList;
@@ -77,6 +76,22 @@ public class Args {
                     return Result.fail("P" + (i+1) + ": 不支持的字符 '" + c + "'");
                 }
             } else { // 值
+                if (c == '\\') { // 转义
+                    if (i + 1 < array.length) {
+                        char ch = array[i+1];
+                        if (ch == '\\') {
+                            store.add('\\');
+                            i++;
+                            continue;
+                        }
+                        if (quote != null && ch == quote) {
+                            store.add(quote);
+                            i++;
+                            continue;
+                        }
+                    }
+                    return Result.fail("P" + (i+1) + ": 无效转义");
+                }
                 if (c == ' ') {
                     if (quote != null) {
                         store.add(' ');
