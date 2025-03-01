@@ -12,10 +12,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -164,7 +163,6 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         FileConfiguration config = getConfig();
         checkCMI = config.getBoolean("check-compatible.cmi", true);
         checkEssentials = config.getBoolean("check-compatible.essentials", true);
-        Bukkit.getPluginManager().registerEvents(this, this);
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
@@ -178,8 +176,14 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             warn("  https://www.minebbs.com/members/24586");
             warn("我已默认你已阅读这条消息，如果你不想在日志中看到，请编辑 plugin.yml，删除 -unstable");
         }
-        if (!Bukkit.getOnlinePlayers().isEmpty()) {
-            checkCompatible(null);
+        if (Util.isPresent("org.bukkit.event.server.ServerLoadEvent")) {
+            Bukkit.getPluginManager().registerEvent(org.bukkit.event.server.ServerLoadEvent.class, this,
+                    EventPriority.MONITOR, (listener, event) -> checkCompatible(), this);
+            if (!Bukkit.getOnlinePlayers().isEmpty()) {
+                checkCompatible();
+            }
+        } else {
+            checkCompatible();
         }
     }
 
@@ -213,8 +217,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         if (economy != null) AttachmentMoney.register();
     }
 
-    @EventHandler
-    public void checkCompatible(ServerLoadEvent e) {
+    public void checkCompatible() {
         if (checkCMI){
             Plugin plugin = Bukkit.getPluginManager().getPlugin("CMI");
             if (plugin instanceof JavaPlugin) {
