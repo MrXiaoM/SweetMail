@@ -31,6 +31,9 @@ public class StatementSchemaWithAs implements IStatementSchema {
             try (ResultSet result = ps.executeQuery()) {
                 while (result.next()) {
                     mailList.add(resolveResult(result, true));
+                    if (mailList.getMaxCount() == 0) {
+                        mailList.setMaxCount(result.getInt("mail_count"));
+                    }
                 }
             }
         }
