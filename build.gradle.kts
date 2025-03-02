@@ -1,7 +1,7 @@
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("top.mrxiaom.shadow")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -21,6 +21,7 @@ allprojects {
     group = "top.mrxiaom"
     version = "1.0.0"
 
+    apply(plugin="java")
     repositories {
         mavenCentral()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
@@ -39,6 +40,8 @@ allprojects {
         }
     }
 }
+
+@Suppress("VulnerableLibrariesLocal")
 dependencies {
     // Minecraft
     compileOnly("org.spigotmc:spigot-api:1.20-R0.1-SNAPSHOT")
@@ -68,6 +71,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
     implementation("de.tr7zw:item-nbt-api:2.14.1")
     implementation("com.github.technicallycoded:FoliaLib:0.4.3")
+    implementation(project(":paper"))
 }
 
 tasks {
@@ -83,6 +87,7 @@ tasks {
         ).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }
+        ignoreRelocations("top/mrxiaom/sweetmail/utils/inventory/PaperInventoryFactory.class")
     }
     create("release")
     withType<Jar> {

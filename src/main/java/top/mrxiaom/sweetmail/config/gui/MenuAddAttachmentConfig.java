@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.config.gui;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -50,7 +49,7 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
 
     @Override
     public Inventory createInventory(Gui gui, Player target) {
-        return Bukkit.createInventory(null, inventory.length, replace(PAPI.setPlaceholders(target, title)));
+        return plugin.getInventoryFactory().create(null, inventory.length, replace(PAPI.setPlaceholders(target, title)));
     }
 
     @Override

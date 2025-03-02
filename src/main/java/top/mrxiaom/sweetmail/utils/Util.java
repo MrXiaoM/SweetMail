@@ -5,8 +5,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -34,14 +32,11 @@ import static top.mrxiaom.sweetmail.utils.Pair.replace;
 @SuppressWarnings({"unused"})
 public class Util {
     private static BukkitAudiences adventure;
-    private static MiniMessage miniMessage;
     public static Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(SweetMail plugin) {
         adventure = BukkitAudiences.builder(plugin).build();
-        miniMessage = MiniMessage.builder()
-                .postProcessor(it -> it.decoration(TextDecoration.ITALIC, false))
-                .build();
+        MiniMessageConvert.init();
         plugin.getScheduler().runAsync((t_) -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
@@ -104,9 +99,7 @@ public class Util {
     }
 
     public static Component miniMessage(String s) {
-        return s == null
-                ? Component.empty()
-                : miniMessage.deserialize(legacyToMiniMessage(s));
+        return MiniMessageConvert.miniMessage(s);
     }
 
     public static Component legacy(String s) {

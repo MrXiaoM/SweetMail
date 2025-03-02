@@ -36,6 +36,9 @@ import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.utils.*;
+import top.mrxiaom.sweetmail.utils.inventory.BukkitInventoryFactory;
+import top.mrxiaom.sweetmail.utils.inventory.InventoryFactory;
+import top.mrxiaom.sweetmail.utils.inventory.PaperInventoryFactory;
 
 import java.io.File;
 import java.net.URL;
@@ -48,8 +51,11 @@ import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
 import static top.mrxiaom.sweetmail.utils.Util.mkdirs;
 
 public class SweetMail extends JavaPlugin implements Listener, TabCompleter, PluginMessageListener {
+    private static final String netKyori;
+    static {
+        netKyori = new String(new char[] { 'n', 'e', 't', '.', 'k', 'y', 'o', 'r', 'i' });
+    }
     private static SweetMail instance;
-
     public static SweetMail getInstance() {
         return instance;
     }
@@ -71,6 +77,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private EconomyHolder economy;
     private final ClassLoaderWrapper classLoader;
     private IBook bookImpl = new DefaultBook();
+    private InventoryFactory inventoryFactory;
     public final FoliaLib foliaLib;
     public SweetMail() {
         this.classLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
@@ -80,6 +87,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
     public IBook getBookImpl() {
         return bookImpl;
+    }
+
+    public InventoryFactory getInventoryFactory() {
+        return inventoryFactory;
     }
 
     public void setBookImpl(IBook bookImpl) {
@@ -148,6 +159,14 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         MinecraftVersion.disableUpdateCheck();
         MinecraftVersion.disableBStats();
         MinecraftVersion.getVersion();
+        if (Util.isPresent("com.destroystokyo.paper.utils.PaperPluginLogger")
+                && Util.isPresent(netKyori + ".adventure.text.Component")) try {
+            inventoryFactory = new PaperInventoryFactory();
+        } catch (Throwable ignored) {
+            inventoryFactory = new BukkitInventoryFactory();
+        } else {
+            inventoryFactory = new BukkitInventoryFactory();
+        }
     }
 
     @Override

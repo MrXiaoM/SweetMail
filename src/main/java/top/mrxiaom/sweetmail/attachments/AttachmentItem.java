@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.attachments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -123,7 +122,7 @@ public class AttachmentItem implements IAttachment {
         @Override
         public Inventory newInventory() {
             // TODO: 从语言配置读取标题
-            return Bukkit.createInventory(null, 9, Internal.itemTitle);
+            return plugin.getInventoryFactory().create(null, 9, Internal.itemTitle);
         }
 
         @Override

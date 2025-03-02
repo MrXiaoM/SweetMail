@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -73,7 +72,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         String title = unread
                 ? (other ? titleUnreadOther : titleUnread)
                 : (other ? titleAllOther : titleAll);
-        return Bukkit.createInventory(null, inventory.length,
+        return plugin.getInventoryFactory().create(null, inventory.length,
                 ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(
                         title,
                         Pair.of("%target%", target),

@@ -223,7 +223,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
 
     @Override
     public Inventory createInventory(Gui gui, Player target) {
-        return Bukkit.createInventory(null, inventory.length, replace(PAPI.setPlaceholders(target, title), Pair.of("%title%", gui.getDraft().title)));
+        return plugin.getInventoryFactory().create(null, inventory.length, replace(PAPI.setPlaceholders(target, title), Pair.of("%title%", gui.getDraft().title)));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.config.gui;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -60,7 +59,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
 
     public Inventory createInventory(Player player, String target, boolean other, int page, int maxPage) {
         String title = other ? this.titleOther : this.title;
-        return Bukkit.createInventory(null, inventory.length,
+        return plugin.getInventoryFactory().create(null, inventory.length,
                 ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(
                         title,
                         Pair.of("%target%", target),

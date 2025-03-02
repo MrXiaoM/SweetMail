@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.gui;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -42,7 +41,7 @@ public class GuiIcon extends AbstractDraftGui {
             }
         }
         size = Math.min(54, ((pairs.size() / 9) + 1) * 9);
-        Inventory inv = Bukkit.createInventory(null, size, PAPI.setPlaceholders(player, title));
+        Inventory inv = plugin.getInventoryFactory().create(null, size, PAPI.setPlaceholders(player, title));
         for (int i = 0, j = 0; i < pairs.size(); i++) {
             Pair<String, MailIcon> pair = pairs.get(i);
             MailIcon icon = pair.getValue();
