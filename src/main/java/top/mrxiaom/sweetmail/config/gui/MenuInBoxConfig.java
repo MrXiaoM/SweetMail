@@ -68,11 +68,11 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         }
     }
 
-    public Inventory createInventory(Player player, String target, boolean unread, boolean other, int page, int maxPage) {
+    public Inventory createInventory(Gui gui, Player player, String target, boolean unread, boolean other, int page, int maxPage) {
         String title = unread
                 ? (other ? titleUnreadOther : titleUnread)
                 : (other ? titleAllOther : titleAll);
-        return plugin.getInventoryFactory().create(null, inventory.length,
+        return plugin.getInventoryFactory().create(gui, inventory.length,
                 ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(
                         title,
                         Pair.of("%target%", target),
@@ -183,6 +183,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         @NotNull
         private final String target;
         private boolean unread;
+        private Inventory created;
         int page = 1;
         ListX<MailWithStatus> inBox;
         public Gui(SweetMail plugin, Player player, @NotNull String target, boolean unread) {
@@ -206,6 +207,12 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             return player;
         }
 
+        @NotNull
+        @Override
+        public Inventory getInventory() {
+            return created;
+        }
+
         @Override
         public Inventory newInventory() {
             String targetKey;
@@ -220,9 +227,9 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     : new ListX<>(-1);
             boolean other = !target.equals(player.getName());
             int maxPage = inBox.getMaxPage(getSlotsCount());
-            Inventory inv = createInventory(player, target, unread, other, page, maxPage);
-            applyIcons(this, inv, player);
-            return inv;
+            created = createInventory(this, player, target, unread, other, page, maxPage);
+            applyIcons(this, created, player);
+            return created;
         }
 
         @Override

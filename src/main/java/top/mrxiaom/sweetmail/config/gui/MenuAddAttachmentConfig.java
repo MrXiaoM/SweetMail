@@ -49,7 +49,7 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
 
     @Override
     public Inventory createInventory(Gui gui, Player target) {
-        return plugin.getInventoryFactory().create(null, inventory.length, replace(PAPI.setPlaceholders(target, title)));
+        return plugin.getInventoryFactory().create(gui, inventory.length, replace(PAPI.setPlaceholders(target, title)));
     }
 
     @Override
@@ -86,9 +86,9 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
                     attachments.put(i++, info);
                 }
             }
-            Inventory inv = createInventory(this, player);
-            applyIcons(this, inv, player);
-            return inv;
+            created = createInventory(this, player);
+            applyIcons(this, created, player);
+            return created;
         }
 
         @Override

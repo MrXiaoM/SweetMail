@@ -41,7 +41,7 @@ public class GuiIcon extends AbstractDraftGui {
             }
         }
         size = Math.min(54, ((pairs.size() / 9) + 1) * 9);
-        Inventory inv = plugin.getInventoryFactory().create(null, size, PAPI.setPlaceholders(player, title));
+        created = plugin.getInventoryFactory().create(this, size, PAPI.setPlaceholders(player, title));
         for (int i = 0, j = 0; i < pairs.size(); i++) {
             Pair<String, MailIcon> pair = pairs.get(i);
             MailIcon icon = pair.getValue();
@@ -62,10 +62,10 @@ public class GuiIcon extends AbstractDraftGui {
                 ItemStackUtil.setItemLore(item, lore);
             }
             iconKeyMap.put(j, pair.getKey());
-            inv.setItem(j, item);
+            created.setItem(j, item);
             j++;
         }
-        return inv;
+        return created;
     }
 
     @Override

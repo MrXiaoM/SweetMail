@@ -57,9 +57,9 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         }
     }
 
-    public Inventory createInventory(Player player, String target, boolean other, int page, int maxPage) {
+    public Inventory createInventory(Gui gui, Player player, String target, boolean other, int page, int maxPage) {
         String title = other ? this.titleOther : this.title;
-        return plugin.getInventoryFactory().create(null, inventory.length,
+        return plugin.getInventoryFactory().create(gui, inventory.length,
                 ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(
                         title,
                         Pair.of("%target%", target),
@@ -169,6 +169,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         private final Player player;
         @NotNull
         private final String target;
+        private Inventory created;
         int page = 1;
         ListX<MailWithStatus> outBox;
         public Gui(SweetMail plugin, Player player, @NotNull String target) {
@@ -191,6 +192,12 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             return player;
         }
 
+        @NotNull
+        @Override
+        public Inventory getInventory() {
+            return created;
+        }
+
         @Override
         public Inventory newInventory() {
             String targetKey;
@@ -207,9 +214,9 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                     : new ListX<>(-1);
             boolean other = !target.equals(player.getName());
             int maxPage = outBox.getMaxPage(getSlotsCount());
-            Inventory inv = createInventory(player, target, other, page, maxPage);
-            applyIcons(this, inv, player);
-            return inv;
+            created = createInventory(this, player, target, other, page, maxPage);
+            applyIcons(this, created, player);
+            return created;
         }
 
         @Override

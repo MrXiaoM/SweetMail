@@ -121,8 +121,7 @@ public class AttachmentItem implements IAttachment {
 
         @Override
         public Inventory newInventory() {
-            // TODO: 从语言配置读取标题
-            return plugin.getInventoryFactory().create(null, 9, Internal.itemTitle);
+            return created = plugin.getInventoryFactory().create(this, 9, Internal.itemTitle);
         }
 
         @Override

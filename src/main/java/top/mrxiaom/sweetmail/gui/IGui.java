@@ -3,11 +3,12 @@ package top.mrxiaom.sweetmail.gui;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.SweetMail;
 
-public interface IGui {
+public interface IGui extends InventoryHolder {
     Player getPlayer();
 
     Inventory newInventory();
