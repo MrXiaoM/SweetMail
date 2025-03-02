@@ -24,7 +24,7 @@
 + [x] 草稿高级设置 (用于管理员发送系统邮件)
 + [x] 第三方附属插件注册附件类型
 + [x] 添加附件菜单
-+ [ ] 材质包界面
++ [ ] 材质包界面 [正在进行中](https://github.com/MrXiaoM/SweetMail/tree/resourcepacks)
 + [x] 针对非 Paper 服务端的功能 fallback
 + [x] 在线模式 使用UUID而非玩家名来识别玩家
 
@@ -79,6 +79,8 @@
 | ❇️  | `/mail admin outbox <玩家>`             | 打开某人的发件箱界面            | `sweetmail.admin`       |
 | ☑️  | `/mail admin timed <定时序列>`            | 查看定时发送邮件序列简要信息        | `sweetmail.admin`       |
 | ☑️  | `/mail admin cancel <定时序列>`           | 取消定时发送邮件序列            | `sweetmail.admin`       |
+| ❇️  | `/mail save <模板>`                     | 将你的草稿保存为邮件模板          | `sweetmail.admin`       |
+| ☑️  | `/mail send <模板> <玩家> [参数...]`        | 根据已配置的模板发送邮件          | `sweetmail.admin`       |
 | ☑️  | `/mail reload database`               | 重载并重新连接数据库            | `sweetmail.admin`       |
 | ☑️  | `/mail reload`                        | 重载配置文件，不重连数据库         | `sweetmail.admin`       |
 
@@ -130,10 +132,21 @@ void foo() {
 
 请参考 [AttachmentItem#register](https://github.com/MrXiaoM/SweetMail/blob/main/src/main/java/top/mrxiaom/sweetmail/attachments/AttachmentItem.java)，位于这个类的最后一个方法。
 
+**设置书本实现**
+
+替换草稿界面、收件箱界面、发件箱界面的打开成书逻辑。
+
+```java
+void foo() {
+    SweetMail.getInstance().setBookImpl(new DefaultBook()/*替换成你自己的实现*/);
+}
+```
+
 **构建插件**
 
-请使用 `java 17` 执行以下命令。别担心，构建产物的目标版本是 `java 8`。
+请使用 `java 17` 执行以下命令即可构建。别担心，构建产物的目标版本是 `java 8`。
 
 ```shell
 ./gradlew clean build
 ```
+构建的插件会出现在 `build/libs` 目录。
