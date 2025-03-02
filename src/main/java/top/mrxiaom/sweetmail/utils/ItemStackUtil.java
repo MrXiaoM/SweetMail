@@ -34,7 +34,9 @@ import top.mrxiaom.sweetmail.utils.comp.Mythic;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static top.mrxiaom.sweetmail.utils.Util.*;
 
