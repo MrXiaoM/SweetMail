@@ -21,6 +21,7 @@ public class PaperInventoryFactory implements InventoryFactory {
         miniMessage = MiniMessage.builder()
                 .postProcessor(it -> it.decoration(TextDecoration.ITALIC, false))
                 .build();
+        Offset.init();
     }
 
     public Component miniMessage(String text) {
