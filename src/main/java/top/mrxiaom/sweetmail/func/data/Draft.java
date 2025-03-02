@@ -18,15 +18,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Draft {
+    /**
+     * 邮件发送者
+     */
     public final String sender;
+    /**
+     * 邮件接收者
+     */
     public String receiver = "";
+    /**
+     * 邮件图标
+     */
     public String iconKey = "default";
+    /**
+     * 邮件标题
+     */
     public String title;
+    /**
+     * 邮件内容
+     */
     public List<String> content = new ArrayList<>();
+    /**
+     * 邮件附件
+     */
     public List<IAttachment> attachments = new ArrayList<>();
+    /**
+     * 高级设置 发送人名字
+     */
     public String advSenderDisplay = null;
+    /**
+     * 高级设置 泛收件人设置
+     */
     public String advReceivers = null;
+    /**
+     * 附件在邮件发出后多少天到期
+     */
     public int outdateDays = 0;
+    /**
+     * 该草稿的上次编辑时间
+     */
     public Long lastEditTime = null;
     public final DraftManager manager;
     public Draft(DraftManager manager, String sender) {
