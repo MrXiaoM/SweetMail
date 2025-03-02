@@ -369,9 +369,10 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
                                     t(player, plugin.prefix() + messageFail);
                                 }
+                                plugin.getMailDatabase().getInBoxUnused(targetKey);
+                                applyIcons(this, created, player);
+                                Util.updateInventory(player);
                             });
-                            plugin.getMailDatabase().getInBoxUnused(targetKey);
-                            applyIcons(this, view, player);
                             return;
                         }
                         // 左键 查看正文
@@ -380,8 +381,11 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     }
                     if (click.isRightClick()) {
                         if (click.isShiftClick()) { // Shift+右键 标记已读并刷新界面图标
-                            plugin.getMailDatabase().getInBoxUnused(targetKey);
-                            applyIcons(this, view, player);
+                            plugin.getScheduler().runNextTick((t_) -> {
+                                plugin.getMailDatabase().getInBoxUnused(targetKey);
+                                applyIcons(this, created, player);
+                                Util.updateInventory(player);
+                            });
                             return;
                         }
                         // 右键 预览附件
