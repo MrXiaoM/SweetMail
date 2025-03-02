@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.config;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -53,6 +54,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
 
         @SafeVarargs
         public final ItemStack generateIcon(OfflinePlayer target, ItemStack item, Pair<String, Object>... replacements) {
+            if (item.getType().equals(Material.AIR)) return item;
             if (display != null) {
                 ItemStackUtil.setItemDisplayName(item, PAPI.setPlaceholders(target, replace(display, replacements)));
             }
