@@ -383,6 +383,11 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 .open();
                         return;
                     }
+                    return;
+                }
+                default: {
+                    handleClick(player, click, c);
+                    break;
                 }
             }
         }

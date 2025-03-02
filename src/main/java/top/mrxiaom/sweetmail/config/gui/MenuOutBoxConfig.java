@@ -282,6 +282,10 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                     }
                     return;
                 }
+                default: {
+                    handleClick(player, click, c);
+                    break;
+                }
             }
         }
     }
