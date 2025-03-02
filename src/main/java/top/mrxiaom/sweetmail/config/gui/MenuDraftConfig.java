@@ -330,19 +330,19 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
 
         public void checkDraft() {
             int outdateHours = getDraftOutdateHours(player);
-            long now = System.currentTimeMillis();
+            long now = Util.toTimestamp(LocalDateTime.now());
             if (outdateHours > 0 && !player.hasPermission("sweetmail.draft.bypass.outdate")) {
-                int outdateTime = outdateHours * 1000 * 3600;
+                long outdateTime = outdateHours * 3600L * 1000L;
                 if (draft.lastEditTime != null) {
                     long last = draft.lastEditTime;
                     if (last + outdateTime > now) {
-                        LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochMilli(last), ZoneId.systemDefault());
+                        LocalDateTime time = Util.fromTimestamp(last);
                         info("玩家 " + player.getName() + " 的草稿已过期重置");
                         t(player, messageDraftOutdateTips.replace("%time%", time.format(formatter)));
                         draft.reset();
                     }
                 }
-                LocalDateTime time = LocalDateTime.ofInstant(Instant.ofEpochMilli(now + outdateTime), ZoneId.systemDefault());
+                LocalDateTime time = Util.fromTimestamp(now + outdateTime);
                 t(player, messageDraftOpenTips
                         .replace("%hours%", String.valueOf(outdateHours))
                         .replace("%time%", time.format(formatter)));

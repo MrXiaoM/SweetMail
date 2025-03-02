@@ -8,9 +8,9 @@ import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -73,7 +73,7 @@ public class IconSlot {
                     case "attachments_outdate":
                         if (!mail.attachments.isEmpty()) {
                             if (mail.outdateTime > 0) {
-                                LocalDateTime time = new Timestamp(mail.outdateTime).toLocalDateTime();
+                                LocalDateTime time = Util.fromTimestamp(mail.outdateTime);
                                 lore.addAll(replace(attachmentOutdateTime, Pair.of("%time%", time.format(formatter))));
                             } else {
                                 lore.addAll(attachmentOutdateInfinite);

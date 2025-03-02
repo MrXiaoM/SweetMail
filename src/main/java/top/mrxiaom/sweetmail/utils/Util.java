@@ -22,10 +22,7 @@ import top.mrxiaom.sweetmail.utils.comp.Mythic;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.io.*;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
@@ -171,6 +168,13 @@ public class Util {
     public static long toTimestamp(LocalDateTime time) {
         ZoneId zoneId = ZoneId.systemDefault();
         return time.toEpochSecond(zoneId.getRules().getOffset(Instant.EPOCH)) * 1000L;
+    }
+
+    public static LocalDateTime fromTimestamp(long timestampMills) {
+        long seconds = timestampMills / 1000L;
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant instant = Instant.ofEpochSecond(seconds);
+        return LocalDateTime.ofInstant(instant, zoneId.getRules().getOffset(Instant.EPOCH));
     }
 
     public static ByteArrayDataOutput newDataOutput() {

@@ -13,6 +13,7 @@ import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,12 +133,9 @@ public class Draft {
         MailIcon icon = DraftManager.inst().getMailIcon(iconKey);
         String iconKeyMail = icon == null ? iconKey.substring(1) : icon.item;
         String sender = senderDisplay.isEmpty() ? this.sender : IMail.SERVER_SENDER;
-        long outdateTime;
-        if (outdateDays > 0) {
-            outdateTime = System.currentTimeMillis() + outdateDays * 1000L * 3600L * 24L;
-        } else {
-            outdateTime = 0;
-        }
+        long outdateTime = outdateDays > 0
+                ? (Util.toTimestamp(LocalDateTime.now()) + (outdateDays * 86400L * 1000L))
+                : 0L;
         return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments, outdateTime);
     }
 
