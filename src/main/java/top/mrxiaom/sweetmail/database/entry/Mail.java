@@ -63,7 +63,7 @@ public class Mail {
     }
 
     public boolean isOutdated() {
-        return outdateTime > 0 && System.currentTimeMillis() >= outdateTime;
+        return outdateTime > 0 && Util.toTimestamp(LocalDateTime.now()) >= outdateTime;
     }
 
     public String serialize() {

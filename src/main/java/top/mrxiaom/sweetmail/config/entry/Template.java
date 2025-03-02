@@ -81,7 +81,9 @@ public class Template {
             }
             attachments.add(attachment);
         }
-        long outdateTime = Util.toTimestamp(now()) + (this.outdateTimeSeconds * 1000L);
+        long outdateTime = this.outdateTimeSeconds > 0L
+                ? (Util.toTimestamp(now()) + (this.outdateTimeSeconds * 1000L))
+                : 0L;
 
         return Result.success(new Mail(uuid, IMail.SERVER_SENDER, senderDisplay, icon, receiverIds, title, content, attachments, outdateTime));
     }
