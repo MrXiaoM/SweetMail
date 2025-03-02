@@ -315,6 +315,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         }
         bundleMaxSlots = config.getInt("bundle-max-slots", 7);
         ItemStackUtil.locale = config.getString("attachments.item.locale", "zh_CN");
+        inventoryFactory.setOffsetFont(config.getString("offset-font", "mrxiaom:sweetmail"));
         info("插件当前在 " + (onlineMode ? "在线模式": "离线模式") + " 下运行");
         reloadAllConfig(config);
     }

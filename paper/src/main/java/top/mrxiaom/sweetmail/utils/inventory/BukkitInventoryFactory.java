@@ -13,4 +13,8 @@ public class BukkitInventoryFactory implements InventoryFactory {
         String parsed = miniMessageToLegacy(title);
         return Bukkit.createInventory(owner, size, parsed);
     }
+
+    @Override
+    public void setOffsetFont(String font) {
+    }
 }
