@@ -1,0 +1,6 @@
+title: '<white><offset:-48><font:mrxiaom:sweetmail>1</font><offset:-98><reset><white>%title%'
+other-items:
+  黑:
+    material: AIR
+    custom-model: 10000
+    display: '&0'
