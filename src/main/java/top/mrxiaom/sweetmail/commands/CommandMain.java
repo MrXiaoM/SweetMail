@@ -19,7 +19,9 @@ import top.mrxiaom.sweetmail.config.gui.MenuInBoxConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuOutBoxConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
+import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.TimerManager;
+import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.TimedDraft;
 import top.mrxiaom.sweetmail.utils.*;
 
@@ -184,6 +186,19 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                         .open();
                 return true;
             }
+            if ("save".equalsIgnoreCase(args[0]) && admin) {
+                if (sender instanceof Player) {
+                    if (args.length != 2) {
+                        return t(sender, "&e请输入文件名 &7(不需要.yml)");
+                    }
+                    Player player = (Player) sender;
+                    Draft draft = DraftManager.inst().getDraft(player);
+                    Template.save(player, draft, args[1]);
+                    return t(player, "&a已执行邮件模板创建操作，详见服务器控制台");
+                } else {
+                    return t(sender, "&e只有玩家才能执行该命令");
+                }
+            }
             if ("send".equalsIgnoreCase(args[0]) && admin) {
                 Template template = TemplateConfig.inst().get(args[1]);
                 if (template == null) {
@@ -228,10 +243,11 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
 
     private static final List<String> emptyList = Lists.newArrayList();
     private static final List<String> listArg0 = Lists.newArrayList("draft", "inbox", "outbox");
-    private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "send", "reload");
+    private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "save", "send", "reload");
     private static final List<String> listArg1Admin = Lists.newArrayList("inbox", "outbox");
     private static final List<String> listArgInBox = Lists.newArrayList("all", "unread");
     private static final List<String> listVarArgSend = Lists.newArrayList("键=值");
+    private static final List<String> listArg1Save = Lists.newArrayList("<模板名>");
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
@@ -249,6 +265,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
                 if ("send".equalsIgnoreCase(args[0])) {
                     return startsWith(TemplateConfig.inst().keys(), args[1]);
+                }
+                if ("save".equalsIgnoreCase(args[0])) {
+                    return listArg1Save;
                 }
             }
             if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX_OTHER)) {

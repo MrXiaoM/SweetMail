@@ -3,17 +3,27 @@ package top.mrxiaom.sweetmail.config.entry;
 import com.google.common.collect.Lists;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.IMail;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.TemplateConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.data.Draft;
+import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.Args;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Result;
 import top.mrxiaom.sweetmail.utils.Util;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,6 +96,66 @@ public class Template {
                 : 0L;
 
         return Result.success(new Mail(uuid, IMail.SERVER_SENDER, senderDisplay, icon, receiverIds, title, content, attachments, outdateTime));
+    }
+
+    public static void save(Player player, Draft draft, String id) {
+        SweetMail plugin = SweetMail.getInstance();
+        YamlConfiguration sample = new YamlConfiguration();
+        InputStream sampleFile = plugin.getResource("templates/example.yml");
+        if (sampleFile != null) {
+            try (InputStream in = sampleFile;
+                 InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+                sample.load(reader);
+            } catch (IOException | InvalidConfigurationException ignored) {
+            }
+        }
+        File file = new File(plugin.getDataFolder(), "templates/" + id + ".yml");
+        YamlConfiguration config = new YamlConfiguration();
+        config.createSection("variables");
+        config.set("mail.sender", draft.advSenderDisplay != null
+                ? draft.advSenderDisplay
+                : "系统消息");
+        MailIcon icon = DraftManager.inst().getMailIcon(draft.iconKey);
+        config.set("mail.icon", icon == null
+                ? draft.iconKey.substring(1)
+                : icon.item);
+        config.set("mail.title", draft.title);
+        List<String> contents = draft.content;
+        if (contents.isEmpty()) {
+            config.createSection("mail.contents");
+        } else for (int i = 0; i < contents.size(); i++) {
+            List<String> page = Lists.newArrayList(contents.get(i).split("\n"));
+            config.set("mail.contents." + (i + 1), page);
+        }
+        List<String> rawAttachments = new ArrayList<>();
+        for (IAttachment attachment : draft.attachments) {
+            rawAttachments.add(attachment.serialize());
+        }
+        config.set("mail.attachments", rawAttachments);
+        String outdateTime = draft.outdateDays > 0
+                ? (draft.outdateDays + "d")
+                : "infinite";
+        config.set("mail.outdate-time", outdateTime);
+
+        setComments(config, sample, "variables", "mail",
+                "mail.sender",
+                "mail.icon",
+                "mail.title",
+                "mail.contents",
+                "mail.attachments",
+                "mail.outdate-time");
+        try {
+            config.save(file);
+            plugin.info("已保存玩家 " + player.getName() + " 的草稿为邮件模板 " + id);
+        } catch (IOException e) {
+            plugin.warn("保存草稿到模板 (" + id + ") 时出现一个异常", e);
+        }
+    }
+
+    private static void setComments(YamlConfiguration config, YamlConfiguration sample, String... keys) {
+        for (String key : keys) {
+            config.setComments(key, sample.getComments(key));
+        }
     }
 
     public static Template load(TemplateConfig parent, YamlConfiguration config, String id) {
