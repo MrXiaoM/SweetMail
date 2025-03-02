@@ -116,7 +116,7 @@ public class Template {
             content.add(String.join("\n", list));
         }
         List<String> rawAttachments = config.getStringList("mail.attachments");
-        String outdateTimeString = config.getString("outdate-time", "0");
+        String outdateTimeString = config.getString("mail.outdate-time", "0");
         long outdateTimeSeconds;
         if (outdateTimeString.equals("0") || outdateTimeString.equals("infinite")) {
             outdateTimeSeconds = 0L;
