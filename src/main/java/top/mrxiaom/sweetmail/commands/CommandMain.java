@@ -28,6 +28,7 @@ import top.mrxiaom.sweetmail.utils.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommandMain extends AbstractPluginHolder implements CommandExecutor, TabCompleter {
     public static final String PERM_ADMIN = "sweetmail.admin";
@@ -204,9 +205,13 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 if (template == null) {
                     return t(sender, "&e邮件模板 " + args[1] + " 不存在");
                 }
-                OfflinePlayer player = Util.getOfflinePlayer(args[2]).orElse(null);
-                if (player == null) {
-                    return t(sender, "&e玩家 " + args[2] + " 不存在");
+                List<OfflinePlayer> players = new ArrayList<>();
+                for (String s : args[2].split(",")) {
+                    OfflinePlayer player = Util.getOfflinePlayer(s).orElse(null);
+                    if (player == null) {
+                        return t(sender, "&e玩家 " + s + " 没有登录过这个子服");
+                    }
+                    players.add(player);
                 }
                 Result<Args> result = Args.parse(Util.consumeString(args, 3));
                 if (result.getError() != null) {
@@ -215,13 +220,16 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
                 Args params = result.getValue();
                 String uuid = plugin.getMailDatabase().generateMailUUID();
-                Result<Mail> mail = template.createMail(uuid, player, params);
+                Result<Mail> mail = template.createMail(uuid, players, params);
                 if (mail.getError() != null) {
                     String err = mail.getError();
                     return t(sender, "&e邮件发送失败: " + err);
                 }
                 plugin.getMailDatabase().sendMail(mail.getValue());
-                return t(sender, "&a成功向 " + player.getName() + " 发送邮件模板 " + template.id + " " + params);
+                String playerNames = players.stream()
+                        .map(OfflinePlayer::getName)
+                        .collect(Collectors.joining(", "));
+                return t(sender, "&a成功向 " + playerNames + " 发送邮件模板 " + template.id + " " + params);
             }
             if ("reload".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length > 1 && "database".equalsIgnoreCase(args[1])) {
