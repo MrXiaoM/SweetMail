@@ -341,45 +341,48 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     }
                     plugin.getMailDatabase().markRead(mail.uuid, targetKey);
                     if (click.isLeftClick()) {
-                        if (click.isShiftClick()) { // 领取附件
-                            if (!mail.attachments.isEmpty() && !mail.used) {
-                                mail.used = true;
-                                plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
-                                if (mail.isOutdated()) {
-                                    t(player, plugin.prefix() + messageOutdated);
-                                    return;
-                                }
-                                plugin.getScheduler().runNextTick((t_) -> {
-                                    try {
-                                        for (IAttachment attachment : mail.attachments) {
-                                            if (attachment.isLegal()) {
-                                                attachment.use(player);
-                                            } else {
-                                                IAttachment.Internal.useIllegalDeny(player);
-                                            }
-                                        }
-                                    } catch (Throwable t) {
-                                        warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                                        t(player, plugin.prefix() + messageFail);
-                                    }
-                                });
-                                plugin.getMailDatabase().getInBoxUnused(targetKey);
-                                applyIcons(this, view, player);
+                        if (click.isShiftClick() && !mail.attachments.isEmpty() && !mail.used) {
+                            // Shift+左键 领取附件
+                            mail.used = true;
+                            plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
+                            if (mail.isOutdated()) {
+                                t(player, plugin.prefix() + messageOutdated);
+                                return;
                             }
+                            plugin.getScheduler().runNextTick((t_) -> {
+                                try {
+                                    for (IAttachment attachment : mail.attachments) {
+                                        if (attachment.isLegal()) {
+                                            attachment.use(player);
+                                        } else {
+                                            IAttachment.Internal.useIllegalDeny(player);
+                                        }
+                                    }
+                                } catch (Throwable t) {
+                                    warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
+                                    t(player, plugin.prefix() + messageFail);
+                                }
+                            });
+                            plugin.getMailDatabase().getInBoxUnused(targetKey);
+                            applyIcons(this, view, player);
                             return;
                         }
-                        // 查看正文
+                        // 左键 查看正文
                         plugin.getBookImpl().openBook(player, mail);
                         return;
                     }
-                    if (!click.isShiftClick() && click.isRightClick()) {
-                        // 预览附件
+                    if (click.isRightClick()) {
+                        if (click.isShiftClick()) { // Shift+右键 标记已读并刷新界面图标
+                            plugin.getMailDatabase().getInBoxUnused(targetKey);
+                            applyIcons(this, view, player);
+                            return;
+                        }
+                        // 右键 预览附件
                         MenuViewAttachmentsConfig.inst()
                                 .new Gui(this, player, mail)
                                 .open();
                         return;
                     }
-                    return;
                 }
             }
         }
