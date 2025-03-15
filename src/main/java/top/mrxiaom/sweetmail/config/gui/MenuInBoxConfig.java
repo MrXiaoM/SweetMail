@@ -17,6 +17,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.config.gui.entry.IconSlot;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
@@ -315,20 +316,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 t(player, plugin.prefix() + messageOutdated);
                                 continue;
                             }
-                            plugin.getScheduler().runNextTick((t_) -> {
-                                try {
-                                    for (IAttachment attachment : mail.attachments) {
-                                        if (attachment.isLegal()) {
-                                            attachment.use(player);
-                                        } else {
-                                            IAttachment.Internal.useIllegalDeny(player);
-                                        }
-                                    }
-                                } catch (Throwable t) {
-                                    warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                                    t(player, plugin.prefix() + messageFail);
-                                }
-                            });
+                            plugin.getScheduler().runNextTick((t_) -> useAttachments(mail));
                         }
                         plugin.getMailDatabase().markUsed(dismiss, targetKey);
                         open();
@@ -357,18 +345,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 return;
                             }
                             plugin.getScheduler().runNextTick((t_) -> {
-                                try {
-                                    for (IAttachment attachment : mail.attachments) {
-                                        if (attachment.isLegal()) {
-                                            attachment.use(player);
-                                        } else {
-                                            IAttachment.Internal.useIllegalDeny(player);
-                                        }
-                                    }
-                                } catch (Throwable t) {
-                                    warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 邮件 " + mail.uuid + " 的附件时出现一个错误", t);
-                                    t(player, plugin.prefix() + messageFail);
-                                }
+                                useAttachments(mail);
                                 plugin.getMailDatabase().getInBoxUnused(targetKey);
                                 applyIcons(this, created, player);
                                 Util.updateInventory(player);
@@ -400,6 +377,22 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     handleClick(player, click, c);
                     break;
                 }
+            }
+        }
+
+        private void useAttachments(Mail mail) {
+            try {
+                for (IAttachment attachment : mail.attachments) {
+                    if (attachment.isLegal()) {
+                        attachment.use(player);
+                    } else {
+                        IAttachment.Internal.useIllegalDeny(player);
+                    }
+                }
+                info("玩家 " + target + " 领取了 " + Util.getPlayerName(mail.sender) + " 的邮件 " + mail.title + " (" + mail.uuid + ") 的附件");
+            } catch (Throwable t) {
+                warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 的邮件 " + mail.title + " (" + mail.uuid + ") 的附件时出现一个错误", t);
+                t(player, plugin.prefix() + messageFail);
             }
         }
     }
