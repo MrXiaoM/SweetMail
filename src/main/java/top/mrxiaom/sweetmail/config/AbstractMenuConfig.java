@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -67,6 +68,9 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             if (glow) {
                 ItemStackUtil.setGlow(item);
             }
+            NBT.modify(item, nbt -> {
+                nbt.setBoolean(ItemStackUtil.FLAG, true);
+            });
             return item;
         }
         @SafeVarargs

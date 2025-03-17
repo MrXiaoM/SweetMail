@@ -42,6 +42,7 @@ import static top.mrxiaom.sweetmail.utils.Util.*;
 
 @SuppressWarnings({"deprecation", "unused"})
 public class ItemStackUtil {
+    public static final String FLAG = "SWEETMAIL_MENU_ICON";
     private static boolean supportTranslationKey;
     private static boolean supportBundle;
     private static boolean useComponent;

@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui.entry;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -123,6 +124,9 @@ public class IconSlot {
         if (base.glow) {
             ItemStackUtil.setGlow(icon);
         }
+        NBT.modify(icon, nbt -> {
+            nbt.setBoolean(ItemStackUtil.FLAG, true);
+        });
         return icon;
     }
 

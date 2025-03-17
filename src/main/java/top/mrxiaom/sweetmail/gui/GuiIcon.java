@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.gui;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -61,6 +62,9 @@ public class GuiIcon extends AbstractDraftGui {
                 lore.addAll(plugin.getConfig().getStringList("messages.draft.selected-icon-lore"));
                 ItemStackUtil.setItemLore(item, lore);
             }
+            NBT.modify(item, nbt -> {
+                nbt.setBoolean(ItemStackUtil.FLAG, true);
+            });
             iconKeyMap.put(j, pair.getKey());
             created.setItem(j, item);
             j++;
