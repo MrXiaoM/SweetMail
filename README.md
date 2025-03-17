@@ -95,6 +95,17 @@
 + `sweetmail.attachment.money` 允许使用`金币`附件
 + `sweetmail.attachment.item` 允许使用`物品`附件
 
+## PAPI变量
+
+```
+%sweetmail_mail_price% 发送邮件价格
+%sweetmail_mail_attachments_outdate_days% 发送邮件的附件有效期(天数)
+%sweetmail_mail_draft_outdate_hours% 玩家的草稿有效期(小时)，这个变量仅仅是配置中的数值，并非还有多久到期
+%sweetmail_inbox_total% 收件箱邮件总数
+%sweetmail_inbox_unread% 收件箱未读邮件总数
+%sweetmail_inbox_used% 收件箱已领取附件的邮件总数
+```
+
 ## 开发者
 
 **使用接口发送系统邮件**

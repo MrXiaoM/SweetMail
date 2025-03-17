@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.IMailDatabaseReloadable;
+import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.utils.ListX;
@@ -118,6 +119,41 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
             handleException(e);
         }
         return mailList;
+    }
+
+
+    public MailCountInfo getInBoxCount(String player) {
+        try (Connection conn = getConnection()) {
+            int totalCount, unreadCount, usedCount;
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "SELECT COUNT(*) FROM `" + TABLE_STATUS + "` WHERE `receiver`=?"
+            )) {
+                ps.setString(1, player);
+                try (ResultSet result = ps.executeQuery()) {
+                    totalCount = result.getInt(1);
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "SELECT COUNT(*) FROM `" + TABLE_STATUS + "` WHERE `receiver`=? AND (`read` = 0 OR `used` = 0)"
+            )) {
+                ps.setString(1, player);
+                try (ResultSet result = ps.executeQuery()) {
+                    unreadCount = result.getInt(1);
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "SELECT COUNT(*) FROM `" + TABLE_STATUS + "` WHERE `receiver`=? AND `used`=1"
+            )) {
+                ps.setString(1, player);
+                try (ResultSet result = ps.executeQuery()) {
+                    usedCount = result.getInt(1);
+                }
+            }
+            return new MailCountInfo(unreadCount, usedCount, totalCount);
+        } catch (SQLException e) {
+            handleException(e);
+        }
+        return MailCountInfo.ZERO;
     }
 
     public static MailWithStatus resolveResult(ResultSet result, boolean outbox) throws IOException, SQLException {

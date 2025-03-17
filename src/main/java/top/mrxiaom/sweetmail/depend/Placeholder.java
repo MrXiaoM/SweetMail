@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
 
 public class Placeholder extends PlaceholderExpansion {
     SweetMail plugin;
@@ -47,6 +48,18 @@ public class Placeholder extends PlaceholderExpansion {
         }
         if (params.equalsIgnoreCase("mail_draft_outdate_hours")) {
             return String.valueOf(MenuDraftConfig.inst().getDraftOutdateHours(player));
+        }
+        if (params.equalsIgnoreCase("inbox_total")) {
+            MailCountInfo info = plugin.getMailDatabase().getInBoxCount(player);
+            return String.valueOf(info.totalCount);
+        }
+        if (params.equalsIgnoreCase("inbox_unread")) {
+            MailCountInfo info = plugin.getMailDatabase().getInBoxCount(player);
+            return String.valueOf(info.unreadCount);
+        }
+        if (params.equalsIgnoreCase("inbox_used")) {
+            MailCountInfo info = plugin.getMailDatabase().getInBoxCount(player);
+            return String.valueOf(info.usedCount);
         }
         return super.onPlaceholderRequest(player, params);
     }

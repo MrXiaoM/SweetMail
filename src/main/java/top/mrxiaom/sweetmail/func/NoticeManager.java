@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
@@ -16,8 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class NoticeManager extends AbstractPluginHolder implements Listener {
     String msgJoinText;
@@ -50,10 +50,9 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         if (!player.hasPermission("sweetmail.notice")) return;
-        String targetKey = plugin.getPlayerKey(player);
-        int count = plugin.getMailDatabase().getInBox(true, targetKey, 1, 1).getMaxCount();
-        if (count > 0) {
-            notice(player, msgJoinText, count);
+        MailCountInfo mailCountInfo = plugin.getMailDatabase().getInBoxCount(player, true);
+        if (mailCountInfo.unreadCount > 0) {
+            notice(player, msgJoinText, mailCountInfo.unreadCount);
         }
     }
 
@@ -66,6 +65,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
             for (int i = 0; i < length; i++) {
                 Player player = Util.getOnlinePlayerByNameOrUUID(in.readUTF()).orElse(null);
                 if (player == null) continue;
+                plugin.getMailDatabase().getInBoxCount(player, true);
                 notice(player, msgJoinTextOnline, 1);
             }
         }
@@ -77,6 +77,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
         for (String s : receivers) {
             Player player = Util.getOnlinePlayerByNameOrUUID(s).orElse(null);
             if (player != null) {
+                plugin.getMailDatabase().getInBoxCount(player, true);
                 notice(player, msgJoinTextOnline, 1);
             } else {
                 players.add(s);

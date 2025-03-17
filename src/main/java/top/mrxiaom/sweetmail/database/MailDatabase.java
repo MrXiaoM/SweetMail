@@ -2,8 +2,11 @@ package top.mrxiaom.sweetmail.database;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.database.impl.MySQLDatabase;
 import top.mrxiaom.sweetmail.database.impl.SQLiteDatabase;
@@ -22,6 +25,7 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
     private final IMailDatabaseReloadable[] databases;
     IMailDatabaseReloadable database = null;
     private final Set<String> canUsePlayers = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<UUID, MailCountInfo> cachedCountInfo = new HashMap<>();
     public MailDatabase(SweetMail plugin) {
         super(plugin);
         mysql = new MySQLDatabase(plugin);
@@ -97,6 +101,26 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
             canUsePlayers.remove(player);
         }
         return inBox;
+    }
+
+    @Override
+    public MailCountInfo getInBoxCount(String player) {
+        if (player == null) return MailCountInfo.ZERO;
+        return database.getInBoxCount(player);
+    }
+
+    @NotNull
+    public MailCountInfo getInBoxCount(Player player) {
+        return getInBoxCount(player, false);
+    }
+    @NotNull
+    public MailCountInfo getInBoxCount(Player player, boolean refresh) {
+        UUID uuid = player.getUniqueId();
+        MailCountInfo cached = cachedCountInfo.get(uuid);
+        if (cached != null) return cached;
+        MailCountInfo info = getInBoxCount(plugin.getPlayerKey(player));
+        cachedCountInfo.put(uuid, info);
+        return info;
     }
 
     @Override

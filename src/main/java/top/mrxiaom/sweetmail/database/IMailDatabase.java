@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.database;
 
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.utils.ListX;
 
@@ -33,6 +34,8 @@ public interface IMailDatabase {
     ListX<MailWithStatus> getInBox(boolean unread, String player, int page, int perPage);
 
     List<MailWithStatus> getInBoxUnused(String player);
+
+    MailCountInfo getInBoxCount(String player);
 
     /**
      * 将邮件标记为已读
