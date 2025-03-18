@@ -1,7 +1,9 @@
 package top.mrxiaom.sweetmail.func;
 
 import com.google.common.collect.Lists;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
@@ -141,7 +143,19 @@ public class LanguageManager extends AbstractPluginHolder {
         if (file == null || holders.isEmpty()) return this;
         holderValues.clear();
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        config.setDefaults(new YamlConfiguration());
+
+        YamlConfiguration defaults = new YamlConfiguration(); // 旧版配置兼容
+        FileConfiguration pluginConfig = plugin.getConfig();
+        ConfigurationSection section = pluginConfig.getConfigurationSection("messages");
+        if (section != null) {
+            defaults.set("messages", section);
+        }
+        section = pluginConfig.getConfigurationSection("help");
+        if (section != null) {
+            defaults.set("messages.help", section);
+        }
+        config.setDefaults(defaults);
+
         for (AbstractLanguageHolder holder : holders.values()) {
             if (!config.contains(holder.key)) {
                 config.set(keyPrefix + holder.key, holder.defaultValue);
