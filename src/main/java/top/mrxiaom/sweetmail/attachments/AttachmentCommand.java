@@ -91,12 +91,12 @@ public class AttachmentCommand implements IAttachment {
                     Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
                     ChatPrompter.prompt(
                             plugin, player,
-                            Messages.Draft.attachments__money__add__prompt_tips.str(),
+                            Messages.Draft.attachments__command__prompt_tips.str(),
                             Messages.Draft.attachments__command__prompt_cancel.str(),
                             str -> {
                                 String[] split = str.split(",", 3);
                                 if (split.length != 3) {
-                                    t(player, Messages.Draft.attachments__money__add__fail.str());
+                                    t(player, Messages.Draft.attachments__command__fail.str());
                                     back.run();
                                     return;
                                 }
