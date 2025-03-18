@@ -35,6 +35,11 @@ public class LanguageManager extends AbstractPluginHolder {
         register();
     }
 
+    @Override
+    protected int priority() {
+        return 0;
+    }
+
     /**
      * 获取语言文件路径
      */

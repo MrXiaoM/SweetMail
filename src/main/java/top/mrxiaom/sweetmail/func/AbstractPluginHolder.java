@@ -20,10 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.StringHelper.stackTraceToString;
 
@@ -35,6 +32,10 @@ public abstract class AbstractPluginHolder {
 
     public AbstractPluginHolder(SweetMail plugin) {
         this.plugin = plugin;
+    }
+
+    protected int priority() {
+        return 1000;
     }
 
     public static void loadModules(SweetMail plugin) {
@@ -181,7 +182,9 @@ public abstract class AbstractPluginHolder {
     }
 
     public static void reloadAllConfig(MemoryConfiguration config) {
-        for (AbstractPluginHolder inst : registeredHolders.values()) {
+        List<AbstractPluginHolder> list = new ArrayList<>(registeredHolders.values());
+        list.sort(Comparator.comparingInt(AbstractPluginHolder::priority));
+        for (AbstractPluginHolder inst : list) {
             inst.reloadConfig(config);
         }
     }
