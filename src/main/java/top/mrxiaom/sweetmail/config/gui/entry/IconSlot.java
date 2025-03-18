@@ -10,7 +10,7 @@ import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
-import top.mrxiaom.sweetmail.utils.comp.PAPI;
+import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

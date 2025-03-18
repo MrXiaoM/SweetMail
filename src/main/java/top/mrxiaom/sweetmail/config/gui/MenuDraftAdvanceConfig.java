@@ -21,7 +21,7 @@ import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
-import top.mrxiaom.sweetmail.utils.comp.PAPI;
+import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

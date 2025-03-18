@@ -12,7 +12,7 @@ import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.comp.PAPI;
+import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.util.List;
 

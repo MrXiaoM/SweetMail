@@ -1,9 +1,9 @@
-package top.mrxiaom.sweetmail.utils.comp;
+package top.mrxiaom.sweetmail.depend;
 
 import org.bukkit.inventory.ItemStack;
 import top.mrxiaom.sweetmail.utils.Util;
-import top.mrxiaom.sweetmail.utils.mythic.Mythic4;
-import top.mrxiaom.sweetmail.utils.mythic.Mythic5;
+import top.mrxiaom.sweetmail.depend.mythic.Mythic4;
+import top.mrxiaom.sweetmail.depend.mythic.Mythic5;
 
 import java.util.Optional;
 

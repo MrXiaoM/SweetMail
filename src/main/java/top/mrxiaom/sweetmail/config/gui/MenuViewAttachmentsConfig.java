@@ -16,7 +16,7 @@ import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.utils.comp.PAPI;
+import top.mrxiaom.sweetmail.depend.PAPI;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 

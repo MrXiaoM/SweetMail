@@ -1,4 +1,4 @@
-package top.mrxiaom.sweetmail.utils.comp;
+package top.mrxiaom.sweetmail.depend;
 
 import com.google.common.collect.Lists;
 import me.clip.placeholderapi.PlaceholderAPI;

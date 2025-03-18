@@ -29,8 +29,8 @@ import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
-import top.mrxiaom.sweetmail.utils.comp.IA;
-import top.mrxiaom.sweetmail.utils.comp.Mythic;
+import top.mrxiaom.sweetmail.depend.ItemsAdder;
+import top.mrxiaom.sweetmail.depend.Mythic;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -287,7 +287,7 @@ public class ItemStackUtil {
 
     public static ItemStack getItem(String str) {
         if (str.startsWith("itemsadder-")) {
-            return IA.get(str.substring(11)).orElseThrow(
+            return ItemsAdder.get(str.substring(11)).orElseThrow(
                     () -> new IllegalStateException("找不到 IA 物品 " + str.substring(11))
             );
         } else if (str.startsWith("mythic-")) {

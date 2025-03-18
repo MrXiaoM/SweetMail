@@ -16,9 +16,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
-import top.mrxiaom.sweetmail.utils.comp.IA;
-import top.mrxiaom.sweetmail.utils.comp.Mythic;
-import top.mrxiaom.sweetmail.utils.comp.PAPI;
+import top.mrxiaom.sweetmail.depend.ItemsAdder;
+import top.mrxiaom.sweetmail.depend.Mythic;
+import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.io.*;
 import java.time.Duration;
@@ -54,7 +54,7 @@ public class Util {
             }
         }, plugin);
         PAPI.init();
-        IA.init();
+        ItemsAdder.init();
         Mythic.load();
         ItemStackUtil.init();
     }
@@ -165,7 +165,7 @@ public class Util {
                 Bukkit.dispatchCommand(player, s.substring(8));
             }
             if (s.startsWith("[message]")) {
-                player.sendMessage(s.substring(9));
+                Util.sendMessage(player, s.substring(9));
             }
         }
     }
