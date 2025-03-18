@@ -19,7 +19,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.attachments.AttachmentCommand;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.AttachmentMoney;
@@ -29,6 +28,9 @@ import top.mrxiaom.sweetmail.book.IBook;
 import top.mrxiaom.sweetmail.database.MailDatabase;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.depend.Placeholder;
+import top.mrxiaom.sweetmail.economy.IEconomy;
+import top.mrxiaom.sweetmail.economy.NoEconomy;
+import top.mrxiaom.sweetmail.economy.VaultEconomy;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.LanguageManager;
@@ -51,6 +53,7 @@ import java.util.logging.Level;
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
 import static top.mrxiaom.sweetmail.utils.Util.mkdirs;
 
+@SuppressWarnings({"unused"})
 public class SweetMail extends JavaPlugin implements Listener, TabCompleter, PluginMessageListener {
     private static final String netKyori;
     static {
@@ -75,7 +78,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private TextHelper textHelper = null;
     private GuiManager guiManager = null;
     private MailDatabase database = null;
-    private EconomyHolder economy;
+    private IEconomy economy;
     private final ClassLoaderWrapper classLoader;
     private IBook bookImpl = new DefaultBook();
     private InventoryFactory inventoryFactory;
@@ -133,10 +136,18 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return database;
     }
 
-    @Nullable
+    @SuppressWarnings({"deprecation"})
+    private final EconomyHolder legacyEconomy = new EconomyHolder(this);
+    @SuppressWarnings({"deprecation"})
     public EconomyHolder getEconomy() {
+        return legacyEconomy;
+    }
+
+    @NotNull
+    public IEconomy economy() {
         return economy;
     }
+
     public String prefix() {
         return Messages.prefix.str();
     }
@@ -223,14 +234,16 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
     public void loadHooks() {
         if (!Util.isPresent("net.milkbowl.vault.economy.Economy")) {
-            economy = null;
+            economy = NoEconomy.INSTANCE;
             warn("没有安装 Vault");
         } else {
-            economy = EconomyHolder.inst();
-            if (economy == null) {
+            IEconomy vault = VaultEconomy.inst();
+            if (vault == null) {
+                economy = NoEconomy.INSTANCE;
                 warn("已安装 Vault，未发现经济插件");
             } else {
-                info("已安装 Vault，经济插件为 " + economy.economy.getName());
+                economy = vault;
+                info("已安装 Vault，经济插件为 " + economy.getName());
             }
         }
         if (Util.isPresent("me.clip.placeholderapi.expansion.PlaceholderExpansion")) {

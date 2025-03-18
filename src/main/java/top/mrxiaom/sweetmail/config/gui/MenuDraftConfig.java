@@ -437,7 +437,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 case "发": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
                         double price = getPrice(player);
-                        if (plugin.getEconomy() != null && !plugin.getEconomy().has(player, price)) {
+                        if (plugin.economy() != null && !plugin.economy().has(player, price)) {
                             t(player, plugin.prefix() + Messages.Draft.no_money.str().replace("%price%", String.format(Messages.Draft.money_format.str(), price)));
                             return;
                         }
@@ -457,8 +457,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 t(player, plugin.prefix() + Messages.Draft.no_receivers.str());
                                 return;
                             }
-                            if (plugin.getEconomy() != null) {
-                                plugin.getEconomy().takeMoney(player, price);
+                            if (plugin.economy() != null) {
+                                plugin.economy().takeMoney(player, price);
                             }
                             String uuid = plugin.getMailDatabase().generateMailUUID();
                             if (draft.outdateDays == 0) {
