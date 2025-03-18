@@ -68,7 +68,7 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
     }
 
     public static MenuAddAttachmentConfig inst() {
-        return get(MenuAddAttachmentConfig.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(MenuAddAttachmentConfig.class);
     }
 
     public class Gui extends AbstractDraftGui {

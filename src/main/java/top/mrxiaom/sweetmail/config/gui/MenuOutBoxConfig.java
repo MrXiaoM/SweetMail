@@ -161,7 +161,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
     }
 
     public static MenuOutBoxConfig inst() {
-        return get(MenuOutBoxConfig.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(MenuOutBoxConfig.class);
     }
 
 

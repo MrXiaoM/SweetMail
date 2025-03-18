@@ -55,6 +55,6 @@ public class TemplateConfig extends AbstractPluginHolder {
     }
 
     public static TemplateConfig inst() {
-        return get(TemplateConfig.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(TemplateConfig.class);
     }
 }

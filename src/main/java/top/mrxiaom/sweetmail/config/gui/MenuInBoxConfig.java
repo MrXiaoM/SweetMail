@@ -176,7 +176,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     }
 
     public static MenuInBoxConfig inst() {
-        return get(MenuInBoxConfig.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(MenuInBoxConfig.class);
     }
 
     public class Gui extends AbstractPluginHolder implements IGui {

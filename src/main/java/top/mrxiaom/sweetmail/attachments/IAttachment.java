@@ -183,7 +183,7 @@ public interface IAttachment {
         }
 
         public static Internal inst() {
-            return get(Internal.class).orElseThrow(IllegalStateException::new);
+            return instanceOf(Internal.class);
         }
     }
 }

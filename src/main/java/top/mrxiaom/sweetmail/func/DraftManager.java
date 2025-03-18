@@ -142,6 +142,6 @@ public class DraftManager extends AbstractPluginHolder {
     }
 
     public static DraftManager inst() {
-        return get(DraftManager.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(DraftManager.class);
     }
 }

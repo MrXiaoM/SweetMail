@@ -151,17 +151,33 @@ public abstract class AbstractPluginHolder {
         plugin.getLogger().warning(stackTraceToString(t));
     }
 
+    /**
+     * 从已注册的模块列表中寻找模块，找不到模块时，将返回 null
+     */
     @Nullable
     @SuppressWarnings({"unchecked"})
     public static <T extends AbstractPluginHolder> T getOrNull(Class<T> clazz) {
         return (T) registeredHolders.get(clazz);
     }
 
+    /**
+     * 从已注册的模块列表中寻找模块
+     */
     @SuppressWarnings({"unchecked"})
     public static <T extends AbstractPluginHolder> Optional<T> get(Class<T> clazz) {
         T inst = (T) registeredHolders.get(clazz);
         if (inst == null) return Optional.empty();
         return Optional.of(inst);
+    }
+
+    /**
+     * 从已注册的模块列表中寻找模块，找不到模块时，将抛出一个异常
+     */
+    @SuppressWarnings({"unchecked", "SameParameterValue"})
+    protected static <T extends AbstractPluginHolder> T instanceOf(Class<T> clazz) {
+        T inst = (T) registeredHolders.get(clazz);
+        if (inst == null) throw new IllegalStateException("无法找到已注册的 " + clazz.getName());
+        return inst;
     }
 
     public static void reloadAllConfig(MemoryConfiguration config) {

@@ -166,7 +166,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     }
 
     public static MenuDraftAdvanceConfig inst() {
-        return get(MenuDraftAdvanceConfig.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(MenuDraftAdvanceConfig.class);
     }
 
     public class Gui extends AbstractDraftGui {

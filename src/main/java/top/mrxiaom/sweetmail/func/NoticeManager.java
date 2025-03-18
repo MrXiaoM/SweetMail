@@ -129,6 +129,6 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     }
 
     public static NoticeManager inst() {
-        return get(NoticeManager.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(NoticeManager.class);
     }
 }

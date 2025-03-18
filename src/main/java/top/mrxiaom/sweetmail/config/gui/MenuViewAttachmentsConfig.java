@@ -67,7 +67,7 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
     }
 
     public static MenuViewAttachmentsConfig inst() {
-        return get(MenuViewAttachmentsConfig.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(MenuViewAttachmentsConfig.class);
     }
 
     public class Gui implements IGui {

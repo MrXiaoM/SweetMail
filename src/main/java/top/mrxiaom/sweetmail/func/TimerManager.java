@@ -110,6 +110,6 @@ public class TimerManager extends AbstractPluginHolder {
     }
 
     public static TimerManager inst() {
-        return get(TimerManager.class).orElseThrow(IllegalStateException::new);
+        return instanceOf(TimerManager.class);
     }
 }
