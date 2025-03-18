@@ -31,6 +31,7 @@ import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.depend.Placeholder;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.LanguageManager;
 import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
@@ -208,6 +209,9 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
     public void loadFunctions() {
         AbstractPluginHolder.loadModules(this);
+        LanguageManager.inst() // 语言文件
+                .setLangFile("messages.yml")
+                .register(Messages.class, Messages::holder);
         textHelper = new TextHelper(this);
         guiManager = new GuiManager(this);
         database = new MailDatabase(this).reload();
