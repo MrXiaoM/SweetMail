@@ -37,7 +37,6 @@ import top.mrxiaom.sweetmail.utils.Util;
 import top.mrxiaom.sweetmail.utils.comp.PAPI;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -45,30 +44,30 @@ import static top.mrxiaom.sweetmail.commands.CommandMain.PERM_ADMIN;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
-    Icon iconReceiver;
-    String iconReceiverUnset;
+    private Icon iconReceiver;
+    private Icon iconIcon;
+    private Icon iconTitle;
+    private Icon iconContent;
+    private Icon iconAdvanced;
+    private Icon iconReset;
+    private Icon iconSend;
+    private Icon iconAttachment;
+    private String iconReceiverUnset;
+    private String iconAdvancedRedirectKey;
     public String iconReceiverPromptTips;
     public String iconReceiverPromptCancel;
     public String iconReceiverWarnNotExists;
     public String iconReceiverRegex;
-    Icon iconIcon;
     public String iconIconTitle;
     public String iconIconTitleCustom;
-    Icon iconTitle;
     public String iconTitlePromptTips;
     public String iconTitlePromptCancel;
-    Icon iconContent;
-    Icon iconAdvanced;
-    String iconAdvancedRedirectKey;
-    Icon iconReset;
-    Icon iconSend;
-    Icon iconAttachment;
 
     public boolean canSendToYourself;
 
-    Map<String, Double> priceMap = new HashMap<>();
-    Map<String, Integer> outdateDaysMap = new HashMap<>();
-    Map<String, Integer> outdateDraftHoursMap = new HashMap<>();
+    private final Map<String, Double> priceMap = new HashMap<>();
+    private final Map<String, Integer> outdateDaysMap = new HashMap<>();
+    private final Map<String, Integer> outdateDraftHoursMap = new HashMap<>();
     public MenuDraftConfig(SweetMail plugin) {
         super(plugin, "menus/draft.yml");
     }
@@ -159,7 +158,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             case "接": {
                 iconReceiver = loadedIcon;
                 iconReceiverUnset = section.getString(key + ".unset", "&7未设置");
-                iconReceiverPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件接收者”&b的值 &7(输入 &ccancel &7取消设置)");
+                iconReceiverPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件接收者”&b的值 &7(输入&c cancel &7取消设置)");
                 iconReceiverPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
                 iconReceiverWarnNotExists = section.getString(key + ".warn-not-exists", "%name% &7(&c从未加入过游戏&7)");
                 iconReceiverRegex = section.getString(key + ".regex", "^[a-zA-Z0-9_\\u4e00-\\u9fa5]{1,20}");
@@ -173,7 +172,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             }
             case "题": {
                 iconTitle = loadedIcon;
-                iconTitlePromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件标题”&b的值 &7(输入 &ccancel &7取消设置)");
+                iconTitlePromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“邮件标题”&b的值 &7(输入&c cancel &7取消设置)");
                 iconTitlePromptCancel = section.getString(key + ".prompt-cancel", "cancel");
                 return true;
             }
@@ -301,7 +300,6 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     }
 
     public class Gui extends AbstractDraftGui {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         public Gui(SweetMail plugin, Player player) {
             super(plugin, player);
             checkDraft();
@@ -317,14 +315,15 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                     if (last + outdateTime > now) {
                         LocalDateTime time = Util.fromTimestamp(last);
                         info("玩家 " + player.getName() + " 的草稿已过期重置");
-                        t(player, plugin.prefix() + Messages.Draft.outdate_tips.str().replace("%time%", time.format(formatter)));
+                        t(player, plugin.prefix() + Messages.Draft.outdate_tips.str(
+                                Pair.of("%time%", plugin.text().toStringTips(time))));
                         draft.reset();
                     }
                 }
                 LocalDateTime time = Util.fromTimestamp(now + outdateTime);
-                t(player, plugin.prefix() + Messages.Draft.open_tips.str()
-                        .replace("%hours%", String.valueOf(outdateHours))
-                        .replace("%time%", time.format(formatter)));
+                t(player, plugin.prefix() + Messages.Draft.open_tips.str(
+                        Pair.of("%hours%", outdateHours),
+                        Pair.of("%time%", plugin.text().toStringTips(time))));
             }
             draft.lastEditTime = now;
             draft.save();
@@ -437,7 +436,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 case "发": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
                         double price = getPrice(player);
-                        if (plugin.economy() != null && !plugin.economy().has(player, price)) {
+                        if (!plugin.economy().has(player, price)) {
                             t(player, plugin.prefix() + Messages.Draft.no_money.str().replace("%price%", String.format(Messages.Draft.money_format.str(), price)));
                             return;
                         }
@@ -457,9 +456,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 t(player, plugin.prefix() + Messages.Draft.no_receivers.str());
                                 return;
                             }
-                            if (plugin.economy() != null) {
-                                plugin.economy().takeMoney(player, price);
-                            }
+                            plugin.economy().takeMoney(player, price);
                             String uuid = plugin.getMailDatabase().generateMailUUID();
                             if (draft.outdateDays == 0) {
                                 draft.outdateDays = getOutdateDays(player);

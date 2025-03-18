@@ -26,9 +26,10 @@ import top.mrxiaom.sweetmail.func.data.TimedDraft;
 import top.mrxiaom.sweetmail.utils.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static top.mrxiaom.sweetmail.utils.StringHelper.startsWith;
 
 public class CommandMain extends AbstractPluginHolder implements CommandExecutor, TabCompleter {
     public static final String PERM_ADMIN = "sweetmail.admin";
@@ -298,12 +299,5 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             return listVarArgSend;
         }
         return emptyList;
-    }
-
-    public List<String> startsWith(Collection<String> list, String s) {
-        String s1 = s.toLowerCase();
-        List<String> stringList = new ArrayList<>(list);
-        stringList.removeIf(it -> !it.toLowerCase().startsWith(s1));
-        return stringList;
     }
 }

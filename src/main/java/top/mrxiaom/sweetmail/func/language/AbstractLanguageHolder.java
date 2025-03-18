@@ -1,11 +1,9 @@
 package top.mrxiaom.sweetmail.func.language;
 
 import com.google.common.collect.Lists;
-import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.func.LanguageManager;
 import top.mrxiaom.sweetmail.utils.Pair;
-import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,46 +76,5 @@ public abstract class AbstractLanguageHolder {
         return list().stream()
                 .map(it -> replace(it, replacements))
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * 以 MiniMessage 格式发送消息
-     * @param receiver 消息接收者
-     * @return 用于命令快捷返回，恒返回 true
-     */
-    public boolean tm(CommandSender receiver) {
-        Util.sendMessage(receiver, str());
-        return true;
-    }
-    /**
-     * 以 MiniMessage 格式发送消息
-     * @param receiver 消息接收者
-     * @param args <code>String.format</code> 参数
-     * @return 用于命令快捷返回，恒返回 true
-     */
-    public boolean tm(CommandSender receiver, Object... args) {
-        Util.sendMessage(receiver, str(args));
-        return true;
-    }
-    /**
-     * 以 MiniMessage 格式发送消息
-     * @param receiver 消息接收者
-     * @param replacements 变量替换键值对
-     * @return 用于命令快捷返回，恒返回 true
-     */
-    @SafeVarargs
-    public final boolean tm(CommandSender receiver, Pair<String, Object>... replacements) {
-        Util.sendMessage(receiver, str(replacements));
-        return true;
-    }
-    /**
-     * 以 MiniMessage 格式发送消息
-     * @param receiver 消息接收者
-     * @param replacements 变量替换键值对
-     * @return 用于命令快捷返回，恒返回 true
-     */
-    public boolean tm(CommandSender receiver, Iterable<Pair<String, Object>> replacements) {
-        Util.sendMessage(receiver, str(replacements));
-        return true;
     }
 }

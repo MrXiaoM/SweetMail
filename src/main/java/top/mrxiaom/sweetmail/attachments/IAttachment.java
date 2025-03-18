@@ -85,7 +85,7 @@ public interface IAttachment {
                 return Objects.hashCode(clazz);
             }
         }
-        protected static Set<AttachmentInfo<?>> attachments = new HashSet<>();
+        protected static final Set<AttachmentInfo<?>> attachments = new HashSet<>();
         protected static List<Material> itemBanMaterials;
         protected static List<String> itemBanName;
         protected static List<String> itemBanLore;

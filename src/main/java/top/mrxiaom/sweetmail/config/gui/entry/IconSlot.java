@@ -20,17 +20,17 @@ import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class IconSlot {
     public final AbstractMenuConfig.Icon base;
-    Map<String, List<String>> loreParts = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    List<String> loreContent;
-    List<String> attachmentFormat;
-    List<String> attachmentBottomAvailable, attachmentBottomUnavailable;
-    DateTimeFormatter formatter;
-    List<String> attachmentOutdateTime, attachmentOutdateInfinite;
-    List<String> loreRead, loreUnread;
-    String redirect;
-    String receiverAndSoOn;
-    List<String> attachmentAndSoOnLore;
-    int attachmentAndSoOnCount;
+    private final Map<String, List<String>> loreParts = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private List<String> loreContent;
+    private List<String> attachmentFormat;
+    private List<String> attachmentBottomAvailable, attachmentBottomUnavailable;
+    private DateTimeFormatter formatter;
+    private List<String> attachmentOutdateTime, attachmentOutdateInfinite;
+    private List<String> loreRead, loreUnread;
+    private String redirect;
+    private String receiverAndSoOn;
+    private List<String> attachmentAndSoOnLore;
+    private int attachmentAndSoOnCount;
 
     public IconSlot(AbstractMenuConfig.Icon base) {
         this.base = base;

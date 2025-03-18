@@ -7,7 +7,7 @@ public class NoEconomy implements IEconomy {
     private NoEconomy() {}
     @Override
     public boolean has(OfflinePlayer player, double money) {
-        return false;
+        return true;
     }
 
     @Override

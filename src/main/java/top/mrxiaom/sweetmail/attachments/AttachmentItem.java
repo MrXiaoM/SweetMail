@@ -98,6 +98,7 @@ public class AttachmentItem implements IAttachment {
                 }
             }
             if ((lore == null || lore.isEmpty())) {
+                //noinspection RedundantIfStatement
                 if (Internal.itemBanLore.contains("")) return false;
             } else {
                 if (Internal.itemBanLore.contains("*")) return false;
@@ -112,7 +113,7 @@ public class AttachmentItem implements IAttachment {
     }
 
     public static class Gui extends AbstractAddAttachmentGui {
-
+        boolean selected = false;
         public Gui(Player player) {
             super(player);
         }
@@ -134,8 +135,16 @@ public class AttachmentItem implements IAttachment {
                     }
                     event.setCurrentItem(null);
                     addAttachment(attachment);
+                    selected = true;
                     backToDraftGui();
                 }
+            }
+        }
+
+        @Override
+        public void onClose(InventoryView view) {
+            if (!selected) {
+                backToSelectTypeGui();
             }
         }
     }

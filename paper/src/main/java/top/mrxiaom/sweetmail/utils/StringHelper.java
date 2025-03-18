@@ -1,7 +1,5 @@
 package top.mrxiaom.sweetmail.utils;
 
-import com.google.common.collect.Lists;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -14,15 +12,11 @@ import java.util.regex.Pattern;
 
 public class StringHelper {
 
-    public static List<String> startsWith(String s, String... texts) {
-        return startsWith(s, Lists.newArrayList(texts));
-    }
-
-    public static List<String> startsWith(String s, Iterable<String> texts) {
+    public static List<String> startsWith(Iterable<String> texts, String s) {
         List<String> list = new ArrayList<>();
-        s = s.toLowerCase();
+        String str = s.toLowerCase();
         for (String text : texts) {
-            if (text.toLowerCase().startsWith(s)) list.add(text);
+            if (text.toLowerCase().startsWith(str)) list.add(text);
         }
         return list;
     }

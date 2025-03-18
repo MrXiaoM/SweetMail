@@ -78,6 +78,7 @@ public enum Messages implements IHolderAccessor {
     }
     @Language(prefix = "messages.draft.")
     public enum Draft implements IHolderAccessor {
+        tips_date_time("yyyy-MM-dd HH:mm:ss"),
         online__no_player("&e找不到该玩家"),
         no_money("&e你没有足够的金币&7(%price%)&e去发送邮件"),
         money_format("%.1f"),

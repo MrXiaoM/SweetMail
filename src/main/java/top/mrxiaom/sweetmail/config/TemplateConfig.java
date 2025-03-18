@@ -15,7 +15,7 @@ import java.util.TreeMap;
 import static top.mrxiaom.sweetmail.utils.Util.mkdirs;
 
 public class TemplateConfig extends AbstractPluginHolder {
-    File configFolder;
+    private final File configFolder;
     private final Map<String, Template> templates = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public TemplateConfig(SweetMail plugin) {
         super(plugin);
@@ -38,9 +38,7 @@ public class TemplateConfig extends AbstractPluginHolder {
             String id = name.substring(0, name.length() - 4);
             YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             Template loaded = Template.load(this, config, id);
-            if (loaded != null) {
-                templates.put(id, loaded);
-            }
+            templates.put(id, loaded);
         }
         info("加载了 " + templates.size() + " 个邮件模板");
     }

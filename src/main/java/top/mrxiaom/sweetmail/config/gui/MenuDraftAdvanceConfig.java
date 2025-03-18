@@ -82,19 +82,19 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
         switch (key) {
             case "系": {
                 iconSenderDisplay = loadedIcon;
-                iconSenderDisplayPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“发件人显示名称”&b的值 &7(输入 &ccancel &7取消设置)");
+                iconSenderDisplayPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“发件人显示名称”&b的值 &7(输入&c cancel &7取消设置)");
                 iconSenderDisplayPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
                 iconSenderDisplayUnset = section.getString(key + ".unset", "&7未设置");
                 return true;
             }
             case "收": {
                 iconReceivers = loadedIcon;
-                iconReceiversPrompts3Tips = section.getString(key + ".prompts.3.tips", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“多久之前到现在，上过线的玩家”&b的 &e判定起始时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消设置)");
+                iconReceiversPrompts3Tips = section.getString(key + ".prompts.3.tips", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“多久之前到现在，上过线的玩家”&b的 &e判定起始时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入&c cancel &7取消设置)");
                 iconReceiversPrompts3Cancel = section.getString(key + ".prompts.3.cancel", "cancel");
-                iconReceiversPrompts4TipsStart = section.getString(key + ".prompts.4.tips-start", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“在某段时间内上过线的玩家”&b的 &e判定起始时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消设置)");
-                iconReceiversPrompts4TipsEnd = section.getString(key + ".prompts.4.tips-end", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“在某段时间内上过线的玩家”&b的 &e判定结束时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消设置)");
+                iconReceiversPrompts4TipsStart = section.getString(key + ".prompts.4.tips-start", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“在某段时间内上过线的玩家”&b的 &e判定起始时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入&c cancel &7取消设置)");
+                iconReceiversPrompts4TipsEnd = section.getString(key + ".prompts.4.tips-end", "&7[&e&l邮件&7] &b请在聊天栏发送，&f“在某段时间内上过线的玩家”&b的 &e判定结束时间 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入&c cancel &7取消设置)");
                 iconReceiversPrompts4Cancel = section.getString(key + ".prompts.4.cancel", "cancel");
-                iconReceiversPrompts5Tips = section.getString(key + ".prompts.5.tips", "&7[&e&l邮件&7] &b请在聊天栏发送玩家列表，使用逗号分隔 &7(输入 &ccancel &7取消设置)");
+                iconReceiversPrompts5Tips = section.getString(key + ".prompts.5.tips", "&7[&e&l邮件&7] &b请在聊天栏发送玩家列表，使用逗号分隔 &7(输入&c cancel &7取消设置)");
                 iconReceiversPrompts5Cancel = section.getString(key + ".prompts.5.cancel", "cancel");
                 iconReceiversUnset = section.getString(key + ".unset", "&7未设置");
                 iconReceiversBadTimeFormat = section.getString(key + ".bad-time-format", "&7[&e&l邮件&7] &f你输入的时间格式不正确!");
@@ -102,7 +102,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
             }
             case "定": {
                 iconTimed = loadedIcon;
-                iconTimedPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“定时发送时间”&b的值，并立即加入定时发送队列 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入 &ccancel &7取消定时发送)");
+                iconTimedPromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“定时发送时间”&b的值，并立即加入定时发送队列 &7(格式 &f年-月-日 时:分:秒&7，不输入时分秒部分默认为0。输入&c cancel &7取消定时发送)");
                 iconTimedPromptCancel = section.getString(key + ".prompt-cancel", "cancel");
                 iconTimedPromptWrongFormat = section.getString(key + ".prompt-wrong-format", "&e时间格式不正确");
                 iconTimedSuccess = section.getString(key + ".success", "&a邮件已成功加入到定时发送队列");
@@ -110,7 +110,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
             }
             case "过": {
                 iconOutdate = loadedIcon;
-                iconOutdatePromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“附件过期时间”&b的值 &7(单位为天数。输入 &ccancel &7取消设置)");
+                iconOutdatePromptTips = section.getString(key + ".prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“附件过期时间”&b的值 &7(单位为天数。输入&c cancel &7取消设置)");
                 iconOutdatePromptCancel = section.getString(key + ".prompt-cancel", "cancel");
                 iconOutdatePromptNotInteger = section.getString(key + ".prompt-not-integer", "&e请输入一个整数");
                 iconOutdateSet = section.getString(key + ".set", "%value% 天");

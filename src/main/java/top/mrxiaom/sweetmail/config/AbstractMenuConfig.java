@@ -132,12 +132,12 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             return icon;
         }
     }
-    File configFile;
-    String file;
-    public Map<String, Icon> otherIcon = new HashMap<>();
+    private final File configFile;
+    private final String file;
+    public final Map<String, Icon> otherIcon = new HashMap<>();
+    protected YamlConfiguration config;
     protected String title;
     public char[] inventory;
-    protected YamlConfiguration config;
     public AbstractMenuConfig(SweetMail plugin, String file) {
         super(plugin);
         this.configFile = new File(plugin.getDataFolder(), this.file = file);
@@ -184,9 +184,6 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         for (int i = 0; i < this.inventory.length; i++) {
             applyIcon(gui, setItem, target, i);
         }
-    }
-    public void applyIcon(T gui, Inventory inv, Player target, int i) {
-        applyIcon(gui, inv::setItem, target, i);
     }
     public void applyIcon(T gui, InventoryView inv, Player target, int i) {
         applyIcon(gui, inv::setItem, target, i);

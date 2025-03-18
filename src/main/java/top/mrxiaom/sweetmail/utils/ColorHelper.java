@@ -1,11 +1,7 @@
 package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,22 +13,6 @@ public class ColorHelper {
     private static final Pattern startWithColor = Pattern.compile("^(&[LMNKOlmnko])+");
     private static final Pattern gradientPattern = Pattern.compile("\\{(#[ABCDEFabcdef0123456789]{6}):(#[ABCDEFabcdef0123456789]{6}):(.*?)}");
     private static final Pattern hexPattern = Pattern.compile("&(#[ABCDEFabcdef0123456789]{6})");
-
-    public static TextComponent bungee(String s) {
-        return new TextComponent(parseColor(s));
-    }
-
-    @SuppressWarnings({"deprecation"})
-    public static HoverEvent hover(String s) {
-        return new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT,
-                new BaseComponent[]{ bungee(s) }
-        );
-    }
-
-    public static HoverEvent hover(List<String> s) {
-        return hover(String.join("\n", s));
-    }
 
     public static List<String> parseColor(List<String> s) {
         return Lists.newArrayList(parseColor(String.join("\n", s)).split("\n"));

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GuiIcon extends AbstractDraftGui {
-    String title;
-    Map<Integer, String> iconKeyMap = new HashMap<>();
-    int size;
+    private final String title;
+    private final Map<Integer, String> iconKeyMap = new HashMap<>();
+    private int size;
     public GuiIcon(SweetMail plugin, Player player, String title) {
         super(plugin, player);
         this.title = title;

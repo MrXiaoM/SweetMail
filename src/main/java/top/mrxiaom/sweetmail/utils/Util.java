@@ -33,8 +33,8 @@ import static top.mrxiaom.sweetmail.utils.Pair.replace;
 @SuppressWarnings({"unused"})
 public class Util {
     private static BukkitAudiences adventure;
-    public static Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    public static Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    public static final Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(SweetMail plugin) {
         adventure = BukkitAudiences.builder(plugin).build();
         MiniMessageConvert.init();
@@ -144,6 +144,10 @@ public class Util {
 
     public static void sendMessage(CommandSender sender, String message) {
         adventure.sender(sender).sendMessage(miniMessage(message));
+    }
+
+    public static void sendMessage(CommandSender sender, Component message) {
+        adventure.sender(sender).sendMessage(message);
     }
 
     @SuppressWarnings({"UnstableApiUsage"})

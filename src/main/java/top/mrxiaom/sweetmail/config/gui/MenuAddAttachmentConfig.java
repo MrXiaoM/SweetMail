@@ -72,7 +72,7 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
     }
 
     public class Gui extends AbstractDraftGui {
-        Map<Integer, IAttachment.Internal.AttachmentInfo<?>> attachments = new HashMap<>();
+        private final Map<Integer, IAttachment.Internal.AttachmentInfo<?>> attachments = new HashMap<>();
         public Gui(SweetMail plugin, Player player) {
             super(plugin, player);
         }

@@ -66,7 +66,7 @@ public class Template {
             if (value == null) {
                 return Result.fail("未输入参数 " + variable.name + "，且该变量没有默认值");
             }
-            if (!variable.type.isValid(value)) {
+            if (variable.type.isNotValid(value)) {
                 return Result.fail("参数 " + variable.name + " 的值无效");
             }
             replacements.add(Pair.of("${" + variable.name + "}", value));
@@ -170,7 +170,7 @@ public class Template {
                 continue;
             }
             String defaultValue = section.getString(name + ".default", null);
-            if (defaultValue != null && !type.isValid(defaultValue)) {
+            if (defaultValue != null && type.isNotValid(defaultValue)) {
                 parent.warn("[template/" + id + "] 变量 " + name + " 的默认值无效");
                 continue;
             }

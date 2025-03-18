@@ -6,7 +6,7 @@ import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({"rawtypes", "unchecked", "unused", "UnusedReturnValue"})
 public interface IHolderAccessor {
 
     AbstractLanguageHolder holder();

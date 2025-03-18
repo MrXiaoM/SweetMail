@@ -3,6 +3,7 @@ package top.mrxiaom.sweetmail.gui;
 import org.bukkit.entity.Player;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 
 public abstract class AbstractAddAttachmentGui extends AbstractDraftGui {
@@ -15,7 +16,7 @@ public abstract class AbstractAddAttachmentGui extends AbstractDraftGui {
     }
 
     public void backToSelectTypeGui() {
-        // TODO: 返回附件类型选择菜单
+        MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
     }
 
     /**

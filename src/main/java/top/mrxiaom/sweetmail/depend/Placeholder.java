@@ -9,7 +9,7 @@ import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
 
 public class Placeholder extends PlaceholderExpansion {
-    SweetMail plugin;
+    private final SweetMail plugin;
     public Placeholder(SweetMail plugin) {
         this.plugin = plugin;
     }

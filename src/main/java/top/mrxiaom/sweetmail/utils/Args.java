@@ -14,6 +14,7 @@ public class Args {
         put('"', '"');
         put('\'', '\'');
     }};
+    @SuppressWarnings("SpellCheckingInspection")
     private static final List<Character> allowInKey = toCharList("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-$");
     final Map<String, String> map;
     private Args(Map<String, String> map) {

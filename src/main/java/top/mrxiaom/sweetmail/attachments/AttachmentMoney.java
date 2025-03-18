@@ -15,7 +15,6 @@ import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
 
-import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class AttachmentMoney implements IAttachment {

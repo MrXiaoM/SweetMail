@@ -1,8 +1,8 @@
 package top.mrxiaom.sweetmail.func;
 
 import com.google.common.io.ByteArrayDataOutput;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
-import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.io.ByteArrayOutputStream;
@@ -107,19 +106,16 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
 
     private void notice(Player player, String msg, int count) {
         if (msg.isEmpty() || !player.hasPermission("sweetmail.notice")) return;
-        TextComponent component = ColorHelper.bungee(msg.replace("%count%", String.valueOf(count)));
+        Component component = Util.miniMessage(msg.replace("%count%", String.valueOf(count)));
         String msgJoinHover = Messages.Join.hover.str();
         String msgJoinCmd = Messages.Join.command.str();
         if (!msgJoinHover.isEmpty()) {
-            component.setHoverEvent(ColorHelper.hover(msgJoinHover));
+            component = component.hoverEvent(Util.miniMessage(msgJoinHover).asHoverEvent());
         }
         if (!msgJoinCmd.isEmpty()) {
-            component.setClickEvent(new ClickEvent(
-                    ClickEvent.Action.RUN_COMMAND,
-                    msgJoinCmd
-            ));
+            component = component.clickEvent(ClickEvent.runCommand(msgJoinCmd));
         }
-        player.spigot().sendMessage(component);
+        Util.sendMessage(player, component);
     }
 
     public static NoticeManager inst() {

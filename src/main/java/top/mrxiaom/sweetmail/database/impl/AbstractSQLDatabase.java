@@ -246,12 +246,12 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
         SweetMail plugin = SweetMail.getInstance();
         if (e instanceof SQLException && message.contains("[SQLITE_ERROR]") && message.contains("near ")) {
             ConsoleCommandSender sender = Bukkit.getConsoleSender();
-            t(sender, "&7[&d&lSweetMail&7] &c" + message);
-            t(sender, "&7[&d&lSweetMail&7] &e服务器自带的 SQLite JDBC 版本过低，不支持执行插件需要的查询语句。");
-            t(sender, "&7[&d&lSweetMail&7] &e这个问题通常只会在低版本服务端（如 1.8）出现。");
-            t(sender, "&7[&d&lSweetMail&7] &e请从以下链接下载新版本，替换掉服务端默认的 SQLite JDBC");
-            t(sender, "&7[&d&lSweetMail&7] &bhttps://mirrors.huaweicloud.com/repository/maven/org/xerial/sqlite-jdbc/3.49.0.0/sqlite-jdbc-3.49.0.0.jar");
-            t(sender, "&7[&d&lSweetMail&7] &e如果不会操作，请使用 MySQL 代替");
+            t(sender, "&7[&d&lSweetMail&7]&c " + message);
+            t(sender, "&7[&d&lSweetMail&7]&e 服务器自带的 SQLite JDBC 版本过低，不支持执行插件需要的查询语句。");
+            t(sender, "&7[&d&lSweetMail&7]&e 这个问题通常只会在低版本服务端（如 1.8）出现。");
+            t(sender, "&7[&d&lSweetMail&7]&e 请从以下链接下载新版本，替换掉服务端默认的 SQLite JDBC");
+            t(sender, "&7[&d&lSweetMail&7]&b https://mirrors.huaweicloud.com/repository/maven/org/xerial/sqlite-jdbc/3.49.0.0/sqlite-jdbc-3.49.0.0.jar");
+            t(sender, "&7[&d&lSweetMail&7]&e 如果不会操作，请使用 MySQL 代替");
         } else {
             plugin.warn("执行数据库语句时出现异常", e);
         }
