@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
@@ -59,7 +60,7 @@ public class GuiIcon extends AbstractDraftGui {
             if (draft.iconKey.equals(pair.getKey())) {
                 ItemStackUtil.setGlow(item);
                 List<String> lore = ItemStackUtil.getItemLore(item);
-                lore.addAll(plugin.getConfig().getStringList("messages.draft.selected-icon-lore"));
+                lore.addAll(Messages.Draft.selected_icon_lore.list());
                 ItemStackUtil.setItemLore(item, lore);
             }
             NBT.modify(item, nbt -> {
@@ -75,11 +76,9 @@ public class GuiIcon extends AbstractDraftGui {
     @Override
     public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
         event.setCancelled(true);
-        MenuDraftConfig draftConfig = MenuDraftConfig.inst();
+        MenuDraftConfig menu = MenuDraftConfig.inst();
         if (slot == -1) {
-            MenuDraftConfig.inst()
-                    .new Gui(plugin, player)
-                    .open();
+            menu.new Gui(plugin, player).open();
             return;
         }
         if (click.isLeftClick() && !click.isShiftClick()) {
@@ -88,9 +87,7 @@ public class GuiIcon extends AbstractDraftGui {
                 if (key != null) {
                     draft.iconKey = key;
                     draft.save();
-                    MenuDraftConfig.inst()
-                            .new Gui(plugin, player)
-                            .open();
+                    menu.new Gui(plugin, player).open();
                     return;
                 }
             }
@@ -105,9 +102,7 @@ public class GuiIcon extends AbstractDraftGui {
                     }
                     draft.iconKey = type;
                     draft.save();
-                    MenuDraftConfig.inst()
-                            .new Gui(plugin, player)
-                            .open();
+                    menu.new Gui(plugin, player).open();
                 }
             }
         }

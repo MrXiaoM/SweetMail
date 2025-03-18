@@ -3,6 +3,7 @@ package top.mrxiaom.sweetmail.attachments;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
@@ -90,11 +91,12 @@ public class AttachmentCommand implements IAttachment {
                     Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
                     ChatPrompter.prompt(
                             plugin, player,
-                            Internal.addCommandPromptTips, Internal.addCommandPromptCancel,
+                            Messages.Draft.attachments__money__add__prompt_tips.str(),
+                            Messages.Draft.attachments__command__prompt_cancel.str(),
                             str -> {
                                 String[] split = str.split(",", 3);
                                 if (split.length != 3) {
-                                    t(player, Internal.addCommandFail);
+                                    t(player, Messages.Draft.attachments__money__add__fail.str());
                                     back.run();
                                     return;
                                 }

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
@@ -85,26 +86,9 @@ public interface IAttachment {
             }
         }
         protected static Set<AttachmentInfo<?>> attachments = new HashSet<>();
-        protected static List<String> loreRemove;
-        protected static List<String> loreRemoveAdmin;
-        protected static String moneyIcon;
-        protected static String moneyName;
-        protected static List<String> moneyLore;
-        protected static String itemTitle;
-        protected static String itemDisplay;
-        protected static String itemDisplayWithAmount;
         protected static List<Material> itemBanMaterials;
         protected static List<String> itemBanName;
         protected static List<String> itemBanLore;
-        protected static String messageUseIllegalDeny;
-
-        protected static String addMoneyPromptTips;
-        protected static String addMoneyPromptCancel;
-        protected static String addMoneyFail;
-        protected static String addMoneyNotEnough;
-        protected static String addCommandPromptTips;
-        protected static String addCommandPromptCancel;
-        protected static String addCommandFail;
 
         protected static String attachmentItemMaterial;
         protected static String attachmentItemDisplay;
@@ -121,21 +105,13 @@ public interface IAttachment {
         }
 
         public static List<String> getLoreRemove(Permissible target) {
-            return target.hasPermission(PERM_ADMIN)
-                    ? Internal.loreRemoveAdmin
-                    : Internal.loreRemove;
+            return (target.hasPermission(PERM_ADMIN)
+                    ? Messages.Draft.attachments__remove_lore_admin
+                    : Messages.Draft.attachments__remove_lore).list();
         }
 
         @Override
         public void reloadConfig(MemoryConfiguration config) {
-            loreRemove = config.getStringList("messages.draft.attachments.remove-lore");
-            loreRemoveAdmin = config.getStringList("messages.draft.attachments.remove-lore-admin");
-            moneyIcon = config.getString("messages.draft.attachments.money.icon", "GOLD_NUGGET");
-            moneyName = config.getString("messages.draft.attachments.money.name", "");
-            moneyLore = config.getStringList("messages.draft.attachments.money.lore");
-            itemTitle = config.getString("messages.draft.attachments.item.title", "请在物品栏点击要添加附件的物品");
-            itemDisplay = config.getString("messages.draft.attachments.item.display", "");
-            itemDisplayWithAmount = config.getString("messages.draft.attachments.item.display-with-amount", "");
             itemBanMaterials = new ArrayList<>();
             for (String s : config.getStringList("attachments.item.blacklist.materials")) {
                 Material material = Util.valueOr(Material.class, s, null);
@@ -145,15 +121,6 @@ public interface IAttachment {
             }
             itemBanName = config.getStringList("attachments.item.blacklist.display_name");
             itemBanLore = config.getStringList("attachments.item.blacklist.lore");
-            messageUseIllegalDeny = config.getString("messages.draft.attachments.use-illegal-deny", "");
-
-            addMoneyPromptTips = config.getString("messages.draft.attachments.money.add.prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“附件金币数量”&b的值 &7(输入 &ccancel &7取消添加附件)");
-            addMoneyPromptCancel = config.getString("messages.draft.attachments.money.add.prompt-cancel", "cancel");
-            addMoneyFail = config.getString("messages.draft.attachments.money.add.fail", "&7[&e&l邮件&7] &e请输入大于0的实数");
-            addMoneyNotEnough = config.getString("messages.draft.attachments.money.add.not-enough", "&7[&e&l邮件&7] &e你没有足够的金币");
-            addCommandPromptTips = config.getString("messages.draft.attachments.command.prompt-tips", "&7[&e&l邮件&7] &b请在聊天栏发送&e“控制台命令附件”&b的值 &7(格式 &f图标,显示名称,执行命令&7，如&f PAPER,10金币,money give %player_name% 10 &7。输入 &ccancel &7取消添加附件)");
-            addCommandPromptCancel = config.getString("messages.draft.attachments.command.prompt-cancel", "cancel");
-            addCommandFail = config.getString("messages.draft.attachments.command.add.fail", "&7[&e&l邮件&7] &e格式不正确，应为 &f图标,显示名称,执行命令&e，如&f PAPER,10金币,money give %player_name% 10");
 
             attachmentItemMaterial = config.getString("attachments.item.material", "ITEM_FRAME");
             attachmentItemDisplay = config.getString("attachments.item.display", "物品附件");
@@ -179,7 +146,7 @@ public interface IAttachment {
         }
 
         public static void useIllegalDeny(CommandSender sender) {
-            t(sender, messageUseIllegalDeny);
+            Messages.Draft.attachments__use_illegal_deny.tm(sender);
         }
 
         public static Internal inst() {

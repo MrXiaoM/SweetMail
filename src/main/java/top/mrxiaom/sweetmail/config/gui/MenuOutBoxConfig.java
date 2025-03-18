@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.config.gui.entry.IconSlot;
@@ -35,7 +36,6 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
     String iconGetAllRedirect;
     IconSlot iconSlot;
     int slotsCount;
-    String messageDeleted;
     public MenuOutBoxConfig(SweetMail plugin) {
         super(plugin, "menus/outbox.yml");
     }
@@ -47,7 +47,6 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
-        messageDeleted = cfg.getString("messages.outbox.deleted", "");
 
         title = config.getString("title", "&0发件箱 ( %page%/%max_page% 页)");
         titleOther = config.getString("title-other", "&0%target% 的发件箱 ( %page%/%max_page% 页)");
@@ -280,7 +279,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             plugin.getMailDatabase().deleteMail(mail.uuid);
                             String sender = mail.senderDisplay.trim().isEmpty()
                                     ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
-                            t(player, plugin.prefix() + messageDeleted
+                            t(player, plugin.prefix() + Messages.OutBox.deleted.str()
                                     .replace("%player%", sender)
                                     .replace("%title%", mail.title)
                                     .replace("%uuid%", mail.uuid));

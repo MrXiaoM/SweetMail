@@ -6,11 +6,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.IMail;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.TemplateConfig;
 import top.mrxiaom.sweetmail.config.entry.Template;
@@ -36,32 +36,10 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public static final String PERM_DRAFT_OTHER = "sweetmail.draft.other";
     public static final String PERM_BOX = "sweetmail.box";
     public static final String PERM_BOX_OTHER = "sweetmail.box.other";
-    private static String prefix;
-    private List<String> helpPlayer;
-    private List<String> helpAdmin;
-    private String cmdReload;
-    private String cmdReloadDatabase;
-    private List<String> cmdTimedInfoDisplay;
-    private String cmdTimedInfoNotFound;
-    private String cmdTimedCancelSuccess;
-    private String cmdTimedCancelFail;
     public CommandMain(SweetMail plugin) {
         super(plugin);
         registerCommand("sweetmail", this);
         register();
-    }
-
-    @Override
-    public void reloadConfig(MemoryConfiguration config) {
-        helpPlayer = config.getStringList("help.player");
-        helpAdmin = config.getStringList("help.admin");
-        prefix = config.getString("messages.prefix", "");
-        cmdReload = config.getString("messages.command.reload", "");
-        cmdReloadDatabase = config.getString("messages.command.reload-database", "");
-        cmdTimedInfoDisplay = config.getStringList("messages.command.timed.info.display");
-        cmdTimedInfoNotFound = config.getString("messages.command.timed.info.not-found", "");
-        cmdTimedCancelSuccess = config.getString("messages.command.timed.cancel.success", "");
-        cmdTimedCancelFail = config.getString("messages.command.timed.cancel.fail", "");
     }
 
     @Override
@@ -109,16 +87,16 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     String id = args[2];
                     TimerManager manager = TimerManager.inst();
                     TimedDraft timedDraft = manager.getQueue(id);
-                    if (timedDraft == null) return t(sender, prefix + cmdTimedInfoNotFound);
+                    if (timedDraft == null) return t(sender, plugin.prefix() + Messages.Command.timed__info__not_found.str());
                     String senderDisplay = timedDraft.draft.advSenderDisplay == null ? "" : timedDraft.draft.advSenderDisplay;
                     String mailSender = senderDisplay.isEmpty() ? timedDraft.draft.sender : IMail.SERVER_SENDER;
-                    for (String s : Pair.replace(cmdTimedInfoDisplay,
+                    for (String s : Messages.Command.timed__info__display.list(
                             Pair.of("%id%", id),
                             Pair.of("%sender%", mailSender),
                             Pair.of("%senderDisplay%", senderDisplay),
                             Pair.of("%receiver%", timedDraft.draft.receiver),
                             Pair.of("%advReceivers%", timedDraft.draft.advReceivers))) {
-                        t(sender, prefix + s);
+                        t(sender, plugin.prefix() + s);
                     }
                     return true;
                 }
@@ -126,7 +104,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     String id = args[2];
                     TimerManager manager = TimerManager.inst();
                     boolean result = manager.cancelQueue(id);
-                    return t(sender, prefix + (result ? cmdTimedCancelSuccess : cmdTimedCancelFail));
+                    return t(sender, plugin.prefix() + (result ? Messages.Command.timed__cancel__success : Messages.Command.timed__cancel__fail).str());
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
@@ -234,17 +212,17 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             if ("reload".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length > 1 && "database".equalsIgnoreCase(args[1])) {
                     plugin.getMailDatabase().reload();
-                    t(sender, prefix + cmdReloadDatabase);
+                    t(sender, plugin.prefix() + Messages.Command.reload_database.str());
                     return true;
                 }
                 plugin.reloadConfig();
-                t(sender, prefix + cmdReload);
+                t(sender, plugin.prefix() + Messages.Command.reload.str());
                 return true;
             }
         }
-        t(sender, helpPlayer);
+        Messages.help__player.tm(sender);
         if (admin) {
-            t(sender, helpAdmin);
+            Messages.help__admin.tm(sender);
         }
         return true;
     }

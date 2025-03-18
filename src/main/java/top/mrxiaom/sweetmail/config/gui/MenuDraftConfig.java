@@ -18,6 +18,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.permissions.Permissible;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
@@ -63,16 +64,6 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     Icon iconSend;
     Icon iconAttachment;
 
-    public String messageNoReceivers;
-    public String messageCantSendToYourself;
-    public String messageSendWithAdvReceivers;
-    public String messageSent;
-    public String messageNoMoney;
-    public String messageMoneyFormat;
-    public String messageOnlineNoPlayer;
-    public String messageItemBanned;
-    public String messageDraftOpenTips;
-    public String messageDraftOutdateTips;
     public boolean canSendToYourself;
 
     Map<String, Double> priceMap = new HashMap<>();
@@ -86,16 +77,6 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
         canSendToYourself = cfg.getBoolean("can-send-to-yourself", false);
-        messageNoReceivers = cfg.getString("messages.draft.no-receivers", "");
-        messageCantSendToYourself = cfg.getString("messages.draft.cant-send-to-yourself", "");
-        messageSendWithAdvReceivers = cfg.getString("messages.draft.send-with-adv-receivers", "");
-        messageSent = cfg.getString("messages.draft.sent", "");
-        messageNoMoney = cfg.getString("messages.draft.no-money", "");
-        messageMoneyFormat = cfg.getString("messages.draft.money-format", "");
-        messageOnlineNoPlayer = cfg.getString("messages.draft.online.no-player", "");
-        messageItemBanned = cfg.getString("messages.draft.attachments.item.banned", "");
-        messageDraftOpenTips = cfg.getString("messages.draft.open-tips", "");
-        messageDraftOutdateTips = cfg.getString("messages.draft.outdate-tips", "");
         priceMap.clear();
         ConfigurationSection section = cfg.getConfigurationSection("price");
         if (section != null) for (String key : section.getKeys(false)) {
@@ -295,7 +276,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             case "发": {
                 return iconSend.generateIcon(
                         target,
-                        Pair.of("%price%", String.format(messageMoneyFormat, getPrice(target)))
+                        Pair.of("%price%", String.format(Messages.Draft.money_format.str(), getPrice(target)))
                 );
             }
             case "附": {
@@ -336,12 +317,12 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                     if (last + outdateTime > now) {
                         LocalDateTime time = Util.fromTimestamp(last);
                         info("玩家 " + player.getName() + " 的草稿已过期重置");
-                        t(player, messageDraftOutdateTips.replace("%time%", time.format(formatter)));
+                        t(player, plugin.prefix() + Messages.Draft.outdate_tips.str().replace("%time%", time.format(formatter)));
                         draft.reset();
                     }
                 }
                 LocalDateTime time = Util.fromTimestamp(now + outdateTime);
-                t(player, messageDraftOpenTips
+                t(player, plugin.prefix() + Messages.Draft.open_tips.str()
                         .replace("%hours%", String.valueOf(outdateHours))
                         .replace("%time%", time.format(formatter)));
             }
@@ -377,13 +358,13 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                         OfflinePlayer offline = Util.getOfflinePlayer(receiver).orElse(null);
                                         String id = plugin.getPlayerKey(offline);
                                         if (id == null) {
-                                            t(player, messageOnlineNoPlayer);
+                                            t(player, plugin.prefix() + Messages.Draft.online__no_player.str());
                                             reopen.run();
                                             return;
                                         }
                                         draft.receiver = id;
                                     } else {
-                                        t(player, messageOnlineNoPlayer);
+                                        t(player, plugin.prefix() + Messages.Draft.online__no_player.str());
                                     }
                                     draft.save();
                                     reopen.run();
@@ -457,23 +438,23 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                     if (click.isLeftClick() && !click.isShiftClick()) {
                         double price = getPrice(player);
                         if (plugin.getEconomy() != null && !plugin.getEconomy().has(player, price)) {
-                            t(player, plugin.prefix() + messageNoMoney.replace("%price%", String.format(messageMoneyFormat, price)));
+                            t(player, plugin.prefix() + Messages.Draft.no_money.str().replace("%price%", String.format(Messages.Draft.money_format.str(), price)));
                             return;
                         }
                         if (!canSendToYourself && draft.sender.equalsIgnoreCase(draft.receiver)) {
-                            t(player, plugin.prefix() + messageCantSendToYourself);
+                            t(player, plugin.prefix() + Messages.Draft.cant_send_to_yourself.str());
                             return;
                         }
                         // 提醒发送人，计算泛接收人列表的时间可能会很长
                         if (draft.advReceivers != null && draft.advReceivers.startsWith("last ")) {
-                            t(player, plugin.prefix() + messageSendWithAdvReceivers);
+                            t(player, plugin.prefix() + Messages.Draft.send_with_adv_receivers.str());
                         }
                         player.closeInventory();
                         plugin.getScheduler().runAsync((t_) -> {
                             List<String> receivers = DraftManager.inst().generateReceivers(draft);
                             if (!canSendToYourself) receivers.remove(player.getName());
                             if (receivers.isEmpty()) {
-                                t(player, plugin.prefix() + messageNoReceivers);
+                                t(player, plugin.prefix() + Messages.Draft.no_receivers.str());
                                 return;
                             }
                             if (plugin.getEconomy() != null) {
@@ -491,7 +472,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             });
                             draft.reset();
                             draft.save();
-                            t(player, plugin.prefix() + messageSent);
+                            t(player, plugin.prefix() + Messages.Draft.sent.str());
                         });
                     }
                     return;
@@ -520,7 +501,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             if (hasCursorItem) {
                                 IAttachment attachment = AttachmentItem.build(cursor);
                                 if (!attachment.isLegal()) {
-                                    t(player, messageItemBanned);
+                                    t(player, plugin.prefix() + Messages.Draft.attachments__item__banned.str());
                                     return;
                                 }
                                 event.setCursor(null);

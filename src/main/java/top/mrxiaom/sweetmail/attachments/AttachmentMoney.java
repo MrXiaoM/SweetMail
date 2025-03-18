@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.attachments;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
@@ -41,12 +42,13 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public ItemStack generateDraftIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(Internal.moneyIcon);
+        ItemStack item = ItemStackUtil.getItem(Messages.Draft.attachments__money__icon.str());
         ItemStackUtil.setItemDisplayName(item, toString());
         List<String> loreRemove = Internal.getLoreRemove(target);
-        if (!Internal.moneyLore.isEmpty() || !loreRemove.isEmpty()) {
+        List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
+        if (!moneyLore.isEmpty() || !loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Internal.moneyLore);
+            lore.addAll(moneyLore);
             lore.addAll(loreRemove);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
         }
@@ -55,11 +57,12 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public ItemStack generateIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(Internal.moneyIcon);
+        ItemStack item = ItemStackUtil.getItem(Messages.Draft.attachments__money__icon.str());
         ItemStackUtil.setItemDisplayName(item, toString());
-        if (!Internal.moneyLore.isEmpty()) {
+        List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
+        if (!moneyLore.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLore(item);
-            lore.addAll(Internal.moneyLore);
+            lore.addAll(moneyLore);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
         }
         return item;
@@ -67,7 +70,7 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public String toString() {
-        return Internal.moneyName.replace("%money%", String.valueOf(money));
+        return Messages.Draft.attachments__money__name.str(Pair.of("%money%", money));
     }
 
     @Override
@@ -88,16 +91,17 @@ public class AttachmentMoney implements IAttachment {
                     Runnable back = () -> MenuAddAttachmentConfig.inst().new Gui(plugin, player).open();
                     ChatPrompter.prompt(
                             plugin, player,
-                            Internal.addMoneyPromptTips, Internal.addMoneyPromptCancel,
+                            Messages.Draft.attachments__money__add__prompt_tips.str(),
+                            Messages.Draft.attachments__money__add__prompt_cancel.str(),
                             str -> {
                                 double money = Util.parseDouble(str).orElse(0.0);
                                 if (money <= 0) {
-                                    t(player, Internal.addMoneyFail);
+                                    Messages.Draft.attachments__money__add__fail.tm(player);
                                     back.run();
                                     return;
                                 }
                                 if (!plugin.getEconomy().has(player, money)) {
-                                    t(player, Internal.addMoneyNotEnough);
+                                    Messages.Draft.attachments__money__add__not_enough.tm(player);
                                     back.run();
                                     return;
                                 }

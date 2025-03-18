@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.func.basic;
 
 import org.bukkit.configuration.MemoryConfiguration;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 
@@ -17,7 +18,7 @@ public class TextHelper extends AbstractPluginHolder {
     @Override
     public void reloadConfig(MemoryConfiguration config) {
         try {
-            formatter = DateTimeFormatter.ofPattern(config.getString("messages.date-time", "yyyy年MM月dd日 HH:mm:ss"));
+            formatter = DateTimeFormatter.ofPattern(Messages.date_time.str());
         } catch (Throwable t) {
             warn("[config.yml] 无法解析 messages.date-time", t);
             formatter = DateTimeFormatter.ISO_DATE_TIME;

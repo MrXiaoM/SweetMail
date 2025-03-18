@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.MailCountInfo;
 import top.mrxiaom.sweetmail.utils.ColorHelper;
@@ -20,10 +21,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class NoticeManager extends AbstractPluginHolder implements Listener {
-    String msgJoinText;
-    String msgJoinTextOnline;
-    List<String> msgJoinHover;
-    String msgJoinCmd;
     boolean noticeBungee;
     String noticeSenderKey;
     String noticeReceiverKey;
@@ -39,11 +36,6 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
         noticeBungee = config.getBoolean("bungeecord.enable", true);
         noticeSenderKey = config.getString("bungeecord.sender-key", "");
         noticeReceiverKey = config.getString("bungeecord.receiver-key", "");
-
-        msgJoinText = config.getString("messages.join.text", "");
-        msgJoinTextOnline = config.getString("messages.join.text-online", "");
-        msgJoinHover = config.getStringList("messages.join.hover");
-        msgJoinCmd = config.getString("messages.join.command", "");
     }
 
     @EventHandler
@@ -52,7 +44,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
         if (!player.hasPermission("sweetmail.notice")) return;
         MailCountInfo mailCountInfo = plugin.getMailDatabase().getInBoxCount(player, true);
         if (mailCountInfo.unreadCount > 0) {
-            notice(player, msgJoinText, mailCountInfo.unreadCount);
+            notice(player, Messages.Join.text.str(), mailCountInfo.unreadCount);
         }
     }
 
@@ -66,7 +58,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
                 Player player = Util.getOnlinePlayerByNameOrUUID(in.readUTF()).orElse(null);
                 if (player == null) continue;
                 plugin.getMailDatabase().getInBoxCount(player, true);
-                notice(player, msgJoinTextOnline, 1);
+                notice(player, Messages.Join.text_online.str(), 1);
             }
         }
     }
@@ -78,7 +70,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
             Player player = Util.getOnlinePlayerByNameOrUUID(s).orElse(null);
             if (player != null) {
                 plugin.getMailDatabase().getInBoxCount(player, true);
-                notice(player, msgJoinTextOnline, 1);
+                notice(player, Messages.Join.text_online.str(), 1);
             } else {
                 players.add(s);
             }
@@ -116,6 +108,8 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     private void notice(Player player, String msg, int count) {
         if (msg.isEmpty() || !player.hasPermission("sweetmail.notice")) return;
         TextComponent component = ColorHelper.bungee(msg.replace("%count%", String.valueOf(count)));
+        String msgJoinHover = Messages.Join.hover.str();
+        String msgJoinCmd = Messages.Join.command.str();
         if (!msgJoinHover.isEmpty()) {
             component.setHoverEvent(ColorHelper.hover(msgJoinHover));
         }

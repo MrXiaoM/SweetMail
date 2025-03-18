@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
@@ -41,9 +42,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     String iconGetAllRedirect;
     IconSlot iconSlot;
     int slotsCount;
-    public String messageFail;
-    public String messageOutdated;
-    public String messageReadAll;
     public MenuInBoxConfig(SweetMail plugin) {
         super(plugin, "menus/inbox.yml");
     }
@@ -55,9 +53,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
         super.reloadConfig(cfg);
-        messageFail = cfg.getString("messages.inbox.attachments-fail", "");
-        messageOutdated = cfg.getString("messages.inbox.attachments-outdated", "");
-        messageReadAll = cfg.getString("messages.inbox.read-all", "");
 
         titleAll = config.getString("title-all", "&0收件箱 全部 ( %page%/%max_page% 页)");
         titleAllOther = config.getString("title-all-other", "&0%target% 的收件箱 全部 ( %page%/%max_page% 页)");
@@ -263,7 +258,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 targetKey = target;
                             }
                             plugin.getMailDatabase().markAllRead(targetKey);
-                            t(player, plugin.prefix() + messageReadAll);
+                            t(player, plugin.prefix() + Messages.InBox.read_all.str());
                             return;
                         }
                     }
@@ -313,7 +308,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             mail.used = true;
                             dismiss.add(mail.uuid);
                             if (mail.isOutdated()) {
-                                t(player, plugin.prefix() + messageOutdated);
+                                t(player, plugin.prefix() + Messages.InBox.attachments_outdated.str());
                                 continue;
                             }
                             plugin.getScheduler().runNextTick((t_) -> useAttachments(mail));
@@ -341,7 +336,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             mail.used = true;
                             plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
                             if (mail.isOutdated()) {
-                                t(player, plugin.prefix() + messageOutdated);
+                                t(player, plugin.prefix() + Messages.InBox.attachments_outdated.str());
                                 return;
                             }
                             plugin.getScheduler().runNextTick((t_) -> {
@@ -392,7 +387,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 info("玩家 " + target + " 领取了 " + Util.getPlayerName(mail.sender) + " 的邮件 " + mail.title + " (" + mail.uuid + ") 的附件");
             } catch (Throwable t) {
                 warn("玩家 " + target + " 领取 " + Util.getPlayerName(mail.sender) + " 的邮件 " + mail.title + " (" + mail.uuid + ") 的附件时出现一个错误", t);
-                t(player, plugin.prefix() + messageFail);
+                t(player, plugin.prefix() +  Messages.InBox.attachments_fail.str());
             }
         }
     }

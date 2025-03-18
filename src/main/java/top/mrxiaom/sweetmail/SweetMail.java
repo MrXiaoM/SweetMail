@@ -137,9 +137,8 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public EconomyHolder getEconomy() {
         return economy;
     }
-    private String prefix;
     public String prefix() {
-        return prefix;
+        return Messages.prefix.str();
     }
     private boolean onlineMode;
     public int bundleMaxSlots;
@@ -211,7 +210,12 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         AbstractPluginHolder.loadModules(this);
         LanguageManager.inst() // 语言文件
                 .setLangFile("messages.yml")
-                .register(Messages.class, Messages::holder);
+                .register(Messages.class, Messages::holder)
+                .register(Messages.Command.class, Messages.Command::holder)
+                .register(Messages.Draft.class, Messages.Draft::holder)
+                .register(Messages.InBox.class, Messages.InBox::holder)
+                .register(Messages.OutBox.class, Messages.OutBox::holder)
+                .register(Messages.Join.class, Messages.Join::holder);
         textHelper = new TextHelper(this);
         guiManager = new GuiManager(this);
         database = new MailDatabase(this).reload();
@@ -303,7 +307,6 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         super.reloadConfig();
 
         FileConfiguration config = getConfig();
-        this.prefix = config.getString("messages.prefix", "");
         String online = config.getString("online-mode", "auto").toLowerCase();
         switch (online) {
             case "true":

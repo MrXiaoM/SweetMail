@@ -10,15 +10,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.util.Collection;
 import java.util.List;
-
-import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class AttachmentItem implements IAttachment {
     public static final String PERM = "sweetmail.attachment.item";
@@ -74,8 +72,8 @@ public class AttachmentItem implements IAttachment {
     public String toString() {
         String name = getName();
         int amount = item.getAmount();
-        if (amount <= 1) return replace(Internal.itemDisplay, Pair.of("%item%", name));
-        return replace(Internal.itemDisplayWithAmount, Pair.of("%item%", name), Pair.of("%amount%", amount));
+        if (amount <= 1) return Messages.Draft.attachments__item__display.str(Pair.of("%item%", name));
+        return Messages.Draft.attachments__item__display_with_amount.str(Pair.of("%item%", name), Pair.of("%amount%", amount));
     }
 
     @Override
@@ -121,7 +119,7 @@ public class AttachmentItem implements IAttachment {
 
         @Override
         public Inventory newInventory() {
-            return created = plugin.getInventoryFactory().create(this, 9, Internal.itemTitle);
+            return created = plugin.getInventoryFactory().create(this, 9, Messages.Draft.attachments__item__title.str());
         }
 
         @Override
@@ -131,7 +129,7 @@ public class AttachmentItem implements IAttachment {
                 if (currentItem != null && !currentItem.getType().equals(Material.AIR) && currentItem.getAmount() > 0) {
                     AttachmentItem attachment = AttachmentItem.build(currentItem);
                     if (!attachment.isLegal()) {
-                        t(player, MenuDraftConfig.inst().messageItemBanned);
+                        Messages.Draft.attachments__item__banned.tm(player);
                         return;
                     }
                     event.setCurrentItem(null);
