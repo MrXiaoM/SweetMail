@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
+
 public class ChatPrompter implements Listener {
     private static final Map<UUID, ChatPrompter> processing = new HashMap<>();
     public static boolean isProcessing(Player player) {
@@ -88,7 +90,7 @@ public class ChatPrompter implements Listener {
         prompter.cancelPrompt = cancelPrompt;
         prompter.success = successCallback;
         prompter.fail = failCallback;
-        ColorHelper.t(player, tips);
+        t(player, tips);
         Bukkit.getPluginManager().registerEvents(prompter, plugin);
         processing.put(player.getUniqueId(), prompter);
     }

@@ -14,7 +14,7 @@ import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.commands.CommandMain;
 import top.mrxiaom.sweetmail.config.TemplateConfig;
 import top.mrxiaom.sweetmail.config.gui.*;
-import top.mrxiaom.sweetmail.utils.ColorHelper;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -190,10 +190,16 @@ public abstract class AbstractPluginHolder {
     }
 
     public static boolean t(CommandSender sender, String... msg) {
-        return ColorHelper.t(sender, msg);
+        for (String s : msg) {
+            Util.sendMessage(sender, s);
+        }
+        return true;
     }
 
     public static boolean t(CommandSender sender, List<String> msg) {
-        return ColorHelper.t(sender, msg);
+        for (String s : msg) {
+            Util.sendMessage(sender, s);
+        }
+        return true;
     }
 }

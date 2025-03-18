@@ -18,16 +18,6 @@ public class ColorHelper {
     private static final Pattern gradientPattern = Pattern.compile("\\{(#[ABCDEFabcdef0123456789]{6}):(#[ABCDEFabcdef0123456789]{6}):(.*?)}");
     private static final Pattern hexPattern = Pattern.compile("&(#[ABCDEFabcdef0123456789]{6})");
 
-    public static boolean t(CommandSender sender, String... msg) {
-        sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
-        return true;
-    }
-
-    public static boolean t(CommandSender sender, List<String> msg) {
-        sender.sendMessage(ColorHelper.parseColor(String.join("\n&r", msg)));
-        return true;
-    }
-
     public static TextComponent bungee(String s) {
         return new TextComponent(parseColor(s));
     }
