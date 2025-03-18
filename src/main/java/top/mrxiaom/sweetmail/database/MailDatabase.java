@@ -116,8 +116,10 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
     @NotNull
     public MailCountInfo getInBoxCount(Player player, boolean refresh) {
         UUID uuid = player.getUniqueId();
-        MailCountInfo cached = cachedCountInfo.get(uuid);
-        if (cached != null) return cached;
+        if (!refresh) {
+            MailCountInfo cached = cachedCountInfo.get(uuid);
+            if (cached != null) return cached;
+        }
         MailCountInfo info = getInBoxCount(plugin.getPlayerKey(player));
         cachedCountInfo.put(uuid, info);
         return info;
