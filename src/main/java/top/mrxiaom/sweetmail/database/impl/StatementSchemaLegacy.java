@@ -31,6 +31,14 @@ public class StatementSchemaLegacy implements IStatementSchema {
                 }
             }
         }
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) FROM `" + tableBox + "` WHERE `sender`=?;"
+        )) {
+            ps.setString(1, player);
+            try (ResultSet result = ps.executeQuery()) {
+                mailList.setMaxCount(result.getInt(1));
+            }
+        }
     }
 
     @Override
@@ -50,6 +58,14 @@ public class StatementSchemaLegacy implements IStatementSchema {
                 while (result.next()) {
                     mailList.add(resolveResult(result, false));
                 }
+            }
+        }
+        try (PreparedStatement ps = conn.prepareStatement(
+                "SELECT COUNT(*) FROM `" + tableStatus + "` WHERE " + conditions + ";"
+        )) {
+            ps.setString(1, player);
+            try (ResultSet result = ps.executeQuery()) {
+                mailList.setMaxCount(result.getInt(1));
             }
         }
     }
