@@ -9,6 +9,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -139,6 +140,10 @@ public class Util {
     public static void openBook(Player player, Book book) {
         player.closeInventory();
         adventure.player(player).openBook(book);
+    }
+
+    public static void sendMessage(CommandSender sender, String message) {
+        adventure.sender(sender).sendMessage(miniMessage(message));
     }
 
     @SuppressWarnings({"UnstableApiUsage"})

@@ -29,6 +29,11 @@ public class Pair<K, V> {
         this.value = value;
     }
 
+    @SuppressWarnings({"unchecked"})
+    public <S, T> Pair<S, T> cast() {
+        return (Pair<S, T>) this;
+    }
+
     public static <K, V> Pair<K, V> of(K key, V value) {
         return new Pair<>(key, value);
     }
@@ -47,8 +52,7 @@ public class Pair<K, V> {
         return newList;
     }
 
-    public static List<String> replace(List<String> list, List<Pair<String, Object>> replacements) {
-        if (replacements.isEmpty()) return new ArrayList<>(list);
+    public static List<String> replace(List<String> list, Iterable<Pair<String, Object>> replacements) {
         List<String> newList = new ArrayList<>();
         for (String s : list) {
             newList.add(replace(s, replacements));
@@ -68,8 +72,7 @@ public class Pair<K, V> {
         return str;
     }
 
-    public static String replace(String s, List<Pair<String, Object>> replacements) {
-        if (replacements.isEmpty()) return s;
+    public static String replace(String s, Iterable<Pair<String, Object>> replacements) {
         String str = s;
         for (Pair<String, Object> pair : replacements) {
             if (str.contains(pair.key)) {
