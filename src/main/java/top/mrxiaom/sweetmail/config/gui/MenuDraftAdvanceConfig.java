@@ -318,8 +318,8 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                                     };
                                     ChatPrompter.prompt(
                                             plugin, player,
-                                            iconReceiversPrompts3Tips,
-                                            iconReceiversPrompts3Cancel,
+                                            iconReceiversPrompts5Tips,
+                                            iconReceiversPrompts5Cancel,
                                             receiver1, reopen);
                                     return;
                                 }
