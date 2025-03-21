@@ -109,15 +109,22 @@ public class IconSlot {
                             String ellipsis = args.length >= 3 ? args[2] : "...";
                             if (num != null) {
                                 int total = 0;
-                                for (String s : mail.content) {
-                                    int length = s.length();
+                                for (String page : mail.content) {
+                                    int length = page.length();
+                                    boolean end;
+                                    String text;
                                     if (total + length >= num) {
-                                        lore.add(prefix + s.substring(0, num - total) + ellipsis);
-                                        break;
+                                        text = page.substring(0, num - total) + ellipsis;
+                                        end = true;
                                     } else {
-                                        total += length;
+                                        text = page;
+                                        end = false;
+                                    }
+                                    total += length;
+                                    for (String s : text.split("\n")) {
                                         lore.add(prefix + s);
                                     }
+                                    if (end) break;
                                 }
                             }
                             break;
