@@ -53,6 +53,7 @@ items:
       - '&f收件人: &e%receiver%'
       - '&f发送时间: &e%time%'
       - '&f正文: &e%count% 字 (共 %pages% 页)'
+      part1-1:
       - '&f附件: '
       part2:
       - ''
@@ -64,8 +65,11 @@ items:
     # attachments (附件列表)
     # content (邮件正文)
     # content;前缀 (邮件正文，但每一行都添加前缀)
+    # short_content;前缀;长度;省略号 (邮件正文，前缀同content，内容超过指定长度将显示省略号，省略号不输入默认为...)
     lore-content:
       - part1
+      - short_content;&7;64
+      - part1-1
       - attachments
       - part2
     lore-format:

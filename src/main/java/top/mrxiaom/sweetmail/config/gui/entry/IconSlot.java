@@ -102,6 +102,26 @@ public class IconSlot {
                             }
                             break;
                         }
+                        if (key.startsWith("short_content;")) {
+                            String[] args = key.substring(14).split(";");
+                            String prefix = args[0];
+                            Integer num = args.length >= 2 ? Util.parseInt(args[1]).orElse(null) : null;
+                            String ellipsis = args.length >= 3 ? args[2] : "...";
+                            if (num != null) {
+                                int total = 0;
+                                for (String s : mail.content) {
+                                    int length = s.length();
+                                    if (total + length >= num) {
+                                        lore.add(prefix + s.substring(0, num - total) + ellipsis);
+                                        break;
+                                    } else {
+                                        total += length;
+                                        lore.add(prefix + s);
+                                    }
+                                }
+                            }
+                            break;
+                        }
                         lore.add(key);
                         break;
                 }
