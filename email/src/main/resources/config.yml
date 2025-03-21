@@ -1,0 +1,9 @@
+# Emailer 模板
+# 标题和HTML可用变量 %title%, %sender%, %content% (仅HTML)
+emailer-template:
+  # 电子邮件标题
+  subject: 'SweetMail: %title%'
+  # 电子邮件正文对应 HTML 文件
+  html: 'emailer/mail.html'
+  # HTML 中，%content% 变量每一行的格式
+  content-line: '<p>%text%</p>'

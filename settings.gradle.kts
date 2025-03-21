@@ -11,3 +11,4 @@ buildscript {
 }
 
 include(":paper")
+include(":email")

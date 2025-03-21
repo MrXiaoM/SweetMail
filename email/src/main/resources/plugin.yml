@@ -1,0 +1,13 @@
+name: SweetMailNotice
+version: '${version}'
+main: top.mrxiaom.sweetmail.ext.email.SweetMailNotice
+api-version: 1.13
+depend:
+  - SweetMail
+  - Emailer
+authors: [ MrXiaoM ]
+folia-supported: true
+commands:
+  sweetmailnotice:
+    description: SweetMail main command.
+    aliases: [smn]

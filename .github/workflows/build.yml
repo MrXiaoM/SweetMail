@@ -24,7 +24,10 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
       - name: Build Plugin
-        run: ./gradlew clean build
+        run: |
+          ./gradlew clean build
+          cp email/build/libs/*.jar build/libs
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
