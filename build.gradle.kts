@@ -1,3 +1,5 @@
+import java.util.Locale
+
 plugins {
     java
     `maven-publish`
@@ -24,6 +26,9 @@ allprojects {
     apply(plugin="java")
     repositories {
         mavenCentral()
+        if (Locale.getDefault().country == "CN") {
+            maven("https://maven.fastmirror.net/repositories/minecraft/")
+        }
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
         maven("https://repo.codemc.io/repository/maven-public/")
