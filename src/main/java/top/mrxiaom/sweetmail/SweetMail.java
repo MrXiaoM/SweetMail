@@ -159,7 +159,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private boolean checkCMI, checkEssentials;
     public String getPlayerKey(OfflinePlayer player) {
         if (player == null) return null;
-        return SweetMail.getInstance().isOnlineMode()
+        return isOnlineMode()
                 ? player.getUniqueId().toString().replace("-", "")
                 : player.getName();
     }
