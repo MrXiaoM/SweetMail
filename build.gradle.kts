@@ -102,6 +102,9 @@ tasks {
             archiveClassifier.set("unstable")
         }
     }
+    jar {
+        archiveBaseName.set("SweetMail-api")
+    }
     build {
         dependsOn(shadowJar)
     }
