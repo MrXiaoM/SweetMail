@@ -8,6 +8,10 @@ version = "1.0.0"
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20-R0.1-SNAPSHOT")
 
+    // Permission API
+    compileOnly("net.milkbowl.vault:VaultAPI:1.7")
+    compileOnly("net.luckperms:api:5.4")
+
     // Dependency Plugins
     compileOnly(rootProject)
     compileOnly("com.github.MrXiaoM:Emailer:v2.1.8")

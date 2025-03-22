@@ -2,6 +2,9 @@ name: SweetMailNotice
 version: '${version}'
 main: top.mrxiaom.sweetmail.ext.email.SweetMailNotice
 api-version: 1.13
+softdepend:
+  - Vault
+  - LuckPerms
 depend:
   - SweetMail
   - Emailer
