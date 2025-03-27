@@ -79,6 +79,7 @@ public enum Messages implements IHolderAccessor {
     @Language(prefix = "messages.draft.")
     public enum Draft implements IHolderAccessor {
         tips_date_time("yyyy-MM-dd HH:mm:ss"),
+        cursor_no_book("&e要覆盖邮件正文内容，你应该先使用鼠标指针，在物品栏&b拿起&e一个&b书与笔&e，再&a左键点击&e正文内容图标。"),
         online__no_player("&e找不到该玩家"),
         no_money("&e你没有足够的金币&7(%price%)&e去发送邮件"),
         money_format("%.1f"),

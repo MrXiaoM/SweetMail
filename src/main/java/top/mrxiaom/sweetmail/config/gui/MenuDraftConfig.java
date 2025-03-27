@@ -405,6 +405,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 draft.save();
                                 applyIcon(this, view, player, slot);
                                 Util.updateInventory(player);
+                            } else {
+                                Messages.Draft.cursor_no_book.tm(player);
                             }
                         }
                         if (click.isRightClick()) {
