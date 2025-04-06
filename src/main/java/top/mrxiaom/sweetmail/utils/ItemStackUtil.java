@@ -118,36 +118,35 @@ public class ItemStackUtil {
     }
 
     public static boolean hasCustomModelData(ItemStack item) {
-        return getCustomModelData(item) != null;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+        try {
+            return meta.hasCustomModelData();
+        } catch (LinkageError e) {
+            return false;
+        }
     }
 
     public static Integer getCustomModelData(ItemStack item) {
-        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
-            return NBT.modifyComponents(item, nbt -> {
-                String key = "minecraft:custom_model_data";
-                return nbt.hasTag(key, NBTType.NBTTagInt) ? nbt.getInteger(key) : null;
-            });
-        } else {
-            return NBT.get(item, nbt -> {
-                String key = "CustomModelData";
-                return nbt.hasTag(key, NBTType.NBTTagInt) ? nbt.getInteger(key) : null;
-            });
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return null;
+        try {
+            if (meta.hasCustomModelData()) {
+                return meta.getCustomModelData();
+            } else {
+                return null;
+            }
+        } catch (LinkageError e) {
+            return null;
         }
     }
 
     public static void setCustomModelData(ItemStack item, Integer customModelData) {
-        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_20_R4)) {
-            NBT.modifyComponents(item, nbt -> {
-                String key = "minecraft:custom_model_data";
-                if (customModelData != null) nbt.setInteger(key, customModelData);
-                else nbt.removeKey(key);
-            });
-        } else {
-            NBT.modify(item, nbt -> {
-                String key = "CustomModelData";
-                if (customModelData != null) nbt.setInteger(key, customModelData);
-                else nbt.removeKey(key);
-            });
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return;
+        try {
+            meta.setCustomModelData(customModelData);
+        } catch (LinkageError ignored) {
         }
     }
 
