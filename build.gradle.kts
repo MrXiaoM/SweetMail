@@ -29,6 +29,7 @@ allprojects {
         if (Locale.getDefault().country == "CN") {
             maven("https://maven.fastmirror.net/repositories/minecraft/")
         }
+        maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
         maven("https://repo.codemc.io/repository/maven-public/")
@@ -59,6 +60,8 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.black_ixx:playerpoints:3.2.7")
     compileOnly("com.github.MascusJeoraly:LanguageUtils:1.9")
+
+    compileOnly("com.mojang:authlib:2.1.28")
 
     // MythicMobs 4 and 5
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
