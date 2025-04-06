@@ -3,7 +3,6 @@ package top.mrxiaom.sweetmail.utils;
 import com.google.common.collect.Lists;
 import com.meowj.langutils.lang.LanguageHelper;
 import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.NBTType;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTList;
 import de.tr7zw.changeme.nbtapi.iface.ReadableNBT;
@@ -47,6 +46,7 @@ public class ItemStackUtil {
     private static boolean supportBundle;
     private static boolean useComponent;
     private static boolean supportLangUtils;
+    private static ItemStack headItem;
     public static String locale = "zh_CN";
     protected static void init() {
         supportTranslationKey = Util.isPresent("org.bukkit.Translatable");
@@ -75,6 +75,12 @@ public class ItemStackUtil {
             }
         }
         supportLangUtils = isPresent("com.meowj.langutils.lang.LanguageHelper");
+        SkullsUtil.init();
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_13_R1)) {
+            headItem = new ItemStack(Material.PLAYER_HEAD, 1);
+        } else {
+            headItem = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
+        }
     }
 
     public static ComponentSerializer<Component, ?, String> serializer() {
@@ -293,6 +299,14 @@ public class ItemStackUtil {
             return Mythic.getItem(str.substring(7)).orElseThrow(
                     () -> new IllegalStateException("找不到 Mythic 物品 " + str.substring(7))
             );
+        } else if (str.startsWith("head-base64-")) {
+            ItemStack item = headItem.clone();
+            String base64 = str.substring(12);
+            ItemMeta meta = SkullsUtil.setSkullBase64(item.getItemMeta(), base64);
+            if (meta != null) {
+                item.setItemMeta(meta);
+            }
+            return item;
         } else {
             Integer customModelData = null;
             String material = str;
