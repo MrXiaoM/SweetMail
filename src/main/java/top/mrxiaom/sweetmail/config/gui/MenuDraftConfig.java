@@ -312,7 +312,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 long outdateTime = outdateHours * 3600L * 1000L;
                 if (draft.lastEditTime != null) {
                     long last = draft.lastEditTime;
-                    if (last + outdateTime > now) {
+                    if (now > last + outdateTime) {
                         LocalDateTime time = Util.fromTimestamp(last);
                         info("玩家 " + player.getName() + " 的草稿已过期重置");
                         t(player, plugin.prefix() + Messages.Draft.outdate_tips.str(
