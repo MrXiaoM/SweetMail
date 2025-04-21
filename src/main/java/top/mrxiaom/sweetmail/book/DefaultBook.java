@@ -72,10 +72,11 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
         UUID uuid = gui.getPlayer().getUniqueId();
         handleListenerUpdate(uuid);
         Listener listener = new Listener() {
+            final long checkStartTime = System.currentTimeMillis() + 1000L;
             boolean done = false;
             @EventHandler
             public void onMove(PlayerMoveEvent e) {
-                if (e.isCancelled()) return;
+                if (e.isCancelled() || System.currentTimeMillis() < checkStartTime) return;
                 if (done) {
                     HandlerList.unregisterAll(this);
                     return;
