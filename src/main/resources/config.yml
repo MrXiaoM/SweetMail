@@ -120,3 +120,8 @@ attachments:
     material: COMMAND_BLOCK
     display: '控制台命令附件'
     lore: []
+
+book:
+  # 打开正文预览后，如果玩家移动了（包括移动视角），则回到上一个菜单
+  # 由于实际运行起来可能怪怪的，这个功能默认关闭
+  return-when-move: false

@@ -80,7 +80,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private MailDatabase database = null;
     private IEconomy economy;
     private final ClassLoaderWrapper classLoader;
-    private IBook bookImpl = new DefaultBook();
+    private IBook bookImpl;
     private InventoryFactory inventoryFactory;
     public final FoliaLib foliaLib;
     public SweetMail() {
@@ -218,6 +218,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     }
 
     public void loadFunctions() {
+        bookImpl = new DefaultBook(this);
         AbstractPluginHolder.loadModules(this);
         LanguageManager.inst() // 语言文件
                 .setLangFile("messages.yml")

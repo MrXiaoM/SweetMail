@@ -410,7 +410,6 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             }
                         }
                         if (click.isRightClick()) {
-                            player.closeInventory();
                             plugin.getBookImpl().openBook(player, draft);
                         }
                     }
