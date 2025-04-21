@@ -5,6 +5,7 @@ plugins {
 group = "top.mrxiaom"
 version = "1.0.0"
 
+@Suppress("VulnerableLibrariesLocal")
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20-R0.1-SNAPSHOT")
 
@@ -20,9 +21,6 @@ dependencies {
 }
 
 tasks {
-    jar {
-        archiveBaseName.set("SweetMailNotice")
-    }
     processResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from("LICENSE")

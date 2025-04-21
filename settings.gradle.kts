@@ -12,3 +12,5 @@ buildscript {
 
 include(":paper")
 include(":email")
+
+project(":email").name = "SweetMailNotice"

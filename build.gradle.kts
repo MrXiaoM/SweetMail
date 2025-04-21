@@ -19,16 +19,13 @@ java {
     withJavadocJar()
 }
 
-allprojects {
-    group = "top.mrxiaom"
-    version = "1.0.0"
+group = "top.mrxiaom"
+version = "1.0.0"
 
+allprojects {
     apply(plugin="java")
     repositories {
         mavenCentral()
-        if (Locale.getDefault().country == "CN") {
-            maven("https://maven.fastmirror.net/repositories/minecraft/")
-        }
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
