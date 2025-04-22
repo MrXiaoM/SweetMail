@@ -428,8 +428,12 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                 case "重": {
                     if (click.isLeftClick() && !click.isShiftClick()) {
                         info("玩家 " + player.getName() + " 手动重置了草稿");
+                        List<IAttachment> old = draft.attachments;
                         draft.reset();
                         draft.save();
+                        for (IAttachment attachment : old) {
+                            attachment.use(player);
+                        }
                         reopen.run();
                     }
                     return;
