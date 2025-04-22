@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.utils;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.meowj.langutils.lang.LanguageHelper;
 import de.tr7zw.changeme.nbtapi.NBT;
@@ -17,6 +18,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -336,7 +338,18 @@ public class ItemStackUtil {
 
     public static void setGlow(ItemStack item) {
         ItemMeta meta = getItemMeta(item);
-        meta.addEnchant(Enchantment.DURABILITY, 1, true);
+        try {
+            Enchantment enchant = Registry.ENCHANTMENT.match("UNBREAKING"); // 1.20.5+
+            if (enchant == null) enchant = Registry.ENCHANTMENT.match("DURABILITY"); // 1.14-1.20.4
+            if (enchant == null) enchant = Iterables.getFirst(Registry.ENCHANTMENT, null);
+            if (enchant == null) throw new LinkageError();
+            meta.addEnchant(enchant, 1, true);
+        } catch (LinkageError e) {
+            Enchantment enchant = Enchantment.getByName("DURABILITY"); // 1.8-1.13.2
+            if (enchant != null) {
+                meta.addEnchant(enchant, 1, true);
+            }
+        }
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         item.setItemMeta(meta);
     }
