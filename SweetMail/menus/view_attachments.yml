@@ -2,10 +2,6 @@ items:
   返:
     material: PAPER
     custom-model: 7831
-    display: '&e&l返回'
-    lore:
-      - ''
-      - '&a左键&7 | &f回到邮件列表'
 other-items:
   黑:
     material: AIR

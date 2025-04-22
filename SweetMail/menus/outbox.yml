@@ -2,8 +2,9 @@ items:
   上:
     material: PAPER
     custom-model: 8732
-    display: '&e&l上一页'
   下:
     material: PAPER
     custom-model: 8733
-    display: '&e&l下一页'
+other-items:
+  黑:
+    material: AIR
