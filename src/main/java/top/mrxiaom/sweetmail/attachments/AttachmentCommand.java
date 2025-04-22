@@ -83,6 +83,11 @@ public class AttachmentCommand implements IAttachment {
         return true;
     }
 
+    @Override
+    public boolean canGiveBack(Player player) {
+        return false;
+    }
+
     public static void register() {
         IAttachment.registerAttachment(AttachmentCommand.class, PERM,
                 Internal::attachmentCommand,

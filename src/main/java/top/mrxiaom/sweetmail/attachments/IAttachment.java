@@ -25,6 +25,9 @@ public interface IAttachment {
     ItemStack generateIcon(Player target);
     String serialize();
     boolean isLegal();
+    default boolean canGiveBack(Player player) {
+        return true;
+    }
     static IAttachment deserialize(String s) {
         for (Internal.AttachmentInfo<?> info : Internal.attachments) {
             IAttachment apply = info.deserializer.apply(s);

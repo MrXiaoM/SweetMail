@@ -432,7 +432,9 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         draft.reset();
                         draft.save();
                         for (IAttachment attachment : old) {
-                            attachment.use(player);
+                            if (attachment.canGiveBack(player)) {
+                                attachment.use(player);
+                            }
                         }
                         reopen.run();
                     }
