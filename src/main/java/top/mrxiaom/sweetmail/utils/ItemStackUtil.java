@@ -191,6 +191,7 @@ public class ItemStackUtil {
         if (meta == null) return;
         try {
             meta.setCustomModelData(customModelData);
+            item.setItemMeta(meta);
         } catch (LinkageError ignored) {
         }
     }
