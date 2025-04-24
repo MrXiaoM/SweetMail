@@ -3,14 +3,37 @@ package top.mrxiaom.sweetmail.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
+import java.lang.reflect.Field;
+import java.util.List;
 
 public class MiniMessageConvert {
     private static MiniMessage miniMessage;
     public static void init() {
         miniMessage = MiniMessage.builder()
+                .editTags(it -> remove(it, "pride"))
                 .postProcessor(it -> it.decoration(TextDecoration.ITALIC, false))
                 .build();
+    }
+
+    @SuppressWarnings({"unchecked", "CallToPrintStackTrace"})
+    private static void remove(TagResolver.Builder builder, String... tags) {
+        Class<?> type = builder.getClass();
+        try {
+            Field field = type.getDeclaredField("resolvers");
+            field.setAccessible(true);
+            List<TagResolver> list = (List<TagResolver>) field.get(builder);
+            list.removeIf(it -> {
+                for (String tag : tags) {
+                    if (it.has(tag)) return true;
+                }
+                return false;
+            });
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     public static String miniMessage(Component component) {
