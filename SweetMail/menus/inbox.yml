@@ -1,10 +1,33 @@
+title-all: '<white><font:mrxiaom:sweetmail><offset:-48>a<offset:-1>b<offset:-216>c<offset:-1>d</font><offset:-208>&0收件箱 全部 (%page%/%max_page% 页)'
+title-all-other: '<white><font:mrxiaom:sweetmail><offset:-48>a<offset:-1>b<offset:-216>c<offset:-1>d</font><offset:-208>&0%target% 的收件箱 全部 (%page%/%max_page% 页)'
+title-unread: '<white><font:mrxiaom:sweetmail><offset:-48>e<offset:-1>f<offset:-216>g<offset:-1>h</font><offset:-208>&0收件箱 未读 (%page%/%max_page% 页)'
+title-unread-other: '<white><font:mrxiaom:sweetmail><offset:-48>e<offset:-1>f<offset:-216>g<offset:-1>h</font><offset:-208>&0%target% 的收件箱 未读 (%page%/%max_page% 页)'
+inventory:
+  - '全全黑黑黑黑黑黑领'
+  - '读读格格格格格格格'
+  - '发发格格格格格格格'
+  - '　黑格格格格格格格'
+  - '　黑格格格格格格格'
+  - '　黑上黑黑黑黑黑下'
 items:
+  全:
+    material: ITEM_FRAME
+    custom-model: 8730
+  读:
+    material: PAINTING
+    custom-model: 8730
+  发:
+    material: PAPER
+    custom-model: 8730
   上:
     material: PAPER
     custom-model: 8732
   下:
     material: PAPER
     custom-model: 8733
+  领:
+    material: PAPER
+    custom-model: 8734
 other-items:
   黑:
     material: AIR

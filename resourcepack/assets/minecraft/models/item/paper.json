@@ -5,16 +5,24 @@
     },
     "overrides": [
         {
+            "predicate": { "custom_model_data": 8730 },
+            "model": "mrxiaom:item/sweetmail/air"
+        },
+        {
             "predicate": { "custom_model_data": 8731 },
-            "model": "mrxiaom:sweetmail/item/back"
+            "model": "mrxiaom:item/sweetmail/back"
         },
         {
             "predicate": { "custom_model_data": 8732 },
-            "model": "mrxiaom:sweetmail/item/page_up"
+            "model": "mrxiaom:item/sweetmail/page_prev"
         },
         {
             "predicate": { "custom_model_data": 8733 },
-            "model": "mrxiaom:sweetmail/item/page_down"
+            "model": "mrxiaom:item/sweetmail/page_next"
+        },
+        {
+            "predicate": { "custom_model_data": 8734 },
+            "model": "mrxiaom:item/sweetmail/icon_arrow_chest"
         }
     ]
 }

@@ -7,6 +7,94 @@
             "ascent":33,
             "type":"bitmap"
         },
+
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_all/1.png",
+            "chars": ["a"],
+            "height":128,
+            "ascent":33,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_all/2.png",
+            "chars": ["b"],
+            "height":128,
+            "ascent":33,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_all/3.png",
+            "chars": ["c"],
+            "height":128,
+            "ascent":-95,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_all/4.png",
+            "chars": ["d"],
+            "height":128,
+            "ascent":-95,
+            "type":"bitmap"
+        },
+
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_unread/1.png",
+            "chars": ["e"],
+            "height":128,
+            "ascent":33,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_unread/2.png",
+            "chars": ["f"],
+            "height":128,
+            "ascent":33,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_unread/3.png",
+            "chars": ["g"],
+            "height":128,
+            "ascent":-95,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/inbox_unread/4.png",
+            "chars": ["h"],
+            "height":128,
+            "ascent":-95,
+            "type":"bitmap"
+        },
+
+        {
+            "file": "mrxiaom:sweetmail/gui/outbox/1.png",
+            "chars": ["i"],
+            "height":128,
+            "ascent":33,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/outbox/2.png",
+            "chars": ["j"],
+            "height":128,
+            "ascent":33,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/outbox/3.png",
+            "chars": ["k"],
+            "height":128,
+            "ascent":-95,
+            "type":"bitmap"
+        },
+        {
+            "file": "mrxiaom:sweetmail/gui/outbox/4.png",
+            "chars": ["l"],
+            "height":128,
+            "ascent":-95,
+            "type":"bitmap"
+        },
+
         {
             "file": "mrxiaom:sweetmail/gui/char/blank.png",
             "chars": ["\uF822"],

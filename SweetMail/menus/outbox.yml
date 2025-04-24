@@ -1,4 +1,23 @@
+title: '<white><font:mrxiaom:sweetmail><offset:-48>i<offset:-1>j<offset:-217>k<offset:-1>l</font><offset:-170>&0发件箱 (%page%/%max_page% 页)'
+title-other: '<white><font:mrxiaom:sweetmail><offset:-48>i<offset:-1>j<offset:-217>k<offset:-1>l</font><offset:-170>&0%target% 的发件箱 (%page%/%max_page% 页)'
+# 界面布局，每行9个图标，不能超过6行
+inventory:
+  - '全全黑黑黑黑黑黑黑'
+  - '读读格格格格格格格'
+  - '发发格格格格格格格'
+  - '　黑格格格格格格格'
+  - '　黑格格格格格格格'
+  - '　黑上黑黑黑黑黑下'
 items:
+  全:
+    material: ITEM_FRAME
+    custom-model: 8730
+  读:
+    material: PAINTING
+    custom-model: 8730
+  发:
+    material: PAPER
+    custom-model: 8730
   上:
     material: PAPER
     custom-model: 8732
