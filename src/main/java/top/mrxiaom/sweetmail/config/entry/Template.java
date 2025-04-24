@@ -153,8 +153,11 @@ public class Template {
     }
 
     private static void setComments(YamlConfiguration config, YamlConfiguration sample, String... keys) {
-        for (String key : keys) {
-            config.setComments(key, sample.getComments(key));
+        try {
+            for (String key : keys) {
+                config.setComments(key, sample.getComments(key));
+            }
+        } catch (LinkageError ignored) { // 1.8 not support comments
         }
     }
 
