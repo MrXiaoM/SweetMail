@@ -17,18 +17,7 @@
 + `1.14` 起加入 CustomModelData。这意味着更旧的版本设置的 CustomModelData 选项将无法用于资源包模型词谓。
 + `1.19.3` 起 Bukkit API 加入 `Translatable` 接口，可以让插件获取到物品的翻译键，使得物品原名可正常显示。这意味着更旧的版本将无法在邮件详细信息查看附件物品中文名。低版本请安装前置 [LangUtils](https://github.com/NyaaCat/LanguageUtils) 来显示原版物品名。
 
-## 未完成
-
-目前还有少量功能就写好可以正式发布了，敬请期待。
-
-+ [x] 草稿高级设置 (用于管理员发送系统邮件)
-+ [x] 第三方附属插件注册附件类型
-+ [x] 添加附件菜单
-+ [ ] 材质包界面 [正在进行中](https://github.com/MrXiaoM/SweetMail/tree/resourcepacks)
-+ [x] 针对非 Paper 服务端的功能 fallback
-+ [x] 在线模式 使用UUID而非玩家名来识别玩家
-
-若想尝鲜，可翻到本文末尾自行尝试编译插件，或通过 [Github Actions](https://github.com/MrXiaoM/SweetMail/actions/workflows/build.yml) 下载自动构建版本使用。
+资源包界面仅限 `1.16+` 的 Paper 及其衍生服务端使用，具体情况请[阅读文档](https://plugins.mcio.dev/docs/mail/resourcepack)。
 
 ## 草稿
 
@@ -55,4 +44,4 @@
 
 ## 文档
 
-关于插件使用与开发，详见 [MCIO Plugins](https://plugins.mcio.dev/docs/mail/intro)
+关于插件的下载、使用与开发，详见 [MCIO Plugins](https://plugins.mcio.dev/docs/mail/intro)
