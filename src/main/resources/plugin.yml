@@ -4,7 +4,6 @@ main: top.mrxiaom.sweetmail.SweetMail
 api-version: 1.13
 softdepend:
   - Vault
-  - PlayerPoints
   - PlaceholderAPI
   - MythicMobs
   - ItemsAdder
