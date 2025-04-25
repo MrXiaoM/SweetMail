@@ -74,8 +74,8 @@ dependencies {
     implementation("net.kyori:adventure-api:4.20.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.20.0")
-    implementation("de.tr7zw:item-nbt-api:2.14.2-SNAPSHOT")
-    implementation("com.github.technicallycoded:FoliaLib:0.4.3")
+    implementation("de.tr7zw:item-nbt-api:2.15.0")
+    implementation("com.github.technicallycoded:FoliaLib:0.4.4")
     implementation(project(":paper"))
 }
 
