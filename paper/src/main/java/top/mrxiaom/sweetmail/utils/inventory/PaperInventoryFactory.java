@@ -19,7 +19,7 @@ import static top.mrxiaom.sweetmail.utils.StringHelper.split;
 public class PaperInventoryFactory implements InventoryFactory {
     private final MiniMessage miniMessage;
     private String offsetFont = "mrxiaom:sweetmail";
-    private final Pattern offsetPattern = Pattern.compile("<offset:(-?[0-9]+)>");
+    private final Pattern offsetPattern = Pattern.compile("<(offset|o|!offset|!o):(-?[0-9]+)>");
     public PaperInventoryFactory() {
         miniMessage = MiniMessage.builder()
                 .editTags(it -> remove(it, "pride"))
@@ -61,9 +61,14 @@ public class PaperInventoryFactory implements InventoryFactory {
             StringBuilder sb = new StringBuilder();
             split(offsetPattern, title, result -> {
                 if (result.isMatched) {
-                    int offset = Integer.parseInt(result.result.group(1));
+                    boolean withoutFont = result.result.group(1).startsWith("!");
+                    int offset = Integer.parseInt(result.result.group(2));
                     String str = Offset.get(offset);
-                    sb.append("<font:").append(offsetFont).append(">").append(str).append("</font>");
+                    if (withoutFont) {
+                        sb.append(str);
+                    } else {
+                        sb.append("<font:").append(offsetFont).append(">").append(str).append("</font>");
+                    }
                 } else {
                     sb.append(result.text);
                 }
