@@ -1,5 +1,3 @@
-import java.util.Locale
-
 plugins {
     java
     `maven-publish`
@@ -118,11 +116,11 @@ tasks {
     }
     javadoc {
         (options as? StandardJavadocDocletOptions)?.apply {
-            links("https://docs.oracle.com/javase/8/docs/api")
             links("https://hub.spigotmc.org/javadocs/spigot/")
             links("https://ci.md-5.net/job/BungeeCord/ws/chat/target/apidocs/")
 
             locale("zh_CN")
+            charset("UTF-8")
             encoding("UTF-8")
             docEncoding("UTF-8")
             addBooleanOption("keywords", true)
