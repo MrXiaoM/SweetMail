@@ -130,7 +130,11 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
             )) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
-                    totalCount = result.getInt(1);
+                    if (result.next()) {
+                        totalCount = result.getInt(1);
+                    } else {
+                        totalCount = 0;
+                    }
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement(
@@ -138,7 +142,11 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
             )) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
-                    unreadCount = result.getInt(1);
+                    if (result.next()) {
+                        unreadCount = result.getInt(1);
+                    } else {
+                        unreadCount = 0;
+                    }
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement(
@@ -146,7 +154,11 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
             )) {
                 ps.setString(1, player);
                 try (ResultSet result = ps.executeQuery()) {
-                    usedCount = result.getInt(1);
+                    if (result.next()) {
+                        usedCount = result.getInt(1);
+                    } else {
+                        usedCount = 0;
+                    }
                 }
             }
             return new MailCountInfo(unreadCount, usedCount, totalCount);

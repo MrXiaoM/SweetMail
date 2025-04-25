@@ -36,7 +36,11 @@ public class StatementSchemaLegacy implements IStatementSchema {
         )) {
             ps.setString(1, player);
             try (ResultSet result = ps.executeQuery()) {
-                mailList.setMaxCount(result.getInt(1));
+                if (result.next()) {
+                    mailList.setMaxCount(result.getInt(1));
+                } else {
+                    mailList.setMaxCount(-1);
+                }
             }
         }
     }
@@ -65,7 +69,11 @@ public class StatementSchemaLegacy implements IStatementSchema {
         )) {
             ps.setString(1, player);
             try (ResultSet result = ps.executeQuery()) {
-                mailList.setMaxCount(result.getInt(1));
+                if (result.next()) {
+                    mailList.setMaxCount(result.getInt(1));
+                } else {
+                    mailList.setMaxCount(-1);
+                }
             }
         }
     }
