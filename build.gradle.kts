@@ -100,7 +100,7 @@ tasks {
         }
     }
     jar {
-        archiveBaseName.set("SweetMail-api")
+        archiveClassifier.set("api")
     }
     build {
         dependsOn(shadowJar)
