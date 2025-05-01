@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.database.entry;
 
 import com.google.gson.*;
 import net.kyori.adventure.inventory.Book;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
@@ -47,8 +48,13 @@ public class Mail {
         this.outdateTime = outdateTime;
     }
 
+    @Deprecated
     public ItemStack generateIcon() {
-        return ItemStackUtil.getItem(icon);
+        return generateIcon(null);
+    }
+
+    public ItemStack generateIcon(Player player) {
+        return ItemStackUtil.getItem(player, icon);
     }
 
     public Book generateBook() {

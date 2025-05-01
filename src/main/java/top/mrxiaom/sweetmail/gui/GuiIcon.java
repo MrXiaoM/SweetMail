@@ -49,7 +49,7 @@ public class GuiIcon extends AbstractDraftGui {
             MailIcon icon = pair.getValue();
             ItemStack item;
             try {
-                item = ItemStackUtil.getItem(icon.item);
+                item = ItemStackUtil.getItem(getPlayer(), icon.item);
             } catch (Throwable t) {
                 warn(t.getMessage());
                 continue;

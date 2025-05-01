@@ -140,26 +140,26 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                 String senderDisplay = draft.advSenderDisplay == null || draft.advSenderDisplay.isEmpty()
                         ? iconSenderDisplayUnset
                         : draft.advSenderDisplay;
-                return iconSenderDisplay.generateIcon(target, Pair.of("%sender%", senderDisplay));
+                return iconSenderDisplay.generateIcon(gui, target, Pair.of("%sender%", senderDisplay));
             }
             case "收": {
                 String receivers = draft.advReceivers == null || draft.advReceivers.isEmpty()
                         ? iconReceiversUnset
                         : draft.advReceivers;
-                return iconReceivers.generateIcon(target, Pair.of("%receivers%", receivers));
+                return iconReceivers.generateIcon(gui, target, Pair.of("%receivers%", receivers));
             }
             case "定": {
-                return iconTimed.generateIcon(target);
+                return iconTimed.generateIcon(gui, target);
             }
             case "过": {
                 String outdate;
                 if (draft.outdateDays == 0) outdate = iconOutdateUnset;
                 else if (draft.outdateDays < 0) outdate = iconOutdateUnlimited;
                 else outdate = iconOutdateSet.replace("%value%", String.valueOf(draft.outdateDays));
-                return iconOutdate.generateIcon(target, Pair.of("%outdate%", outdate));
+                return iconOutdate.generateIcon(gui, target, Pair.of("%outdate%", outdate));
             }
             case "返": {
-                return iconBack.generateIcon(target);
+                return iconBack.generateIcon(gui, target);
             }
         }
         return null;

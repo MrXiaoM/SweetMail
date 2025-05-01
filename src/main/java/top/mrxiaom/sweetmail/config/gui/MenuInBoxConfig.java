@@ -118,23 +118,23 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
     protected ItemStack tryApplyMainIcon(Gui gui, String key, Player target, int iconIndex) {
         switch (key) {
             case "全":
-                return iconAll.generateIcon(target);
+                return iconAll.generateIcon(gui, target);
             case "读":
-                return iconUnread.generateIcon(target);
+                return iconUnread.generateIcon(gui, target);
             case "发":
-                return iconOut.generateIcon(target);
+                return iconOut.generateIcon(gui, target);
             case "上":
-                return iconPrevPage.generateIcon(target);
+                return iconPrevPage.generateIcon(gui, target);
             case "下":
-                return iconNextPage.generateIcon(target);
+                return iconNextPage.generateIcon(gui, target);
             case "领":
                 String targetKey = plugin.getPlayerKey(target);
                 if (plugin.getMailDatabase().hasUnUsed(targetKey)) {
-                    return iconGetAll.generateIcon(target);
+                    return iconGetAll.generateIcon(gui, target);
                 } else {
                     Icon icon = otherIcon.get(iconGetAllRedirect);
                     if (icon != null) {
-                        return icon.generateIcon(target);
+                        return icon.generateIcon(gui, target);
                     }
                 }
                 break;
@@ -142,7 +142,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 ListX<MailWithStatus> inBox = gui.getInBox();
                 if (iconIndex >= 0 && iconIndex < inBox.size()) {
                     MailWithStatus mail = inBox.get(iconIndex);
-                    ItemStack icon = ItemStackUtil.resolveBundle(target, mail.generateIcon(), mail.attachments);
+                    ItemStack icon = ItemStackUtil.resolveBundle(target, mail.generateIcon(gui.getPlayer()), mail.attachments);
                     String sender = mail.senderDisplay.trim().isEmpty()
                             ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
                     String receiver = mail.receivers.size() == 1
@@ -162,7 +162,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 } else {
                     Icon icon = otherIcon.get(iconSlot.getRedirect());
                     if (icon != null) {
-                        return icon.generateIcon(target);
+                        return icon.generateIcon(gui, target);
                     }
                 }
                 break;

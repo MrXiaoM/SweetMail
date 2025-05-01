@@ -137,15 +137,15 @@ public interface IAttachment {
         }
 
         protected static ItemStack attachmentItem(Player player) {
-            return ItemStackUtil.buildItem(attachmentItemMaterial, attachmentItemDisplay, attachmentItemLore);
+            return ItemStackUtil.buildItem(player, attachmentItemMaterial, attachmentItemDisplay, attachmentItemLore);
         }
 
         protected static ItemStack attachmentMoney(Player player) {
-            return ItemStackUtil.buildItem(attachmentMoneyMaterial, attachmentMoneyDisplay, attachmentMoneyLore);
+            return ItemStackUtil.buildItem(player, attachmentMoneyMaterial, attachmentMoneyDisplay, attachmentMoneyLore);
         }
 
         protected static ItemStack attachmentCommand(Player player) {
-            return ItemStackUtil.buildItem(attachmentCommandMaterial, attachmentCommandDisplay, attachmentCommandLore);
+            return ItemStackUtil.buildItem(player, attachmentCommandMaterial, attachmentCommandDisplay, attachmentCommandLore);
         }
 
         public static void useIllegalDeny(CommandSender sender) {

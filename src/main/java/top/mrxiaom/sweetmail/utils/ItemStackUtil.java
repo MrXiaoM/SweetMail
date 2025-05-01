@@ -33,14 +33,11 @@ import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
-import top.mrxiaom.sweetmail.depend.ItemsAdder;
-import top.mrxiaom.sweetmail.depend.Mythic;
+import top.mrxiaom.sweetmail.utils.items.ItemProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static top.mrxiaom.sweetmail.utils.Util.*;
 
@@ -73,19 +70,15 @@ public class ItemStackUtil {
      * @since Minecraft 1.21.5
      */
     private static boolean componentUseNBT;
-    private static ItemStack headItem;
     public static String locale = "zh_CN";
+    private static final Map<String, ItemProvider> itemProviders = new HashMap<>();
     protected static void init() {
         supportTranslationKey = Util.isPresent("org.bukkit.Translatable");
         supportBundle = Util.isPresent("org.bukkit.inventory.meta.BundleMeta");
         supportLangUtils = isPresent("com.meowj.langutils.lang.LanguageHelper");
         doItemTest();
         SkullsUtil.init();
-        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_13_R1)) {
-            headItem = new ItemStack(Material.PLAYER_HEAD, 1);
-        } else {
-            headItem = new ItemStack(Material.valueOf("SKULL_ITEM"), 1, (short) 3);
-        }
+        ItemProvider.loadBuiltIn(itemProviders);
     }
 
     private static void doItemTest() {
@@ -324,13 +317,25 @@ public class ItemStackUtil {
             });
         }
     }
-
-    public static ItemStack buildItem(String material, String name, List<String> lore) {
-        return buildItem(material, null, name, lore);
-    }
+    @Deprecated
     public static ItemStack buildItem(String material, Integer customModelData, String name, List<String> lore) {
+        return buildItem(null, material, customModelData, name, lore);
+    }
+    @Deprecated
+    public static ItemStack buildItem(String material, String name, List<String> lore) {
+        return buildItem(null, material, name, lore);
+    }
+    @Deprecated
+    public static ItemStack getItem(String str) {
+        return getItem(null, str);
+    }
+
+    public static ItemStack buildItem(Player player, String material, String name, List<String> lore) {
+        return buildItem(player, material, null, name, lore);
+    }
+    public static ItemStack buildItem(Player player, String material, Integer customModelData, String name, List<String> lore) {
         if (material.equalsIgnoreCase("AIR")) return new ItemStack(Material.AIR);
-        ItemStack item = getItem(material);
+        ItemStack item = getItem(player, material);
         setItemDisplayName(item, name);
         setItemLore(item, lore);
         if (customModelData != null) setCustomModelData(item, customModelData);
@@ -355,43 +360,31 @@ public class ItemStackUtil {
         item.setItemMeta(meta);
     }
 
-    public static ItemStack getItem(String str) {
-        if (str.startsWith("itemsadder-")) {
-            return ItemsAdder.get(str.substring(11)).orElseThrow(
-                    () -> new IllegalStateException("找不到 IA 物品 " + str.substring(11))
-            );
-        } else if (str.startsWith("mythic-")) {
-            return Mythic.getItem(str.substring(7)).orElseThrow(
-                    () -> new IllegalStateException("找不到 Mythic 物品 " + str.substring(7))
-            );
-        } else if (str.startsWith("head-base64-")) {
-            ItemStack item = headItem.clone();
-            String base64 = str.substring(12);
-            ItemMeta meta = SkullsUtil.setSkullBase64(item.getItemMeta(), base64);
-            if (meta != null) {
-                item.setItemMeta(meta);
+    public static ItemStack getItem(Player player, String str) {
+        for (Map.Entry<String, ItemProvider> entry : itemProviders.entrySet()) {
+            if (str.startsWith(entry.getKey())) {
+                String argument = str.substring(entry.getKey().length());
+                return entry.getValue().get(player, argument);
             }
-            return item;
-        } else {
-            Integer customModelData = null;
-            String material = str;
-            Integer dataValue = null;
-            if (str.contains("#")) {
-                String customModel = str.substring(str.indexOf("#") + 1);
-                customModelData = Util.parseInt(customModel).orElseThrow(
-                        () -> new IllegalStateException("无法解析 " + customModel + " 为整数")
-                );
-                material = str.replace("#" + customModel, "");
-            }
-            if (material.contains(":")) {
-                String data = material.substring(str.indexOf(":"));
-                dataValue = Util.parseInt(data.substring(1)).orElse(null);
-                material = material.replace(data, "");
-            }
-            ItemStack item = parseMaterial(material.toUpperCase(), dataValue);
-            if (customModelData != null) setCustomModelData(item, customModelData);
-            return item;
         }
+        Integer customModelData = null;
+        String material = str;
+        Integer dataValue = null;
+        if (str.contains("#")) {
+            String customModel = str.substring(str.indexOf("#") + 1);
+            customModelData = Util.parseInt(customModel).orElseThrow(
+                    () -> new IllegalStateException("无法解析 " + customModel + " 为整数")
+            );
+            material = str.replace("#" + customModel, "");
+        }
+        if (material.contains(":")) {
+            String data = material.substring(str.indexOf(":"));
+            dataValue = Util.parseInt(data.substring(1)).orElse(null);
+            material = material.replace(data, "");
+        }
+        ItemStack item = parseMaterial(material.toUpperCase(), dataValue);
+        if (customModelData != null) setCustomModelData(item, customModelData);
+        return item;
     }
 
     private static final String[] materialColors = new String[] {

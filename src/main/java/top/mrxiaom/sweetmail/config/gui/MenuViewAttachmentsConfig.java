@@ -60,7 +60,7 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
                 return attachment.generateIcon(target);
             }
             case "返": {
-                return iconBack.generateIcon(target);
+                return iconBack.generateIcon(gui, target);
             }
         }
         return null;

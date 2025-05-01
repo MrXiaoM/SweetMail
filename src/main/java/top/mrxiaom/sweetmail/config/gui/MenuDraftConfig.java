@@ -222,7 +222,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             .orElseGet(() -> iconReceiverWarnNotExists.replace("%name%", name));
                 }
                 ItemStack item = iconReceiver.generateIcon(
-                        target,
+                        gui, target,
                         Pair.of("%receiver%", receiver)
                 );
                 if (!draft.receiver.isEmpty() && item.getItemMeta() instanceof SkullMeta) {
@@ -237,7 +237,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             case "图": {
                 MailIcon icon = manager.getMailIcon(draft.iconKey);
                 String itemKey = icon == null ? draft.iconKey.substring(1) : icon.item;
-                ItemStack item = ItemStackUtil.getItem(itemKey);
+                ItemStack item = ItemStackUtil.getItem(gui.getPlayer(), itemKey);
                 String resolvedKey = draft.iconKey;
                 if (icon != null && icon.display != null && !draft.iconKey.equals(icon.display)) {
                     resolvedKey = icon.display;
@@ -251,30 +251,30 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             }
             case "题": {
                 return iconTitle.generateIcon(
-                        target,
+                        gui, target,
                         Pair.of("%title%", draft.title)
                 );
             }
             case "文": {
                 return iconContent.generateIcon(
-                        target,
+                        gui, target,
                         Pair.of("%content_size%", String.join("", draft.content).length())
                 );
             }
             case "高": {
                 if (target.hasPermission(PERM_ADMIN)) {
-                    return iconAdvanced.generateIcon(target);
+                    return iconAdvanced.generateIcon(gui, target);
                 } else {
                     Icon icon = otherIcon.get(iconAdvancedRedirectKey);
-                    return icon == null ? null : icon.generateIcon(target);
+                    return icon == null ? null : icon.generateIcon(gui, target);
                 }
             }
             case "重": {
-                return iconReset.generateIcon(target);
+                return iconReset.generateIcon(gui, target);
             }
             case "发": {
                 return iconSend.generateIcon(
-                        target,
+                        gui, target,
                         Pair.of("%price%", String.format(Messages.Draft.money_format.str(), getPrice(target)))
                 );
             }
@@ -283,7 +283,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                     IAttachment attachment = draft.attachments.get(iconIndex);
                     return attachment.generateDraftIcon(target);
                 } else {
-                    return iconAttachment.generateIcon(target);
+                    return iconAttachment.generateIcon(gui, target);
                 }
             }
         }

@@ -61,7 +61,7 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
                 return info.icon.apply(target);
             }
             case "返": {
-                return iconBack.generateIcon(target);
+                return iconBack.generateIcon(gui, target);
             }
         }
         return null;

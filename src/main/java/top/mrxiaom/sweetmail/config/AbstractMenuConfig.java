@@ -74,8 +74,8 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             return item;
         }
         @SafeVarargs
-        public final ItemStack generateIcon(OfflinePlayer target, Pair<String, Object>... replacements) {
-            ItemStack item = ItemStackUtil.getItem(material);
+        public final ItemStack generateIcon(IGui gui, OfflinePlayer target, Pair<String, Object>... replacements) {
+            ItemStack item = ItemStackUtil.getItem(gui.getPlayer(), material);
             return generateIcon(target, item, replacements);
         }
 
@@ -204,7 +204,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         }
         Icon icon = otherIcon.get(key);
         if (icon != null) {
-            setItem.accept(i, icon.generateIcon(target));
+            setItem.accept(i, icon.generateIcon(gui, target));
         } else {
             setItem.accept(i, null);
         }

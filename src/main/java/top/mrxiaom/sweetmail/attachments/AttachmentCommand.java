@@ -50,7 +50,7 @@ public class AttachmentCommand implements IAttachment {
 
     @Override
     public ItemStack generateDraftIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(this.item);
+        ItemStack item = ItemStackUtil.getItem(target, this.item);
         ItemStackUtil.setItemDisplayName(item, display);
         List<String> loreRemove = Internal.getLoreRemove(target);
         if (!loreRemove.isEmpty()) {
@@ -63,7 +63,7 @@ public class AttachmentCommand implements IAttachment {
 
     @Override
     public ItemStack generateIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(this.item);
+        ItemStack item = ItemStackUtil.getItem(target, this.item);
         ItemStackUtil.setItemDisplayName(item, display);
         return item;
     }

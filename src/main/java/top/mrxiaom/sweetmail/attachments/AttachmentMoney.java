@@ -41,7 +41,7 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public ItemStack generateDraftIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(Messages.Draft.attachments__money__icon.str());
+        ItemStack item = ItemStackUtil.getItem(target, Messages.Draft.attachments__money__icon.str());
         ItemStackUtil.setItemDisplayName(item, toString());
         List<String> loreRemove = Internal.getLoreRemove(target);
         List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
@@ -56,7 +56,7 @@ public class AttachmentMoney implements IAttachment {
 
     @Override
     public ItemStack generateIcon(Player target) {
-        ItemStack item = ItemStackUtil.getItem(Messages.Draft.attachments__money__icon.str());
+        ItemStack item = ItemStackUtil.getItem(target, Messages.Draft.attachments__money__icon.str());
         ItemStackUtil.setItemDisplayName(item, toString());
         List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
         if (!moneyLore.isEmpty()) {
