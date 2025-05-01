@@ -13,5 +13,9 @@ public interface ItemProvider {
         map.put("itemsadder-", new ItemsAdderProvider());
         map.put("mythic-", new MythicProvider());
         map.put("head-base64-", new HeadBase64Provider());
+        try {
+            map.put("craftengine-", new CraftEngineProvider());
+        } catch (ReflectiveOperationException ignored) {
+        }
     }
 }

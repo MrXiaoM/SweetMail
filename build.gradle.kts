@@ -31,7 +31,6 @@ allprojects {
         maven("https://repo.helpch.at/releases/")
         maven("https://jitpack.io")
         maven("https://repo.rosewooddev.io/repository/public/")
-        maven("https://oss.sonatype.org/content/groups/public/")
     }
 
     tasks.withType<JavaCompile>().configureEach {
@@ -42,6 +41,7 @@ allprojects {
     }
 }
 
+val shadowLink = configurations.create("shadowLink")
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     // Minecraft
@@ -74,10 +74,12 @@ dependencies {
     implementation("de.tr7zw:item-nbt-api:2.15.0")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
     implementation(project(":paper"))
+    "shadowLink"(project(":paper:craft-engine"))
 }
 
 tasks {
     shadowJar {
+        configurations.add(shadowLink)
         mapOf(
             "org.intellij.lang.annotations" to "annotations.intellij",
             "org.jetbrains.annotations" to "annotations.jetbrains",
@@ -90,6 +92,7 @@ tasks {
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }
         ignoreRelocations("top/mrxiaom/sweetmail/utils/inventory/PaperInventoryFactory.class")
+        ignoreRelocations("top/mrxiaom/sweetmail/utils/items/CraftEngineProviderImpl.class")
     }
     create("release")
     withType<Jar> {
