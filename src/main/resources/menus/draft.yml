@@ -110,6 +110,7 @@ other-items:
     # mythic- 开头使用 MythicMobs 物品
     # itemsadder- 开头使用 ItemsAdder 物品
     # head-base64- 开头使用 base64 材质头颅，你可以从网站 https://minecraft-heads.com/ 获取头颅
+    # craftengine- 开头使用 CraftEngine 物品
     material: 'STONE#10000'
     # 可选，添加一个耐久1附魔与隐藏附魔flag，使得物品具有附魔光泽
     glow: true
