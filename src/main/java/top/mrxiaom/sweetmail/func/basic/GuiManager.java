@@ -44,7 +44,11 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
         player.closeInventory();
         playersGui.put(player.getUniqueId(), gui);
         Inventory inv = gui.newInventory();
-        if (inv != null) player.openInventory(inv);
+        if (inv != null) {
+            player.openInventory(inv);
+        } else {
+            warn("试图为玩家 " + player.getName() + " 打开界面 " + gui.getClass().getName() + " 时，程序返回了 null");
+        }
     }
 
     public void onDisable() {
