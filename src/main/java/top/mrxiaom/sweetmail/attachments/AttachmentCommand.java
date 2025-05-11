@@ -10,13 +10,13 @@ import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
-import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.util.List;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
+import static top.mrxiaom.sweetmail.utils.MiniMessageConvert.miniMessageToLegacy;
 
 public class AttachmentCommand implements IAttachment {
     public static final String PERM = "sweetmail.attachment.command";
@@ -44,7 +44,7 @@ public class AttachmentCommand implements IAttachment {
     public void use(Player player) {
         SweetMail.getInstance().getScheduler().runNextTick((t_) -> {
             String cmd = PAPI.setPlaceholders(player, command);
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), ColorHelper.parseColor(cmd));
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), miniMessageToLegacy(cmd));
         });
     }
 

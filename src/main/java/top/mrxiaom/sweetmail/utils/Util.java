@@ -157,7 +157,7 @@ public class Util {
 
     @SafeVarargs
     public static void runCommands(Player player, List<String> list, Pair<String, Object>... replacements) {
-        for (String s : ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(list, replacements)))) {
+        for (String s : PAPI.setPlaceholders(player, replace(list, replacements))) {
             if (s.startsWith("[console]")) {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.substring(9));
             }
