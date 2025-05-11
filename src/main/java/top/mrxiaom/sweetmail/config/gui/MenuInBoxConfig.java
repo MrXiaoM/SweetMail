@@ -64,18 +64,19 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         }
     }
 
-    public Inventory createInventory(Gui gui, Player player, String target, boolean unread, boolean other, int page, int maxPage) {
-        String title = unread
+    @Override
+    protected String getTitleText(Gui gui, Player player) {
+        boolean other = !gui.target.equals(player.getName());
+        String title = gui.unread
                 ? (other ? titleUnreadOther : titleUnread)
                 : (other ? titleAllOther : titleAll);
-        return plugin.getInventoryFactory().create(gui, inventory.length,
-                ColorHelper.parseColor(PAPI.setPlaceholders(player, replace(
-                        title,
-                        Pair.of("%target%", target),
-                        Pair.of("%page%", page),
-                        Pair.of("%max_page%", maxPage > 0 ? maxPage : "?")
-                )))
-        );
+        int maxPage = gui.inBox.getMaxPage(getSlotsCount());
+        return PAPI.setPlaceholders(player, replace(
+                title,
+                Pair.of("%target%", gui.target),
+                Pair.of("%page%", gui.page),
+                Pair.of("%max_page%", maxPage > 0 ? maxPage : "?")
+        ));
     }
 
     @Override
@@ -221,9 +222,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             inBox = targetKey != null
                     ? plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount())
                     : new ListX<>(-1);
-            boolean other = !target.equals(player.getName());
-            int maxPage = inBox.getMaxPage(getSlotsCount());
-            created = createInventory(this, player, target, unread, other, page, maxPage);
+            created = createInventory(this, player);
             applyIcons(this, created, player);
             return created;
         }

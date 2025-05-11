@@ -46,11 +46,6 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
     }
 
     @Override
-    public Inventory createInventory(Gui gui, Player target) {
-        return plugin.getInventoryFactory().create(gui, inventory.length, replace(PAPI.setPlaceholders(target, title)));
-    }
-
-    @Override
     protected ItemStack tryApplyMainIcon(Gui gui, String key, Player target, int iconIndex) {
         Mail mail = gui.mail;
         switch (key) {

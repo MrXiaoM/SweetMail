@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.utils.ColorHelper;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
@@ -171,7 +170,10 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
      */
     protected abstract ItemStack tryApplyMainIcon(T gui, String key, Player target, int iconIndex);
     public Inventory createInventory(T gui, Player target) {
-        return plugin.getInventoryFactory().create(gui, inventory.length, PAPI.setPlaceholders(target, title));
+        return plugin.getInventoryFactory().create(gui, inventory.length, getTitleText(gui, target));
+    }
+    protected String getTitleText(T gui, Player target) {
+        return PAPI.setPlaceholders(target, title);
     }
     public void applyIcons(T gui, Inventory inv, Player target) {
         applyIcons(gui, inv::setItem, target);
@@ -234,7 +236,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
 
         config = YamlConfiguration.loadConfiguration(configFile);
         ConfigurationSection section;
-        title = ColorHelper.parseColor(config.getString("title", "菜单标题"));
+        title = config.getString("title", "菜单标题");
         inventory = String.join("", config.getStringList("inventory")).toCharArray();
         List<Character> ignored = config.getCharacterList("ignored");
 

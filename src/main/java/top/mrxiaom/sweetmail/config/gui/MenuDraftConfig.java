@@ -202,8 +202,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
     }
 
     @Override
-    public Inventory createInventory(Gui gui, Player target) {
-        return plugin.getInventoryFactory().create(gui, inventory.length, replace(PAPI.setPlaceholders(target, title), Pair.of("%title%", gui.getDraft().title)));
+    protected String getTitleText(Gui gui, Player target) {
+        return replace(PAPI.setPlaceholders(target, title), Pair.of("%title%", gui.getDraft().title));
     }
 
     @Override

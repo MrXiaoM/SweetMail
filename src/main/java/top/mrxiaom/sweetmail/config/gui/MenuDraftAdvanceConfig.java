@@ -21,7 +21,6 @@ import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
-import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +31,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static top.mrxiaom.sweetmail.utils.Pair.replace;
 import static top.mrxiaom.sweetmail.utils.Util.toTimestamp;
 
 public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceConfig.Gui> {
@@ -124,11 +122,6 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
             }
         }
         return false;
-    }
-
-    @Override
-    public Inventory createInventory(Gui gui, Player target) {
-        return plugin.getInventoryFactory().create(gui, inventory.length, replace(PAPI.setPlaceholders(target, title)));
     }
 
     @Override

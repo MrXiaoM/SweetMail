@@ -15,12 +15,9 @@ import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmentConfig.Gui> {
     Icon iconBack;
@@ -45,11 +42,6 @@ public class MenuAddAttachmentConfig extends AbstractMenuConfig<MenuAddAttachmen
             return true;
         }
         return false;
-    }
-
-    @Override
-    public Inventory createInventory(Gui gui, Player target) {
-        return plugin.getInventoryFactory().create(gui, inventory.length, replace(PAPI.setPlaceholders(target, title)));
     }
 
     @Override
