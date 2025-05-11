@@ -1,5 +1,7 @@
 package top.mrxiaom.sweetmail.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +74,8 @@ public class Pair<K, V> {
         return str;
     }
 
-    public static String replace(String s, Iterable<Pair<String, Object>> replacements) {
+    public static String replace(String s, @Nullable Iterable<Pair<String, Object>> replacements) {
+        if (replacements == null) return s;
         String str = s;
         for (Pair<String, Object> pair : replacements) {
             if (str.contains(pair.key)) {

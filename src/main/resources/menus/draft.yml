@@ -125,7 +125,10 @@ other-items:
     # 格式为 [类型]参数。有以下类型，写法与 DeluxeMenus 类似，但没有它那么丰富
     # [console] 控制台命令
     # [player] 玩家命令
+    # [actionbar] 物品栏上方提示消息
     # [message] 聊天栏消息
+    # [close] 关闭界面
+    # [delay]时间(tick) 延时再执行下一条语句（如果要使用这个，建议先关闭界面再使用，以免玩家重复点击）
     # 均支持使用 PAPI
     left-click-commands: []
     right-click-commands: []

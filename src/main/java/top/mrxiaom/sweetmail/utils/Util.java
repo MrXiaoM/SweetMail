@@ -28,9 +28,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
-import static top.mrxiaom.sweetmail.utils.Pair.replace;
-
-@SuppressWarnings({"unused"})
 public class Util {
     private static BukkitAudiences adventure;
     public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -148,6 +145,10 @@ public class Util {
 
     public static void sendMessage(CommandSender sender, Component message) {
         adventure.sender(sender).sendMessage(message);
+    }
+
+    public static void sendActionBar(Player player, String message) {
+        adventure.player(player).sendActionBar(miniMessage(message));
     }
 
     @SuppressWarnings({"UnstableApiUsage"})

@@ -19,6 +19,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.sweetmail.actions.*;
 import top.mrxiaom.sweetmail.attachments.AttachmentCommand;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.AttachmentMoney;
@@ -261,6 +262,18 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         AttachmentItem.register();
         AttachmentCommand.register();
         if (economy != null) AttachmentMoney.register();
+    }
+
+    private void loadBuiltInActions() {
+        try {
+            ActionProviders.registerActionProvider(ActionConsole.PROVIDER);
+            ActionProviders.registerActionProvider(ActionPlayer.PROVIDER);
+            ActionProviders.registerActionProvider(ActionActionBar.PROVIDER);
+            ActionProviders.registerActionProvider(ActionMessage.PROVIDER);
+            ActionProviders.registerActionProvider(ActionClose.PROVIDER);
+            ActionProviders.registerActionProvider(ActionDelay.PROVIDER);
+        } catch (Throwable ignored) {
+        }
     }
 
     public void checkCompatible() {

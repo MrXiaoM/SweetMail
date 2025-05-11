@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.config;
 
 import de.tr7zw.changeme.nbtapi.NBT;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,6 +13,8 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.actions.ActionProviders;
+import top.mrxiaom.sweetmail.actions.IAction;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
@@ -38,11 +39,11 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         @Nullable
         public final Integer customModel;
         public final List<String> lore;
-        List<String> leftClick = null;
-        List<String> rightClick = null;
-        List<String> shiftLeftClick = null;
-        List<String> shiftRightClick = null;
-        List<String> dropClick = null;
+        List<IAction> leftClick = null;
+        List<IAction> rightClick = null;
+        List<IAction> shiftLeftClick = null;
+        List<IAction> shiftRightClick = null;
+        List<IAction> dropClick = null;
 
         private Icon(String material, boolean glow, @Nullable String display, @Nullable Integer customModel, List<String> lore) {
             this.material = material;
@@ -79,7 +80,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         }
 
         public void click(Player player, ClickType type) {
-            List<String> commands = null;
+            List<IAction> commands = null;
             switch (type) {
                 case LEFT:
                     commands = leftClick;
@@ -98,18 +99,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
                     break;
             }
             if (commands == null || commands.isEmpty()) return;
-            commands = PAPI.setPlaceholders(player, commands);
-            for (String s : commands) {
-                if (s.startsWith("[console]")) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.substring(9).trim());
-                }
-                if (s.startsWith("[player]")) {
-                    Bukkit.dispatchCommand(player, s.substring(8).trim());
-                }
-                if (s.startsWith("[message]")) {
-                    t(player, s.substring(9));
-                }
-            }
+            ActionProviders.run(SweetMail.getInstance(), player, commands);
         }
 
         public static Icon getIcon(ConfigurationSection section, String key, boolean commands) {
@@ -122,11 +112,11 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             List<String> lore = section.getStringList(key + ".lore");
             Icon icon = new Icon(material, glow, display, customModel, lore);
             if (commands) {
-                icon.leftClick = section.getStringList(key + ".left-click-commands");
-                icon.rightClick = section.getStringList(key + ".right-click-commands");
-                icon.shiftLeftClick = section.getStringList(key + ".shift-left-click-commands");
-                icon.shiftRightClick = section.getStringList(key + ".shift-right-click-commands");
-                icon.dropClick = section.getStringList(key + ".drop-commands");
+                icon.leftClick = ActionProviders.loadActions(section, key + ".left-click-commands");
+                icon.rightClick = ActionProviders.loadActions(section, key + ".right-click-commands");
+                icon.shiftLeftClick = ActionProviders.loadActions(section, key + ".shift-left-click-commands");
+                icon.shiftRightClick = ActionProviders.loadActions(section, key + ".shift-right-click-commands");
+                icon.dropClick = ActionProviders.loadActions(section, key + ".drop-commands");
             }
             return icon;
         }
