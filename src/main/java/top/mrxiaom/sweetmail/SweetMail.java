@@ -189,6 +189,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         loadFunctions();
         if (!database.ok()) return;
         loadBuiltInAttachments();
+        loadBuiltInActions();
         reloadConfig();
 
         FileConfiguration config = getConfig();
