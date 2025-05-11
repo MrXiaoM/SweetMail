@@ -14,12 +14,12 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
-import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.io.File;
 import java.util.HashMap;

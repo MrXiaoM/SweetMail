@@ -15,11 +15,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
-import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;

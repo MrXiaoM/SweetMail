@@ -18,10 +18,10 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.config.gui.entry.IconSlot;
 import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.*;
-import top.mrxiaom.sweetmail.depend.PAPI;
 
 import static top.mrxiaom.sweetmail.config.gui.entry.IconSlot.loadSlot;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;

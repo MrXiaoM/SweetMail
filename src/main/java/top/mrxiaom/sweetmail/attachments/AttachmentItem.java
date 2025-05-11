@@ -12,7 +12,6 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.Messages;
-import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.MiniMessageConvert;

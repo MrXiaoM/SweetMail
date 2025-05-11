@@ -17,10 +17,7 @@ import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
-
-import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
 public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttachmentsConfig.Gui> {
     Icon iconBack;

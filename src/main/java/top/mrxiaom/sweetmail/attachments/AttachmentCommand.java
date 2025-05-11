@@ -7,11 +7,11 @@ import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.util.List;
 

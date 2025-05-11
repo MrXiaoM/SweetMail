@@ -25,6 +25,7 @@ import top.mrxiaom.sweetmail.attachments.AttachmentItem;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.events.PlayerMailSentEvent;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
@@ -32,7 +33,6 @@ import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.gui.GuiIcon;
 import top.mrxiaom.sweetmail.utils.*;
-import top.mrxiaom.sweetmail.depend.PAPI;
 
 import java.time.LocalDateTime;
 import java.util.*;
