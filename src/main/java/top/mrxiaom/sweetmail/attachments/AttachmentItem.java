@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.attachments;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -11,8 +12,10 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.Messages;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.util.Collection;
@@ -120,7 +123,17 @@ public class AttachmentItem implements IAttachment {
 
         @Override
         public Inventory newInventory() {
-            return created = plugin.getInventoryFactory().create(this, 9, Messages.Draft.attachments__item__title.str());
+            return created = plugin.getInventoryFactory().create(this, 9, getTitleText());
+        }
+
+        private String getTitleText() {
+            return Messages.Draft.attachments__item__title.str();
+        }
+
+        @Override
+        public Component getTitle() {
+            String titleText = getTitleText();
+            return MiniMessageConvert.miniMessage(titleText);
         }
 
         @Override

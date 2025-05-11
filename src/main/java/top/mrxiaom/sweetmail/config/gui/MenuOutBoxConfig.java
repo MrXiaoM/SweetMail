@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -215,6 +216,12 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             created = createInventory(this, player);
             applyIcons(this, created, player);
             return created;
+        }
+
+        @Override
+        public Component getTitle() {
+            String titleText = getTitleText(this, getPlayer());
+            return MiniMessageConvert.miniMessage(titleText);
         }
 
         @Override

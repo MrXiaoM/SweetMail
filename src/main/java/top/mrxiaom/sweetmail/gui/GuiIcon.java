@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.gui;
 
 import de.tr7zw.changeme.nbtapi.NBT;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -16,6 +17,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.depend.PAPI;
 
@@ -43,7 +45,7 @@ public class GuiIcon extends AbstractDraftGui {
             }
         }
         size = Math.min(54, ((pairs.size() / 9) + 1) * 9);
-        created = plugin.getInventoryFactory().create(this, size, PAPI.setPlaceholders(player, title));
+        created = plugin.getInventoryFactory().create(this, size, getTitleText());
         for (int i = 0, j = 0; i < pairs.size(); i++) {
             Pair<String, MailIcon> pair = pairs.get(i);
             MailIcon icon = pair.getValue();
@@ -71,6 +73,16 @@ public class GuiIcon extends AbstractDraftGui {
             j++;
         }
         return created;
+    }
+
+    private String getTitleText() {
+        return PAPI.setPlaceholders(player, title);
+    }
+
+    @Override
+    public Component getTitle() {
+        String titleText = getTitleText();
+        return MiniMessageConvert.miniMessage(titleText);
     }
 
     @Override

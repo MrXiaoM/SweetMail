@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.depend.PAPI;
+import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
 
@@ -92,6 +94,12 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
             created = createInventory(this, player);
             applyIcons(this, created, player);
             return created;
+        }
+
+        @Override
+        public Component getTitle() {
+            String titleText = getTitleText(this, getPlayer());
+            return MiniMessageConvert.miniMessage(titleText);
         }
 
         @Override
