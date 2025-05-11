@@ -38,7 +38,7 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
     @Override
     public void openBook(Player player, Draft draft) {
         IGui gui = plugin.getGuiManager().getOpeningGui(player);
-        Book book = Util.legacyBook(draft.title, draft.content, player.getName());
+        Book book = Util.legacyBook(draft.content, player.getName());
         Util.openBook(player, book);
         afterOpenBook(gui);
     }

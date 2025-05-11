@@ -61,7 +61,7 @@ public class Mail {
         String author = senderDisplay == null || senderDisplay.isEmpty()
                 ? Util.getPlayerName(sender)
                 : senderDisplay;
-        return Util.legacyBook(title, content, author);
+        return Util.legacyBook(content, author);
     }
 
     public void noticeSent() {

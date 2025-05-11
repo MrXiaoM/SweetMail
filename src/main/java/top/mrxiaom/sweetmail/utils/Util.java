@@ -127,7 +127,7 @@ public class Util {
         ));
     }
 
-    public static Book legacyBook(String title, List<String> pages, String author) {
+    public static Book legacyBook(List<String> pages, String author) {
         List<Component> bookPages = pages.isEmpty() ? Lists.newArrayList(Component.empty()) : Util.legacy(pages);
         Component bookAuthor = Util.legacy(author);
         return Book.builder()
@@ -153,21 +153,6 @@ public class Util {
     @SuppressWarnings({"UnstableApiUsage"})
     public static void updateInventory(Player player) {
         player.updateInventory();
-    }
-
-    @SafeVarargs
-    public static void runCommands(Player player, List<String> list, Pair<String, Object>... replacements) {
-        for (String s : PAPI.setPlaceholders(player, replace(list, replacements))) {
-            if (s.startsWith("[console]")) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.substring(9));
-            }
-            if (s.startsWith("[player]")) {
-                Bukkit.dispatchCommand(player, s.substring(8));
-            }
-            if (s.startsWith("[message]")) {
-                Util.sendMessage(player, s.substring(9));
-            }
-        }
     }
 
     public static long toTimestamp(LocalDateTime time) {
@@ -254,15 +239,6 @@ public class Util {
         if (s == null) return Optional.empty();
         try {
             return Optional.of(Integer.parseInt(s));
-        } catch (NumberFormatException e) {
-            return Optional.empty();
-        }
-    }
-
-    public static Optional<Byte> parseByte(String s) {
-        if (s == null) return Optional.empty();
-        try {
-            return Optional.of(Byte.parseByte(s));
         } catch (NumberFormatException e) {
             return Optional.empty();
         }
