@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -84,5 +85,14 @@ public class PaperInventoryFactory implements InventoryFactory {
     @Override
     public void setOffsetFont(String font) {
         this.offsetFont = font;
+    }
+
+    public static boolean test() {
+        try {
+            Bukkit.class.getDeclaredMethod("createInventory", InventoryHolder.class, InventoryType.class, Component.class);
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
     }
 }

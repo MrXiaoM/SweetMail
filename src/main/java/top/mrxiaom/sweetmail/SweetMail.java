@@ -170,8 +170,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         MinecraftVersion.disableUpdateCheck();
         MinecraftVersion.disableBStats();
         MinecraftVersion.getVersion();
-        if (Util.isPresent("com.destroystokyo.paper.utils.PaperPluginLogger")
-                && Util.isPresent(netKyori + ".adventure.text.Component")) try {
+        if (PaperInventoryFactory.test()) try {
             inventoryFactory = new PaperInventoryFactory();
         } catch (Throwable ignored) {
             inventoryFactory = new BukkitInventoryFactory();
