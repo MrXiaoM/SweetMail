@@ -9,6 +9,7 @@ softdepend:
   - ItemsAdder
   - LangUtils
   - CraftEngine
+  - ProtocolLib
 authors: [ MrXiaoM ]
 folia-supported: true
 commands:

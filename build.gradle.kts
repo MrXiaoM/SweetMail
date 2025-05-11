@@ -1,3 +1,5 @@
+import java.util.Locale
+
 plugins {
     java
     `maven-publish`
@@ -28,6 +30,13 @@ allprojects {
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
         maven("https://repo.codemc.io/repository/maven-public/")
+        if (Locale.getDefault().country == "CN") {
+            maven("https://repo.carm.cc/repository/maven-public/") {
+                mavenContent { includeGroup("com.comphenix.protocol") }
+            }
+        } else {
+            maven("https://repo.dmulloy2.net/repository/releases/")
+        }
         maven("https://repo.helpch.at/releases/")
         maven("https://jitpack.io")
         maven("https://repo.rosewooddev.io/repository/public/")
@@ -54,12 +63,13 @@ dependencies {
     // Dependency Plugins
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.MascusJeoraly:LanguageUtils:1.9")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
 
     compileOnly("com.mojang:authlib:2.1.28")
 
     // MythicMobs 4 and 5
     compileOnly("io.lumine:Mythic-Dist:4.13.0")
-    compileOnly("io.lumine:Mythic:5.6.2") // 不要再升级 Mythic5 了，再升级就要 java 21 才能编译了
+    compileOnly("io.lumine:Mythic:5.6.2")
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
     compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
@@ -68,9 +78,10 @@ dependencies {
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.slf4j:slf4j-nop:2.0.16")
     implementation("org.jetbrains:annotations:24.0.0")
-    implementation("net.kyori:adventure-api:4.20.0")
+    implementation("net.kyori:adventure-api:4.21.0")
     implementation("net.kyori:adventure-platform-bukkit:4.4.0")
-    implementation("net.kyori:adventure-text-minimessage:4.20.0")
+    implementation("net.kyori:adventure-text-serializer-gson:4.21.0")
+    implementation("net.kyori:adventure-text-minimessage:4.21.0")
     implementation("de.tr7zw:item-nbt-api:2.15.0")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
     implementation(project(":paper"))

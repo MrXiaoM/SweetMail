@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.gui;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
@@ -12,6 +13,10 @@ public interface IGui extends InventoryHolder {
     Player getPlayer();
 
     Inventory newInventory();
+
+    default Component getTitle() {
+        return null;
+    }
 
     void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event);
 

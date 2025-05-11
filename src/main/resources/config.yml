@@ -32,6 +32,11 @@ check-compatible:
   cmi: true
   essentials: true
 
+# 是否与相关插件进行交互
+dependencies:
+  # 非 Paper 服务端（或非常旧的 Paper 服务端）通过 ProtocolLib 修改界面标题，实现在菜单标题使用 MiniMessage
+  ProtocolLib: true
+
 # 收纳袋图标最多显示的物品数量
 bundle-max-slots: 7
 
