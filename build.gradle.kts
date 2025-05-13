@@ -30,13 +30,6 @@ allprojects {
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
         maven("https://repo.codemc.io/repository/maven-public/")
-        if (Locale.getDefault().country == "CN") {
-            maven("https://repo.carm.cc/repository/maven-public/") {
-                mavenContent { includeGroup("com.comphenix.protocol") }
-            }
-        } else {
-            maven("https://repo.dmulloy2.net/repository/releases/")
-        }
         maven("https://repo.helpch.at/releases/")
         maven("https://jitpack.io")
         maven("https://repo.rosewooddev.io/repository/public/")
@@ -63,7 +56,7 @@ dependencies {
     // Dependency Plugins
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.MascusJeoraly:LanguageUtils:1.9")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("com.github.dmulloy2:ProtocolLib:5.2.0")
 
     compileOnly("com.mojang:authlib:2.1.28")
 
