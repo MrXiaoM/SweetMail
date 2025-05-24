@@ -23,6 +23,7 @@ import java.util.UUID;
 
 public class DefaultBook extends AbstractPluginHolder implements IBook, Listener {
     private boolean enableReturnWhenMove = false;
+    private boolean openForMail, openForDraft;
     public Map<UUID, Listener> listeners = new HashMap<>();
     public DefaultBook(SweetMail plugin) {
         super(plugin);
@@ -33,10 +34,13 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
     @Override
     public void reloadConfig(MemoryConfiguration config) {
         enableReturnWhenMove = config.getBoolean("book.return-when-move");
+        openForMail = config.getBoolean("book.open-for-mail", true);
+        openForDraft = config.getBoolean("book.open-for-draft", true);
     }
 
     @Override
     public void openBook(Player player, Draft draft) {
+        if (!openForDraft) return;
         IGui gui = plugin.getGuiManager().getOpeningGui(player);
         Book book = Util.legacyBook(draft.content, player.getName());
         Util.openBook(player, book);
@@ -45,6 +49,7 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
 
     @Override
     public void openBook(Player player, Mail mail) {
+        if (!openForMail) return;
         IGui gui = plugin.getGuiManager().getOpeningGui(player);
         Util.openBook(player, mail.generateBook());
         afterOpenBook(gui);

@@ -130,6 +130,10 @@ book:
   # 打开正文预览后，如果玩家移动了（包括移动视角），则回到上一个菜单
   # 由于实际运行起来可能怪怪的，这个功能默认关闭
   return-when-move: false
+  # 是否允许默认的书本实现，在左键点击草稿正文图标时，打开书与笔预览
+  open-for-draft: true
+  # 是否允许默认的书本实现，在左键点击收件箱、发件箱的邮件图标时，打开书与笔预览
+  open-for-mail: true
 
 # 在 Paper 服务端中，菜单标题 <offset:> 变量的偏移符所用字体
 offset-font: 'mrxiaom:sweetmail'
