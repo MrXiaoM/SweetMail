@@ -84,11 +84,13 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
                 if (e.isCancelled() || System.currentTimeMillis() < checkStartTime) return;
                 if (done) {
                     HandlerList.unregisterAll(this);
+                    listeners.remove(uuid);
                     return;
                 }
                 if (e.getPlayer().getUniqueId().equals(uuid)) {
                     done = true;
                     HandlerList.unregisterAll(this);
+                    listeners.remove(uuid);
                     gui.open();
                 }
             }
