@@ -62,6 +62,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     @Override
     public void sendMail(Mail mail) {
         SweetMail.getInstance().getScheduler().runAsync((t_) -> {
+            boolean success = false;
             try (Connection conn = getConnection()) {
                 try (PreparedStatement ps = conn.prepareStatement(
                         "INSERT INTO `" + TABLE_BOX + "`(`uuid`,`sender`,`data`,`time`) VALUES(?, ?, ?, ?);"
@@ -81,9 +82,12 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
                     }
                     ps.executeBatch();
                 }
-                mail.noticeSent();
+                success = true;
             } catch (SQLException e) {
                 handleException(e);
+            }
+            if (success) {
+                mail.noticeSent();
             }
         });
     }
