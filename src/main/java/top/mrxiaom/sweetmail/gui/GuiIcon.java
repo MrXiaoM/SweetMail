@@ -17,7 +17,6 @@ import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ public class GuiIcon extends AbstractDraftGui {
     private final String title;
     private final Map<Integer, String> iconKeyMap = new HashMap<>();
     private int size;
+    private boolean idle = true;
     public GuiIcon(SweetMail plugin, Player player, String title) {
         super(plugin, player);
         this.title = title;
@@ -84,6 +84,7 @@ public class GuiIcon extends AbstractDraftGui {
         event.setCancelled(true);
         MenuDraftConfig menu = MenuDraftConfig.inst();
         if (slot == -1) {
+            idle = false;
             menu.new Gui(plugin, player).open();
             return;
         }
@@ -93,6 +94,7 @@ public class GuiIcon extends AbstractDraftGui {
                 if (key != null) {
                     draft.iconKey = key;
                     draft.save();
+                    idle = false;
                     menu.new Gui(plugin, player).open();
                     return;
                 }
@@ -108,9 +110,17 @@ public class GuiIcon extends AbstractDraftGui {
                     }
                     draft.iconKey = type;
                     draft.save();
+                    idle = false;
                     menu.new Gui(plugin, player).open();
                 }
             }
+        }
+    }
+
+    @Override
+    public void onClose(InventoryView view) {
+        if (idle) {
+            MenuDraftConfig.inst().new Gui(plugin, player).open();
         }
     }
 }
