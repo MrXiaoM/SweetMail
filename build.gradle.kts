@@ -56,7 +56,7 @@ dependencies {
     // Dependency Plugins
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.MascusJeoraly:LanguageUtils:1.9")
-    compileOnly("com.github.dmulloy2:ProtocolLib:5.2.0")
+    compileOnly("com.github.dmulloy2:ProtocolLib:5.3.0")
 
     compileOnly("com.mojang:authlib:2.1.28")
 

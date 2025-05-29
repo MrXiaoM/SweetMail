@@ -1,4 +1,4 @@
-package top.mrxiaom.sweetmail.depend.title;
+package top.mrxiaom.sweetmail.depend.protocollib;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -17,10 +17,10 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
 
-public class ProtocolLib extends AbstractPluginHolder {
+public class PLComponentTitle extends AbstractPluginHolder {
     ProtocolManager protocol;
     GsonComponentSerializer gson;
-    public ProtocolLib(SweetMail plugin) {
+    public PLComponentTitle(SweetMail plugin) {
         super(plugin);
         register();
         if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_16_R1)) {
@@ -42,7 +42,7 @@ public class ProtocolLib extends AbstractPluginHolder {
             ) {
                 @Override
                 public void onPacketSending(PacketEvent event) {
-                    ProtocolLib.this.onPacketSending(event);
+                    PLComponentTitle.this.onPacketSending(event);
                 }
             });
         }
