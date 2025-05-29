@@ -75,6 +75,9 @@ public class MailDatabase extends AbstractPluginHolder implements IMailDatabase 
             return list;
         }
         ListX<MailWithStatus> inBox = database.getInBox(unread, player, page, perPage);
+        if (inBox.isEmpty()) {
+            inBox.setMaxCount(0);
+        }
         boolean flag = false;
         for (MailWithStatus mail : inBox) {
             if (!mail.used) {
