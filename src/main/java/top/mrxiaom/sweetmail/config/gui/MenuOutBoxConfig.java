@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.config.gui;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -21,7 +20,10 @@ import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.utils.*;
+import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.ListX;
+import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import static top.mrxiaom.sweetmail.config.gui.entry.IconSlot.loadSlot;
 import static top.mrxiaom.sweetmail.utils.Pair.replace;
@@ -170,7 +172,6 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         private final Player player;
         @NotNull
         private final String target;
-        private Inventory created;
         int page = 1;
         ListX<MailWithStatus> outBox;
         public Gui(SweetMail plugin, Player player, @NotNull String target) {
@@ -193,12 +194,6 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             return player;
         }
 
-        @NotNull
-        @Override
-        public Inventory getInventory() {
-            return created;
-        }
-
         @Override
         public Inventory newInventory() {
             String targetKey;
@@ -213,15 +208,9 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             outBox = targetKey != null
                     ? plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount())
                     : new ListX<>(-1);
-            created = createInventory(this, player);
-            applyIcons(this, created, player);
-            return created;
-        }
-
-        @Override
-        public Component getTitle() {
-            String titleText = getTitleText(this, getPlayer());
-            return MiniMessageConvert.miniMessage(titleText);
+            Inventory inv = createInventory(this, player);
+            applyIcons(this, inv, player);
+            return inv;
         }
 
         @Override

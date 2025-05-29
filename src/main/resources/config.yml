@@ -37,6 +37,12 @@ dependencies:
   # 非 Paper 服务端（或非常旧的 Paper 服务端）通过 ProtocolLib 修改界面标题，实现在菜单标题使用 MiniMessage
   ProtocolLib: true
 
+gui:
+  # 在两个界面大小相同时，是否通过设置标题切换界面，从而不更新鼠标位置
+  # 开启此选项，需要安装 ProtocolLib 才能在菜单标题使用完整的 MiniMessage
+  # 因为新版本的 Paper 服务端也没有为 InventoryView#setTitle 提供 adventure 支持…
+  switch-smoothly: true
+
 # 收纳袋图标最多显示的物品数量
 bundle-max-slots: 7
 

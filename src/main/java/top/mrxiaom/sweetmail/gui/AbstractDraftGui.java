@@ -2,7 +2,6 @@ package top.mrxiaom.sweetmail.gui;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
@@ -26,11 +25,5 @@ public abstract class AbstractDraftGui extends AbstractPluginHolder implements I
     @Override
     public Player getPlayer() {
         return player;
-    }
-
-    @NotNull
-    @Override
-    public Inventory getInventory() {
-        return created;
     }
 }

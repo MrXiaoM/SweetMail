@@ -255,9 +255,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             new Placeholder(this).register();
         }
         if (Util.isPresent("com.comphenix.protocol.ProtocolLibrary")) {
-            if (!(inventoryFactory instanceof PaperInventoryFactory)) {
-                new PLComponentTitle(this);
-            }
+            new PLComponentTitle(this);
         }
     }
 

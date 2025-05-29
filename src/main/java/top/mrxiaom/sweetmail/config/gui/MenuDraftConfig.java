@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -32,7 +31,10 @@ import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.gui.GuiIcon;
-import top.mrxiaom.sweetmail.utils.*;
+import top.mrxiaom.sweetmail.utils.ChatPrompter;
+import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -332,12 +334,6 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             created = createInventory(this, player);
             applyIcons(this, created, player);
             return created;
-        }
-
-        @Override
-        public Component getTitle() {
-            String titleText = getTitleText(this, getPlayer());
-            return MiniMessageConvert.miniMessage(titleText);
         }
 
         @Override

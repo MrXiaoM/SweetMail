@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
-import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -24,7 +23,10 @@ import top.mrxiaom.sweetmail.database.entry.MailWithStatus;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
-import top.mrxiaom.sweetmail.utils.*;
+import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.ListX;
+import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,12 +207,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             return player;
         }
 
-        @NotNull
-        @Override
-        public Inventory getInventory() {
-            return created;
-        }
-
         @Override
         public Inventory newInventory() {
             String targetKey;
@@ -226,12 +222,6 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             created = createInventory(this, player);
             applyIcons(this, created, player);
             return created;
-        }
-
-        @Override
-        public Component getTitle() {
-            String titleText = getTitleText(this, getPlayer());
-            return MiniMessageConvert.miniMessage(titleText);
         }
 
         @Override

@@ -160,7 +160,8 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
      */
     protected abstract ItemStack tryApplyMainIcon(T gui, String key, Player target, int iconIndex);
     public Inventory createInventory(T gui, Player target) {
-        return plugin.getInventoryFactory().create(gui, inventory.length, getTitleText(gui, target));
+        String titleStr = getTitleText(gui, target);
+        return plugin.getGuiManager().getInventory(gui, target, inventory.length, titleStr);
     }
     protected String getTitleText(T gui, Player target) {
         return PAPI.setPlaceholders(target, title);

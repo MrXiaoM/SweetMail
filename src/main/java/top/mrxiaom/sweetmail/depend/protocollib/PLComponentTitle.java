@@ -13,9 +13,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
-import top.mrxiaom.sweetmail.gui.IGui;
+import top.mrxiaom.sweetmail.func.basic.BaseHolder;
 
 public class PLComponentTitle extends AbstractPluginHolder {
     ProtocolManager protocol;
@@ -51,9 +52,9 @@ public class PLComponentTitle extends AbstractPluginHolder {
     private void onPacketSending(PacketEvent event) {
         PacketContainer packet = event.getPacket();
         Player player = event.getPlayer();
-        IGui gui = plugin.getGuiManager().getOpeningGui(player);
-        if (gui != null) {
-            Component title = gui.getTitle();
+        Inventory inv = player.getOpenInventory().getTopInventory();
+        if (inv.getHolder() instanceof BaseHolder) {
+            Component title = ((BaseHolder) inv.getHolder()).getTitle();
             if (title == null) return;
             try {
                 String json = gson.serialize(title);

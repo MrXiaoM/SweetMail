@@ -1,7 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
-import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
-import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 
@@ -174,12 +172,6 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
             created = createInventory(this, player);
             applyIcons(this, created, player);
             return created;
-        }
-
-        @Override
-        public Component getTitle() {
-            String titleText = getTitleText(this, getPlayer());
-            return MiniMessageConvert.miniMessage(titleText);
         }
 
         @Override
