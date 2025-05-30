@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 public class CraftEngineProvider implements ItemProvider {
     BiFunction<Player, String, ItemStack> impl;
     @SuppressWarnings("unchecked")
-    public CraftEngineProvider() throws ReflectiveOperationException {
+    public CraftEngineProvider() throws Throwable {
         Class<?> type = Class.forName(getClass().getName() + "Impl");
         Field field = type.getDeclaredField("PROVIDER");
         impl = (BiFunction<Player, String, ItemStack>) field.get(null);

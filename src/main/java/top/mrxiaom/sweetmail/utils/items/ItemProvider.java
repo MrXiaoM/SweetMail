@@ -15,7 +15,7 @@ public interface ItemProvider {
         map.put("head-base64-", new HeadBase64Provider());
         try {
             map.put("craftengine-", new CraftEngineProvider());
-        } catch (ReflectiveOperationException ignored) {
+        } catch (Throwable ignored) {
         }
     }
 }
