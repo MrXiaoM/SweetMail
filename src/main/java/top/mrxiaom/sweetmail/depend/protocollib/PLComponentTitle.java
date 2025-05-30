@@ -17,6 +17,7 @@ import org.bukkit.inventory.Inventory;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.basic.BaseHolder;
+import top.mrxiaom.sweetmail.utils.inventory.PaperInventoryFactory;
 
 public class PLComponentTitle extends AbstractPluginHolder {
     ProtocolManager protocol;
@@ -35,7 +36,8 @@ public class PLComponentTitle extends AbstractPluginHolder {
     @Override
     public void reloadConfig(MemoryConfiguration config) {
         protocol.removePacketListeners(plugin);
-        if (config.getBoolean("dependencies.ProtocolLib", true)) {
+        if (config.getBoolean("dependencies.ProtocolLib", true)
+        && !(plugin.getInventoryFactory() instanceof PaperInventoryFactory)) {
             protocol.addPacketListener(new PacketAdapter(
                     new PacketAdapter.AdapterParameteters()
                             .plugin(plugin).serverSide().optionAsync()
