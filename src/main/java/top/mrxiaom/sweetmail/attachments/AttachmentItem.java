@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
+import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
 
 import java.util.Collection;
@@ -48,7 +49,7 @@ public class AttachmentItem implements IAttachment {
         ItemStack item = this.item.clone();
         List<String> loreRemove = Internal.getLoreRemove(target);
         if (!loreRemove.isEmpty()) {
-            List<String> lore = ItemStackUtil.getItemLore(item);
+            List<String> lore = ItemStackUtil.getItemLoreAsMiniMessage(item);
             lore.addAll(loreRemove);
             ItemStackUtil.setItemLore(item, lore);
         }
@@ -61,10 +62,6 @@ public class AttachmentItem implements IAttachment {
     }
 
     public String getName() {
-        if (item.getItemMeta() != null) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta.hasDisplayName() && !meta.getDisplayName().isEmpty()) return meta.getDisplayName();
-        }
         return ItemStackUtil.miniTranslate(item);
     }
 

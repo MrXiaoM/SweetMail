@@ -61,7 +61,7 @@ public class GuiIcon extends AbstractDraftGui {
             }
             if (draft.iconKey.equals(pair.getKey())) {
                 ItemStackUtil.setGlow(item);
-                List<String> lore = ItemStackUtil.getItemLore(item);
+                List<String> lore = ItemStackUtil.getItemLoreAsMiniMessage(item);
                 lore.addAll(Messages.Draft.selected_icon_lore.list());
                 ItemStackUtil.setItemLore(item, lore);
             }

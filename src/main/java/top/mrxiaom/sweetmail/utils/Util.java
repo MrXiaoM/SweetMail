@@ -100,6 +100,10 @@ public class Util {
         return MiniMessageConvert.miniMessage(s);
     }
 
+    public static String miniMessage(Component s) {
+        return MiniMessageConvert.miniMessage(s);
+    }
+
     public static Component legacy(String s) {
         return s == null
                 ? Component.empty()

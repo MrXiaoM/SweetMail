@@ -54,7 +54,7 @@ public class AttachmentCommand implements IAttachment {
         ItemStackUtil.setItemDisplayName(item, display);
         List<String> loreRemove = Internal.getLoreRemove(target);
         if (!loreRemove.isEmpty()) {
-            List<String> lore = ItemStackUtil.getItemLore(item);
+            List<String> lore = ItemStackUtil.getItemLoreAsMiniMessage(item);
             lore.addAll(loreRemove);
             ItemStackUtil.setItemLore(item, lore);
         }

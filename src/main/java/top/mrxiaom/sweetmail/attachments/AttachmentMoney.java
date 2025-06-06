@@ -46,7 +46,7 @@ public class AttachmentMoney implements IAttachment {
         List<String> loreRemove = Internal.getLoreRemove(target);
         List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
         if (!moneyLore.isEmpty() || !loreRemove.isEmpty()) {
-            List<String> lore = ItemStackUtil.getItemLore(item);
+            List<String> lore = ItemStackUtil.getItemLoreAsMiniMessage(item);
             lore.addAll(moneyLore);
             lore.addAll(loreRemove);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
@@ -60,7 +60,7 @@ public class AttachmentMoney implements IAttachment {
         ItemStackUtil.setItemDisplayName(item, toString());
         List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
         if (!moneyLore.isEmpty()) {
-            List<String> lore = ItemStackUtil.getItemLore(item);
+            List<String> lore = ItemStackUtil.getItemLoreAsMiniMessage(item);
             lore.addAll(moneyLore);
             ItemStackUtil.setItemLore(item, replace(lore, Pair.of("%money%", money)));
         }

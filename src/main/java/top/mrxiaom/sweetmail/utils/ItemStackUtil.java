@@ -28,6 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
@@ -123,7 +124,20 @@ public class ItemStackUtil {
         }
     }
 
-    public static String miniTranslate(ItemStack item) {
+    public static String miniTranslate(@NotNull ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            if (meta.hasDisplayName()) {
+                String nameAdventure = getItemDisplayNameAsMiniMessage(item);
+                if (nameAdventure != null) {
+                    return nameAdventure;
+                }
+                String nameBukkit = meta.getDisplayName();
+                if (!nameBukkit.isEmpty()) {
+                    return MiniMessageConvert.legacyToMiniMessage(nameBukkit);
+                }
+            }
+        }
         if (supportTranslationKey && textUseComponent) {
             return "<translate:" + item.getTranslationKey() + ">";
         }
@@ -224,17 +238,100 @@ public class ItemStackUtil {
         }
     }
 
-    public static String getItemDisplayName(ItemStack item) {
-        if ((item == null) || !item.hasItemMeta() || item.getItemMeta() == null)
-            return item != null ? item.getType().name() : "";
-        return item.getItemMeta().getDisplayName();
+    @Nullable
+    public static String getItemDisplayNameAsMiniMessage(ItemStack item) {
+        Component component = getItemDisplayName(item);
+        if (component == null) return null;
+        return miniMessage(component);
     }
 
-    public static List<String> getItemLore(ItemStack item) {
-        if ((item == null) || !item.hasItemMeta() || item.getItemMeta() == null
-                || (item.getItemMeta().getLore() == null))
-            return new ArrayList<>();
-        return item.getItemMeta().getLore();
+    @Nullable
+    public static Component getItemDisplayName(ItemStack item) {
+        String nameAsJson = getItemDisplayNameAsJson(item);
+        if (nameAsJson == null) return null;
+        return serializer().deserialize(nameAsJson);
+    }
+
+    @Nullable
+    public static String getItemDisplayNameAsJson(ItemStack item) {
+        if (isEmpty(item)) return null;
+        if (itemNbtUseComponentsFormat) {
+            ReadWriteNBT nbtItem = NBT.itemStackToNBT(item);
+            ReadWriteNBT nbt = nbtItem.getCompound("components");
+            if (nbt == null) return null;
+            if (componentUseNBT) {
+                ReadWriteNBT component = nbt.hasTag("minecraft:custom_name")
+                        ? nbt.getCompound("minecraft:custom_name")
+                        : null;
+                return component != null
+                        ? component.toString()
+                        : null;
+            } else {
+                return nbt.hasTag("minecraft:custom_name", NBTType.NBTTagString)
+                        ? nbt.getString("minecraft:custom_name")
+                        : null;
+            }
+        } else {
+            return NBT.get(item, nbt -> {
+                ReadableNBT display = nbt.getCompound("display");
+                return display != null && display.hasTag("Name", NBTType.NBTTagString)
+                        ? display.getString("Name")
+                        : null;
+            });
+        }
+    }
+
+    public static List<String> getItemLoreAsMiniMessage(ItemStack item) {
+        List<Component> components = getItemLore(item);
+        List<String> lore = new ArrayList<>();
+        for (Component component : components) {
+            String s = miniMessage(component);
+            lore.add(s);
+        }
+        return lore;
+    }
+
+    public static List<Component> getItemLore(ItemStack item) {
+        List<String> loreAsJson = getItemLoreAsJson(item);
+        if (loreAsJson == null) return new ArrayList<>();
+        List<Component> lore = new ArrayList<>();
+        for (String line : loreAsJson) {
+            Component component = serializer().deserialize(line);
+            lore.add(component);
+        }
+        return lore;
+    }
+
+    @Nullable
+    public static List<String> getItemLoreAsJson(ItemStack item) {
+        if (isEmpty(item)) return null;
+        if (itemNbtUseComponentsFormat) {
+            ReadWriteNBT nbtItem = NBT.itemStackToNBT(item);
+            ReadWriteNBT nbt = nbtItem.getCompound("components");
+            if (nbt == null) return null;
+            if (componentUseNBT) {
+                ReadWriteNBTCompoundList components = nbt.hasTag("minecraft:custom_name")
+                        ? nbt.getCompoundList("minecraft:custom_name")
+                        : null;
+                if (components == null) return null;
+                List<String> list = new ArrayList<>();
+                for (ReadWriteNBT component : components) {
+                    list.add(component.toString());
+                }
+                return list;
+            } else {
+                return nbt.hasTag("minecraft:custom_name", NBTType.NBTTagList)
+                        ? nbt.getStringList("minecraft:lore").toListCopy()
+                        : null;
+            }
+        } else {
+            return NBT.get(item, nbt -> {
+                ReadableNBT display = nbt.getCompound("display");
+                return display != null && display.hasTag("Lore", NBTType.NBTTagList)
+                        ? display.getStringList("Lore").toListCopy()
+                        : null;
+            });
+        }
     }
 
     public static void setItemDisplayName(ItemStack item, String name) {
@@ -477,6 +574,12 @@ public class ItemStackUtil {
             return new ItemStack(material);
         }
     }
+
+    @Contract("null -> true")
+    public static boolean isEmpty(ItemStack item) {
+        return item == null || item.getType().equals(Material.AIR);
+    }
+
     @NotNull
     public static ItemMeta getItemMeta(@NotNull ItemStack item) {
         ItemMeta meta = item.getItemMeta();
