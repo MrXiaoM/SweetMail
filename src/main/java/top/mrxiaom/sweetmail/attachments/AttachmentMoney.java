@@ -6,6 +6,7 @@ import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
@@ -44,7 +45,7 @@ public class AttachmentMoney implements IAttachment {
         ItemStack item = ItemStackUtil.getItem(target, Messages.Draft.attachments__money__icon.str());
         ItemStackUtil.setItemDisplayName(item, toString());
         List<String> loreRemove = Internal.getLoreRemove(target);
-        List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
+        List<String> moneyLore = PAPI.setPlaceholders(target, Messages.Draft.attachments__money__lore.list());
         if (!moneyLore.isEmpty() || !loreRemove.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLoreAsMiniMessage(item);
             lore.addAll(moneyLore);
@@ -58,7 +59,7 @@ public class AttachmentMoney implements IAttachment {
     public ItemStack generateIcon(Player target) {
         ItemStack item = ItemStackUtil.getItem(target, Messages.Draft.attachments__money__icon.str());
         ItemStackUtil.setItemDisplayName(item, toString());
-        List<String> moneyLore = Messages.Draft.attachments__money__lore.list();
+        List<String> moneyLore = PAPI.setPlaceholders(target, Messages.Draft.attachments__money__lore.list());
         if (!moneyLore.isEmpty()) {
             List<String> lore = ItemStackUtil.getItemLoreAsMiniMessage(item);
             lore.addAll(moneyLore);

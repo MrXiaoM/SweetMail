@@ -9,6 +9,7 @@ import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
@@ -107,10 +108,11 @@ public interface IAttachment {
             register();
         }
 
-        public static List<String> getLoreRemove(Permissible target) {
-            return (target.hasPermission(PERM_ADMIN)
+        public static List<String> getLoreRemove(Player target) {
+            List<String> list = (target.hasPermission(PERM_ADMIN)
                     ? Messages.Draft.attachments__remove_lore_admin
                     : Messages.Draft.attachments__remove_lore).list();
+            return PAPI.setPlaceholders(target, list);
         }
 
         @Override
