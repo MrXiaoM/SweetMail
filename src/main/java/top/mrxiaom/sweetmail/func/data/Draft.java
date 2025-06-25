@@ -179,12 +179,17 @@ public class Draft {
         if (advReceivers.equalsIgnoreCase("current online")) {
             // 在线玩家列表
             for (Player player : Bukkit.getOnlinePlayers()) {
-                receivers.add(player.getName());
+                receivers.add(plugin.getPlayerKey(player));
             }
         }
         if (advReceivers.equalsIgnoreCase("current online bungeecord")) {
             // 从代理端获取在线玩家列表
-            receivers.addAll(DraftManager.inst().getAllPlayers());
+            List<String> playerNames = DraftManager.inst().getAllPlayers();
+            for (String name : playerNames) {
+                OfflinePlayer player = Util.getOfflinePlayer(name).orElse(null);
+                if (player == null || player.getName() == null) continue;
+                receivers.add(plugin.getPlayerKey(player));
+            }
         }
         if (advReceivers.startsWith("last played in ")) {
             // 从什么时间到现在，上过线的玩家
