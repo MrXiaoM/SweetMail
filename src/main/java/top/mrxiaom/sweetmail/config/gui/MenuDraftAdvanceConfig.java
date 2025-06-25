@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static top.mrxiaom.sweetmail.commands.CommandMain.parseLocalTimeOrZero;
 import static top.mrxiaom.sweetmail.utils.Util.toTimestamp;
 
 public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceConfig.Gui> {
@@ -397,21 +398,15 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
     @Nullable
     public static Long parseTime(String s) {
         String[] split = s.split(" ", 2);
-        try {
-            String[] dateSplit = split[0].split("-", 3);
-            if (dateSplit.length != 3) return null;
-            Integer year = Util.parseInt(dateSplit[0]).orElse(null);
-            Integer month = Util.parseInt(dateSplit[1]).orElse(null);
-            Integer date = Util.parseInt(dateSplit[2]).orElse(null);
-            if (year == null || month == null || date == null) return null;
-            LocalDate localDate = LocalDate.of(year, month, date);
-            LocalTime localTime = split.length > 1
-                ? LocalTime.parse(split[1])
-                : LocalTime.of(0, 0, 0);
-            LocalDateTime time = localDate.atTime(localTime);
-            return toTimestamp(time);
-        } catch (DateTimeParseException e) {
-            return null;
-        }
+        String[] dateSplit = split[0].split("-", 3);
+        if (dateSplit.length != 3) return null;
+        Integer year = Util.parseInt(dateSplit[0]).orElse(null);
+        Integer month = Util.parseInt(dateSplit[1]).orElse(null);
+        Integer date = Util.parseInt(dateSplit[2]).orElse(null);
+        if (year == null || month == null || date == null) return null;
+        LocalDate localDate = LocalDate.of(year, month, date);
+        LocalTime localTime = parseLocalTimeOrZero(split.length > 1 ? split[1] : null);
+        LocalDateTime time = localDate.atTime(localTime);
+        return toTimestamp(time);
     }
 }
