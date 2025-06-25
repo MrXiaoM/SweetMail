@@ -51,6 +51,7 @@ public enum Messages implements IHolderAccessor {
     public enum Command implements IHolderAccessor {
         reload("&a配置文件已重载 &7(如需重载数据库，请使用 &f/mail reload database&7)"),
         reload_database("&a数据库配置已重载，已重新连接数据库"),
+
         timed__info__display(
                 "&f定时发送序列: &e%id%",
                 "&f发送人: &e%sender%",
@@ -61,6 +62,18 @@ public enum Messages implements IHolderAccessor {
         timed__info__not_found("&c找不到定时发送序列 &e%id%"),
         timed__cancel__success("&a成功取消定时发送序列 &e%id%"),
         timed__cancel__fail("&c找不到定时发送序列 &e%id%"),
+
+        send__no_template("&e邮件模板 %template% 不存在"),
+        send__no_players("&e输入的接收者表达式共筛选出 0 位玩家"),
+        send__wrong_arguments("&e参数错误 %error%"),
+        send__failed("&e邮件发送失败: %error%"),
+        send__success("&a成功向 %players_count% 位玩家发送模板邮件 %template% %parameters%"),
+
+        players__empty("&a接收者表达式&e %formula% &e共计算出&c 0 &e名玩家"),
+        players__chat_header("&a接收者表达式&e %formula% &e共计算出&e %players_count% &e名玩家，前&e %count% &a位名单如下:"),
+        players__chat_entry("&7-&f <hover:show_text:%player_uuid%>%player_name%</hover>"),
+        players__book_header("共 %players_count% 名玩家"),
+        players__book_entry("- <hover:show_text:%player_uuid%>%player_name%</hover>"),
         ;
 
         Command(String defaultValue) {

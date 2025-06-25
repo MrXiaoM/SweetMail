@@ -33,7 +33,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static top.mrxiaom.sweetmail.utils.StringHelper.startsWith;
 import static top.mrxiaom.sweetmail.utils.Util.toTimestamp;
@@ -198,49 +197,55 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             if ("send".equalsIgnoreCase(args[0]) && args.length >= 2 && admin) {
                 Template template = TemplateConfig.inst().get(args[1]);
                 if (template == null) {
-                    return t(sender, "&e邮件模板 " + args[1] + " 不存在");
+                    return Messages.Command.send__no_template.tm(sender,
+                            Pair.of("%template%", args[1]));
                 }
                 List<OfflinePlayer> players = getPlayers(sender, args[2]);
                 if (players.isEmpty()) {
-                    return t(sender, "&e输入的接收者表达式共筛选出了 0 位玩家");
+                    return Messages.Command.send__no_players.tm(sender);
                 }
                 Result<Args> result = Args.parse(Util.consumeString(args, 3));
                 if (result.getError() != null) {
-                    String err = result.getError();
-                    return t(sender, "&e参数错误 " + err);
+                    return Messages.Command.send__wrong_arguments.tm(sender,
+                            Pair.of("%error%", result.getError()));
                 }
                 Args params = result.getValue();
                 String uuid = plugin.getMailDatabase().generateMailUUID();
                 Result<Mail> mail = template.createMail(uuid, players, params);
                 if (mail.getError() != null) {
-                    String err = mail.getError();
-                    return t(sender, "&e邮件发送失败: " + err);
+                    return Messages.Command.send__failed.tm(sender,
+                            Pair.of("%error%", mail.getError()));
                 }
                 plugin.getMailDatabase().sendMail(mail.getValue());
-                String playerNames = players.stream()
-                        .map(OfflinePlayer::getName)
-                        .collect(Collectors.joining(", "));
-                return t(sender, "&a成功向 " + playerNames + " 发送邮件模板 " + template.id + " " + params);
+                return Messages.Command.send__success.tm(sender,
+                        Pair.of("%players_count%", players.size()),
+                        Pair.of("%template%", template.id),
+                        Pair.of("%parameters%", params));
             }
             if ("players".equalsIgnoreCase(args[0]) && args.length >= 2 && admin) {
                 List<OfflinePlayer> players = getPlayers(sender, args[1]);
                 if (players.isEmpty()) {
-                    return t(sender, "&a接收者表达式&e " + args[1] + " &a共计算出&c 0 &e名玩家");
+                    return Messages.Command.players__empty.tm(sender,
+                            Pair.of("%formula%", args[1]));
                 }
+                int playersCount = players.size();
                 if (sender instanceof Player && args.length >= 3
                         && (args[2].equals("--book") || args[2].equals("-b"))
                 ) {
                     // 通过书与笔展示
                     List<Component> pages = new ArrayList<>();
                     int i = 0;
-                    while (i < players.size()) {
+                    while (i < playersCount) {
                         List<String> lines = new ArrayList<>();
-                        lines.add("共 " + players.size() + " 名玩家");
+                        lines.add(Messages.Command.players__book_header.str(Pair.of("%players_count%", playersCount)));
                         for (int j = 0; j < 10 && i < players.size(); j++, i++) {
                             OfflinePlayer player = players.get(i);
                             String uuid = player.getUniqueId().toString();
                             String name = player.getName() == null ? "[null]" : player.getName();
-                            lines.add("- <hover:show_text:" + uuid + ">" + name + "</hover>");
+                            lines.add(Messages.Command.players__book_entry.str(
+                                    Pair.of("%player_uuid%", uuid),
+                                    Pair.of("%player_name%", name)
+                            ));
                         }
                         pages.add(MiniMessageConvert.miniMessage(String.join("\n", lines)));
                     }
@@ -251,9 +256,19 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                             .build());
                 } else {
                     // 通过聊天展示
-                    t(sender, "&a接收者表达式&e " + args[1] + " &a共计算出&e " + players.size() + " &e位玩家，前&e 16 &a位名单如下:");
-                    for (OfflinePlayer player : players) {
-                        t(sender, "&7- &f" + player.getName());
+                    int count = Math.min(16, playersCount);
+                    Messages.Command.players__chat_header.tm(sender,
+                            Pair.of("%formula%", args[1]),
+                            Pair.of("%players_count%", playersCount),
+                            Pair.of("%count%", count));
+                    for (int i = 0; i < count; i++) {
+                        OfflinePlayer player = players.get(i);
+                        String uuid = player.getUniqueId().toString();
+                        String name = player.getName() == null ? "[null]" : player.getName();
+                        Messages.Command.players__chat_entry.tm(sender,
+                                Pair.of("%player_uuid%", uuid),
+                                Pair.of("%player_name%", name)
+                        );
                     }
                 }
                 return true;
