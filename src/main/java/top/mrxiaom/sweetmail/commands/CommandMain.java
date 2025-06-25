@@ -1,11 +1,13 @@
 package top.mrxiaom.sweetmail.commands;
 
 import com.google.common.collect.Lists;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,11 +27,17 @@ import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.TimedDraft;
 import top.mrxiaom.sweetmail.utils.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static top.mrxiaom.sweetmail.utils.StringHelper.startsWith;
+import static top.mrxiaom.sweetmail.utils.Util.toTimestamp;
 
 public class CommandMain extends AbstractPluginHolder implements CommandExecutor, TabCompleter {
     public static final String PERM_ADMIN = "sweetmail.admin";
@@ -37,10 +45,19 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     public static final String PERM_DRAFT_OTHER = "sweetmail.draft.other";
     public static final String PERM_BOX = "sweetmail.box";
     public static final String PERM_BOX_OTHER = "sweetmail.box.other";
+    private String defaultTimeSpan;
     public CommandMain(SweetMail plugin) {
         super(plugin);
         registerCommand("sweetmail", this);
         register();
+    }
+
+    @Override
+    public void reloadConfig(MemoryConfiguration config) {
+        defaultTimeSpan = config.getString("all-offline-players-default-timespan", "90d");
+        if (parseFromTimeSpan(defaultTimeSpan) == null) {
+            warn("[config.yml] 配置中的 all-offline-players-default-timespan 无法解析");
+        }
     }
 
     @Override
@@ -226,6 +243,145 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             Messages.help__admin.tm(sender);
         }
         return true;
+    }
+
+    public List<OfflinePlayer> getPlayers(CommandSender sender, String str) {
+        List<OfflinePlayer> list = new ArrayList<>();
+        if (str.startsWith("@")) {
+            int startIndex = str.indexOf('[');
+            int endIndex = str.lastIndexOf(']');
+            String type;
+            Map<String, String> parameters = new HashMap<>();
+            if (startIndex != -1 && endIndex != -1) {
+                type = str.substring(1, startIndex).toLowerCase();
+                String[] input = str.substring(startIndex + 1, endIndex).split(",");
+                for (String s : input) {
+                    if (s.isEmpty()) continue;
+                    String[] split = s.split("=", 2);
+                    if (split.length == 1) {
+                        parameters.put(split[0], "");
+                    } else {
+                        parameters.put(split[0], split[1]);
+                    }
+                }
+            } else {
+                type = str.substring(1).toLowerCase();
+            }
+            switch (type) {
+                case "all": {
+                    LocalDateTime fromTime, toTime;
+                    if (parameters.containsKey("timespan") || parameters.containsKey("ts")) {
+                        String strTimeSpan = parameters.getOrDefault("timespan", parameters.get("ts"));
+                        fromTime = parseFromTimeSpan(strTimeSpan);
+                        toTime = LocalDateTime.now();
+                    } else if (parameters.containsKey("from")) {
+                        fromTime = parseDateTime(parameters.get("from"));
+                        if (parameters.containsKey("to")) {
+                            toTime = parseDateTime(parameters.get("to"));
+                        } else {
+                            toTime = LocalDateTime.now();
+                        }
+                    } else {
+                        fromTime = parseFromTimeSpan(defaultTimeSpan);
+                        toTime = LocalDateTime.now();
+                    }
+                    if (fromTime != null && toTime != null) {
+                        long from = toTimestamp(fromTime), to = toTimestamp(toTime);
+                        for (OfflinePlayer player : Util.getOfflinePlayers()) {
+                            if (player == null || player.getName() == null) continue;
+                            long last = player.getLastPlayed();
+                            if (last >= from && last <= to) {
+                                list.add(player);
+                            }
+                        }
+                    }
+                    break;
+                }
+                case "self":
+                case "me": {
+                    if (sender instanceof Player) {
+                        list.add((Player) sender);
+                    }
+                    break;
+                }
+                case "online": {
+                    if (parameters.containsKey("bc")) {
+                        List<String> playerNames = DraftManager.inst().getAllPlayers();
+                        for (String name : playerNames) {
+                            OfflinePlayer player = Util.getOfflinePlayer(name).orElse(null);
+                            if (player == null || player.getName() == null) continue;
+                            list.add(player);
+                        }
+                        break;
+                    }
+                    list.addAll(Bukkit.getOnlinePlayers());
+                    break;
+                }
+                default:
+                    break;
+            }
+        } else {
+            for (String s : str.split(",")) {
+                Util.getOfflinePlayer(s).ifPresent(list::add);
+            }
+        }
+        return list;
+    }
+
+    @Nullable
+    public static LocalDateTime parseDateTime(String s) {
+        String[] split = s.split("_", 2);
+        String[] dateSplit = split[0].split("-", 3);
+        Integer year, month, date;
+        if (dateSplit.length == 2) {
+            year = LocalDate.now().getYear();
+            month = Util.parseInt(dateSplit[0]).orElse(null);
+            date = Util.parseInt(dateSplit[1]).orElse(null);
+        } else if (dateSplit.length == 3) {
+            year = Util.parseInt(dateSplit[0]).orElse(null);
+            month = Util.parseInt(dateSplit[1]).orElse(null);
+            date = Util.parseInt(dateSplit[2]).orElse(null);
+        } else {
+            return null;
+        }
+        if (year == null || month == null || date == null) return null;
+        LocalDate localDate = LocalDate.of(year, month, date);
+        LocalTime localTime = parseLocalTimeOrZero(split.length > 1 ? split[1] : null);
+        return localDate.atTime(localTime);
+    }
+
+    @NotNull
+    public static LocalTime parseLocalTimeOrZero(String str) {
+        if (str == null) return LocalTime.of(0, 0, 0);
+        String[] split = str.split(":", 3);
+        int hour = split.length > 0 ? Util.parseInt(split[0]).orElse(0) : 0;
+        int minute = split.length > 1 ? Util.parseInt(split[1]).orElse(0) : 0;
+        int second = split.length > 2 ? Util.parseInt(split[2]).orElse(0) : 0;
+        return LocalTime.of(hour, minute, second);
+    }
+
+    @Nullable
+    public static LocalDateTime parseFromTimeSpan(String s) {
+        long seconds = 0L;
+        String[] split = s.replaceAll("([dhms])", "$1 ").split(" ");
+        for (String str : split) {
+            int last = str.length() - 1;
+            if (last == -1) continue;
+            char unit = str.charAt(last);
+            Integer num = Util.parseInt(str.substring(0, last)).orElse(null);
+            if (num == null) continue;
+            switch (unit) {
+                case 'd': seconds += num * 86400L; break;
+                case 'h': seconds += num * 3600L; break;
+                case 'm': seconds += num * 60L; break;
+                case 's': seconds += num; break;
+                default: break;
+            }
+        }
+        if (seconds == 0L) {
+            return null;
+        }
+        return LocalDateTime.now().minusSeconds(seconds);
     }
 
     private static final List<String> emptyList = Lists.newArrayList();

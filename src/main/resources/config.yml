@@ -15,6 +15,9 @@ can-send-to-yourself: false
 ###########################################
 online-mode: auto
 
+# 设置使用 send 命令发送邮件给【距离现在，最久在多长时间内，上过线的玩家】的时间阈值
+all-offline-players-default-timespan: 90d
+
 # BungeeCord 广播设置
 bungeecord:
   # 是否启用 BungeeCord 跨服通知新邮件 发送与接收
