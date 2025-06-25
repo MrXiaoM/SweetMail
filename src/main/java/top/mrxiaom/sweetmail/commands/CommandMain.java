@@ -1,6 +1,8 @@
 package top.mrxiaom.sweetmail.commands;
 
 import com.google.common.collect.Lists;
+import net.kyori.adventure.inventory.Book;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -30,10 +32,7 @@ import top.mrxiaom.sweetmail.utils.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static top.mrxiaom.sweetmail.utils.StringHelper.startsWith;
@@ -196,18 +195,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     return t(sender, "&e只有玩家才能执行该命令");
                 }
             }
-            if ("send".equalsIgnoreCase(args[0]) && admin) {
+            if ("send".equalsIgnoreCase(args[0]) && args.length >= 2 && admin) {
                 Template template = TemplateConfig.inst().get(args[1]);
                 if (template == null) {
                     return t(sender, "&e邮件模板 " + args[1] + " 不存在");
                 }
-                List<OfflinePlayer> players = new ArrayList<>();
-                for (String s : args[2].split(",")) {
-                    OfflinePlayer player = Util.getOfflinePlayer(s).orElse(null);
-                    if (player == null) {
-                        return t(sender, "&e玩家 " + s + " 没有登录过这个子服");
-                    }
-                    players.add(player);
+                List<OfflinePlayer> players = getPlayers(sender, args[2]);
+                if (players.isEmpty()) {
+                    return t(sender, "&e输入的接收者表达式共筛选出了 0 位玩家");
                 }
                 Result<Args> result = Args.parse(Util.consumeString(args, 3));
                 if (result.getError() != null) {
@@ -226,6 +221,42 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                         .map(OfflinePlayer::getName)
                         .collect(Collectors.joining(", "));
                 return t(sender, "&a成功向 " + playerNames + " 发送邮件模板 " + template.id + " " + params);
+            }
+            if ("players".equalsIgnoreCase(args[0]) && args.length >= 2 && admin) {
+                List<OfflinePlayer> players = getPlayers(sender, args[1]);
+                if (players.isEmpty()) {
+                    return t(sender, "&a接收者表达式&e " + args[1] + " &a共计算出&c 0 &e名玩家");
+                }
+                if (sender instanceof Player && args.length >= 3
+                        && (args[2].equals("--book") || args[2].equals("-b"))
+                ) {
+                    // 通过书与笔展示
+                    List<Component> pages = new ArrayList<>();
+                    int i = 0;
+                    while (i < players.size()) {
+                        List<String> lines = new ArrayList<>();
+                        lines.add("共 " + players.size() + " 名玩家");
+                        for (int j = 0; j < 10 && i < players.size(); j++, i++) {
+                            OfflinePlayer player = players.get(i);
+                            String uuid = player.getUniqueId().toString();
+                            String name = player.getName() == null ? "[null]" : player.getName();
+                            lines.add("- <hover:show_text:" + uuid + ">" + name + "</hover>");
+                        }
+                        pages.add(MiniMessageConvert.miniMessage(String.join("\n", lines)));
+                    }
+                    Util.openBook((Player) sender, Book.builder()
+                            .title(Component.text("SweetMail"))
+                            .author(Component.text("SweetMail"))
+                            .pages(pages)
+                            .build());
+                } else {
+                    // 通过聊天展示
+                    t(sender, "&a接收者表达式&e " + args[1] + " &a共计算出&e " + players.size() + " &e位玩家，前&e 16 &a位名单如下:");
+                    for (OfflinePlayer player : players) {
+                        t(sender, "&7- &f" + player.getName());
+                    }
+                }
+                return true;
             }
             if ("reload".equalsIgnoreCase(args[0]) && admin) {
                 if (args.length > 1 && "database".equalsIgnoreCase(args[1])) {
@@ -386,7 +417,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
 
     private static final List<String> emptyList = Lists.newArrayList();
     private static final List<String> listArg0 = Lists.newArrayList("draft", "inbox", "outbox");
-    private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "save", "send", "reload");
+    private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "save", "send", "players", "reload");
     private static final List<String> listArg1Admin = Lists.newArrayList("inbox", "outbox");
     private static final List<String> listArgInBox = Lists.newArrayList("all", "unread");
     private static final List<String> listVarArgSend = Lists.newArrayList("键=值");
@@ -408,6 +439,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
                 if ("send".equalsIgnoreCase(args[0])) {
                     return startsWith(TemplateConfig.inst().keys(), args[1]);
+                }
+                if ("players".equalsIgnoreCase(args[0])) {
+                    return null;
                 }
                 if ("save".equalsIgnoreCase(args[0])) {
                     return listArg1Save;

@@ -27,7 +27,8 @@ public enum Messages implements IHolderAccessor {
             "  &f/mail admin timed <定时序列> &8-- &e查看定时发送邮件序列简要信息",
             "  &f/mail admin cancel <定时序列> &8-- &e取消定时发送邮件序列",
             "  &f/mail save <模板> &8-- &e将你的草稿保存为邮件模板",
-            "  &f/mail send <模板> <玩家> [参数...] &8-- &e根据已配置的模板发送邮件（多个玩家可用英文逗号隔开）",
+            "  &f/mail send <模板> <接收者表达式> [参数...] &8-- &e根据已配置的模板发送邮件（接收者格式详见文档）",
+            "  &f/mail players <接收者表达式> [--book/-b] &8-- &e计算接收者表达式最终的玩家列表（用于测试）",
             "  &f/mail reload database &8-- &3重载数据库",
             "  &f/mail reload &8-- &3重载配置文件"),
     ;
