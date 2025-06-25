@@ -415,11 +415,12 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
         return LocalDateTime.now().minusSeconds(seconds);
     }
 
-    private static final List<String> emptyList = Lists.newArrayList();
+    private static final List<String> emptyList = Collections.emptyList();
     private static final List<String> listArg0 = Lists.newArrayList("draft", "inbox", "outbox");
     private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "save", "send", "players", "reload");
     private static final List<String> listArg1Admin = Lists.newArrayList("inbox", "outbox");
     private static final List<String> listArgInBox = Lists.newArrayList("all", "unread");
+    private static final List<String> listArgPlayers = Lists.newArrayList("@all", "@all[ts=]", "@all[from=,to=]", "@self", "@me", "@online", "@online[bc]");
     private static final List<String> listVarArgSend = Lists.newArrayList("键=值");
     private static final List<String> listArg1Save = Lists.newArrayList("<模板名>");
     @Nullable
@@ -441,7 +442,11 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     return startsWith(TemplateConfig.inst().keys(), args[1]);
                 }
                 if ("players".equalsIgnoreCase(args[0])) {
-                    return null;
+                    List<String> list = new ArrayList<>(listArgPlayers);
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        list.add(player.getName());
+                    }
+                    return startsWith(list, args[1]);
                 }
                 if ("save".equalsIgnoreCase(args[0])) {
                     return listArg1Save;
@@ -469,7 +474,11 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     }
                 }
                 if ("send".equalsIgnoreCase(args[0])) {
-                    return null;
+                    List<String> list = new ArrayList<>(listArgPlayers);
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        list.add(player.getName());
+                    }
+                    return startsWith(list, args[2]);
                 }
             }
             if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX_OTHER)) {
