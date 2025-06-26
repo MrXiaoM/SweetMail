@@ -36,6 +36,10 @@ public class MiniMessageConvert {
         }
     }
 
+    public static MiniMessage miniMessage() {
+        return miniMessage;
+    }
+
     public static String miniMessage(Component component) {
         return component == null
                 ? ""

@@ -10,6 +10,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.io.File;
@@ -61,14 +62,14 @@ public class Draft {
     public final DraftManager manager;
     public Draft(DraftManager manager, String sender) {
         this.manager = manager;
-        this.title = manager.defaultTitle();
+        this.title = MiniMessageConvert.legacyToMiniMessage(manager.defaultTitle());
         this.sender = sender;
     }
 
     public void reset() {
         receiver = "";
         iconKey = "default";
-        title = manager.defaultTitle();
+        title = MiniMessageConvert.legacyToMiniMessage(manager.defaultTitle());
         content = new ArrayList<>();
         attachments = new ArrayList<>();
         advSenderDisplay = null;
@@ -82,7 +83,7 @@ public class Draft {
         Draft draft = new Draft(manager, sender);
         draft.receiver = receiver;
         draft.iconKey = iconKey;
-        draft.title = title;
+        draft.title = MiniMessageConvert.legacyToMiniMessage(title);
         if (!content.isEmpty()) draft.content.addAll(content);
         if (!attachments.isEmpty()) for (IAttachment attachment : attachments) {
             String serialize = attachment.serialize();
@@ -100,7 +101,7 @@ public class Draft {
         Draft draft = new Draft(manager, sender);
         draft.receiver = config.getString("receiver", "");
         draft.iconKey = config.getString("icon_key", "default");
-        draft.title = config.getString("title", manager.defaultTitle());
+        draft.title = MiniMessageConvert.legacyToMiniMessage(config.getString("title", manager.defaultTitle()));
         draft.content = config.getStringList("content");
         List<IAttachment> attachments = new ArrayList<>();
         List<String> list = config.getStringList("attachments");

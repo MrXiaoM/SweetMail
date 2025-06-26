@@ -1,6 +1,11 @@
 package top.mrxiaom.sweetmail.config.gui;
 
 import com.google.common.collect.Lists;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -31,10 +36,7 @@ import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
 import top.mrxiaom.sweetmail.gui.GuiIcon;
-import top.mrxiaom.sweetmail.utils.ChatPrompter;
-import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.Pair;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -295,6 +297,106 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
         return regex.matcher(name).matches();
     }
 
+    /**
+     * 根据玩家拥有的权限，返回 MiniMessage 序列化器
+     * <ul>
+     *     <li><code>sweetmail.format.all</code> 所有标签（不推荐给玩家）</li>
+     *     <li><code>sweetmail.format.color.basic</code> 基本颜色和十六进制颜色</li>
+     *     <li><code>sweetmail.format.color.gradient</code> 渐变颜色</li>
+     *     <li><code>sweetmail.format.color.rainbow</code> 彩虹颜色</li>
+     *     <li><code>sweetmail.format.decoration.basic</code> 加粗、斜体、下划线、删除线</li>
+     *     <li><code>sweetmail.format.decoration.bold</code> 加粗</li>
+     *     <li><code>sweetmail.format.decoration.italic</code> 斜体</li>
+     *     <li><code>sweetmail.format.decoration.underline</code> 下划线</li>
+     *     <li><code>sweetmail.format.decoration.strike</code> 删除线</li>
+     *     <li><code>sweetmail.format.decoration.obfuscated</code> 乱码</li>
+     *     <li><code>sweetmail.format.shadow</code> 文字阴影</li>
+     *     <li><code>sweetmail.format.font</code> 自定义字体</li>
+     *     <li><code>sweetmail.format.translatable</code> 客户端翻译</li>
+     *     <li><code>sweetmail.format.keybind</code> 按键显示</li>
+     *     <li><code>sweetmail.format.hover</code> 悬停显示</li>
+     *     <li><code>sweetmail.format.click</code> 点击操作</li>
+     *     <li><code>sweetmail.format.insertion</code> Shift点击插入操作</li>
+     * </ul>
+     */
+    public MiniMessage getMiniMessage(Player player) {
+        if (player.hasPermission("sweetmail.format.all")) {
+            return MiniMessageConvert.miniMessage();
+        }
+        List<TagResolver> tags = new ArrayList<>();
+        if (player.hasPermission("sweetmail.format.color.basic")) {
+            tags.add(StandardTags.color());
+        }
+        if (player.hasPermission("sweetmail.format.color.gradient")) {
+            tags.add(StandardTags.gradient());
+        }
+        if (player.hasPermission("sweetmail.format.color.rainbow")) {
+            tags.add(StandardTags.rainbow());
+        }
+        if (player.hasPermission("sweetmail.format.decoration.basic")) {
+            tags.add(StandardTags.decorations(TextDecoration.BOLD));
+            tags.add(StandardTags.decorations(TextDecoration.ITALIC));
+            tags.add(StandardTags.decorations(TextDecoration.UNDERLINED));
+            tags.add(StandardTags.decorations(TextDecoration.STRIKETHROUGH));
+        } else {
+            if (player.hasPermission("sweetmail.format.decoration.bold")) {
+                tags.add(StandardTags.decorations(TextDecoration.BOLD));
+            }
+            if (player.hasPermission("sweetmail.format.decoration.italic")) {
+                tags.add(StandardTags.decorations(TextDecoration.ITALIC));
+            }
+            if (player.hasPermission("sweetmail.format.decoration.underline")) {
+                tags.add(StandardTags.decorations(TextDecoration.UNDERLINED));
+            }
+            if (player.hasPermission("sweetmail.format.decoration.strike")) {
+                tags.add(StandardTags.decorations(TextDecoration.STRIKETHROUGH));
+            }
+        }
+        if (player.hasPermission("sweetmail.format.decoration.obfuscated")) {
+            tags.add(StandardTags.decorations(TextDecoration.OBFUSCATED));
+        }
+        if (player.hasPermission("sweetmail.format.shadow")) {
+            tags.add(StandardTags.shadowColor());
+        }
+        if (player.hasPermission("sweetmail.format.font")) {
+            tags.add(StandardTags.font());
+        }
+        if (player.hasPermission("sweetmail.format.translatable")) {
+            tags.add(StandardTags.translatable());
+            tags.add(StandardTags.translatableFallback());
+        }
+        if (player.hasPermission("sweetmail.format.keybind")) {
+            tags.add(StandardTags.keybind());
+        }
+        if (player.hasPermission("sweetmail.format.hover")) {
+            tags.add(StandardTags.hoverEvent());
+        }
+        if (player.hasPermission("sweetmail.format.click")) {
+            tags.add(StandardTags.clickEvent());
+        }
+        if (player.hasPermission("sweetmail.format.insertion")) {
+            tags.add(StandardTags.insertion());
+        }
+        TagResolver[] array = tags.toArray(new TagResolver[0]);
+        return MiniMessage.builder().tags(TagResolver.builder().resolvers(array).build()).build();
+    }
+
+    public String format(Player player, String text) {
+        MiniMessage miniMessage = getMiniMessage(player);
+        Component component = MiniMessageConvert.miniMessage(text);
+        return miniMessage.serialize(component);
+    }
+
+    public List<String> format(Player player, List<String> lines) {
+        MiniMessage miniMessage = getMiniMessage(player);
+        List<String> list = new ArrayList<>();
+        for (String line : lines) {
+            Component component = MiniMessageConvert.miniMessage(line);
+            list.add(miniMessage.serialize(component));
+        }
+        return list;
+    }
+
     public static MenuDraftConfig inst() {
         return instanceOf(MenuDraftConfig.class);
     }
@@ -386,7 +488,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 iconTitlePromptTips,
                                 iconTitlePromptCancel,
                                 title -> {
-                                    draft.title = title;
+                                    draft.title = format(player, title);
                                     draft.save();
                                     reopen.run();
                                 }, reopen
@@ -400,7 +502,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             ItemMeta rawMeta = cursor != null ? cursor.getItemMeta() : null;
                             if (rawMeta instanceof BookMeta) {
                                 BookMeta meta = (BookMeta) rawMeta;
-                                draft.content = meta.getPages();
+                                draft.content = format(player, meta.getPages());
                                 draft.save();
                                 applyIcon(this, view, player, slot);
                                 Util.updateInventory(player);
