@@ -5,7 +5,6 @@ import com.google.common.io.ByteArrayDataOutput;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -104,16 +103,10 @@ public class Util {
         return MiniMessageConvert.miniMessage(s);
     }
 
-    public static Component legacy(String s) {
-        return s == null
-                ? Component.empty()
-                : LegacyComponentSerializer.legacySection().deserialize(s);
-    }
-
-    public static List<Component> legacy(List<String> list) {
+    public static List<Component> toMiniMessage(List<String> list) {
         List<Component> components = new ArrayList<>();
         for (String s : list) {
-            components.add(legacy(s));
+            components.add(MiniMessageConvert.miniMessage(s));
         }
         return components;
     }
@@ -129,12 +122,13 @@ public class Util {
     }
 
     public static Book legacyBook(List<String> pages, String author) {
-        List<Component> bookPages = pages.isEmpty() ? Lists.newArrayList(Component.empty()) : Util.legacy(pages);
-        Component bookAuthor = Util.legacy(author);
+        List<Component> bookPages = pages.isEmpty()
+                ? Lists.newArrayList(Component.empty())
+                : Util.toMiniMessage(pages);
         return Book.builder()
                 .title(Component.text("SweetMail"))
+                .author(Component.text(author))
                 .pages(bookPages)
-                .author(bookAuthor)
                 .build();
     }
 
