@@ -1,5 +1,3 @@
-import java.util.Locale
-
 plugins {
     java
     `maven-publish`
@@ -20,7 +18,7 @@ java {
 }
 
 group = "top.mrxiaom"
-version = "1.0.3"
+version = "1.0.4"
 
 allprojects {
     apply(plugin="java")
