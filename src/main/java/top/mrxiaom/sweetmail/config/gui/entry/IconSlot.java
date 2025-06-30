@@ -87,15 +87,16 @@ public class IconSlot {
                     case "read":
                         lore.addAll(mail.read ? loreRead : loreUnread);
                         break;
-                    case "content":
-                        for (String page : mail.content) {
+                    case "content": {
+                        for (String page : mail.getContent(target)) {
                             lore.addAll(Arrays.asList(page.split("\n")));
                         }
                         break;
-                    default:
+                    }
+                    default: {
                         if (key.startsWith("content;")) {
                             String prefix = key.substring(8);
-                            for (String page : mail.content) {
+                            for (String page : mail.getContent(target)) {
                                 for (String s : page.split("\n")) {
                                     lore.add(prefix + s);
                                 }
@@ -109,7 +110,7 @@ public class IconSlot {
                             String ellipsis = args.length >= 3 ? args[2] : "...";
                             if (num != null) {
                                 int total = 0;
-                                for (String page : mail.content) {
+                                for (String page : mail.getContent(target)) {
                                     int length = page.length();
                                     boolean end;
                                     String text;
@@ -131,6 +132,7 @@ public class IconSlot {
                         }
                         lore.add(key);
                         break;
+                    }
                 }
             }
         }

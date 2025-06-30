@@ -83,13 +83,17 @@ public class Mail {
         String author = senderDisplay == null || senderDisplay.isEmpty()
                 ? Util.getPlayerName(sender)
                 : senderDisplay;
+        return Util.legacyBook(getContent(player), author);
+    }
+
+    public List<String> getContent(Player player) {
         List<String> content = new ArrayList<>();
         if (enablePlaceholders) {
             content.addAll(PAPI.setPlaceholders(player, this.content));
         } else {
             content.addAll(this.content);
         }
-        return Util.legacyBook(PAPI.setPlaceholders(player, content), author);
+        return content;
     }
 
     public void noticeSent() {
