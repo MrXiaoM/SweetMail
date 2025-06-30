@@ -52,6 +52,10 @@ public class Draft {
      */
     public String advReceivers = null;
     /**
+     * 高级设置 是否在正文启用PAPI变量
+     */
+    public boolean advPlaceholders = false;
+    /**
      * 附件在邮件发出后多少天到期
      */
     public int outdateDays = 0;
@@ -74,6 +78,7 @@ public class Draft {
         attachments = new ArrayList<>();
         advSenderDisplay = null;
         advReceivers = null;
+        advPlaceholders = false;
         outdateDays = 0;
         lastEditTime = null;
         save();
@@ -92,6 +97,7 @@ public class Draft {
         }
         draft.advSenderDisplay = advSenderDisplay;
         draft.advReceivers = advReceivers;
+        draft.advPlaceholders = advPlaceholders;
         draft.outdateDays = outdateDays;
         draft.lastEditTime = lastEditTime;
         return draft;
@@ -114,6 +120,7 @@ public class Draft {
         draft.attachments = attachments;
         draft.advSenderDisplay = config.getString("advance.sender_display", null);
         draft.advReceivers = config.getString("advance.receivers", null);
+        draft.advPlaceholders = config.getBoolean("advance.placeholders", false);
         draft.outdateDays = config.getInt("advance.outdate_days", 0);
         draft.lastEditTime = config.contains("last-edit") ? config.getLong("last-edit") : null;
         return draft;
@@ -140,6 +147,7 @@ public class Draft {
         config.set("attachments", attachmentsList);
         if (advSenderDisplay != null) config.set("advance.sender_display", advSenderDisplay);
         if (advReceivers != null) config.set("advance.receivers", advReceivers);
+        config.set("advance.placeholders", advPlaceholders);
         config.set("advance.outdate_days", outdateDays);
         if (lastEditTime != null) config.set("last-edit", lastEditTime);
     }
@@ -167,7 +175,7 @@ public class Draft {
         long outdateTime = outdateDays > 0
                 ? (Util.toTimestamp(LocalDateTime.now()) + (outdateDays * 86400L * 1000L))
                 : 0L;
-        return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments, outdateTime);
+        return new Mail(uuid, sender, senderDisplay, iconKeyMail, realReceivers, title, content, attachments, advPlaceholders, outdateTime);
     }
 
     /**

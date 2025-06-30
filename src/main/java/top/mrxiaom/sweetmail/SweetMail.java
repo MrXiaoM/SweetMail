@@ -383,9 +383,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                     attachments.add(attachment);
                 }
             }
+            boolean enablePlaceholders = draft.isEnablePlaceholders();
             long outdateTime = draft.getOutdateTime();
 
-            Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments, outdateTime);
+            Mail mail = new Mail(uuid, sender, senderDisplay, icon, receivers, title, content, attachments, enablePlaceholders, outdateTime);
             db.sendMail(mail);
             return Status.SUCCESS;
         }

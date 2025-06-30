@@ -63,6 +63,7 @@ public abstract class IMail {
         private String title = "";
         private List<String> content = new ArrayList<>();
         private List<IAttachment> attachments = new ArrayList<>();
+        private boolean enablePlaceholders = false;
         private long outdateTime = 0L;
         private MailDraft(String sender) {
             this.sender = sender;
@@ -116,6 +117,13 @@ public abstract class IMail {
          */
         public List<IAttachment> getAttachments() {
             return attachments;
+        }
+
+        /**
+         * 获取邮件正文是否要使用 PAPI 变量
+         */
+        public boolean isEnablePlaceholders() {
+            return enablePlaceholders;
         }
 
         /**
@@ -248,6 +256,13 @@ public abstract class IMail {
         public MailDraft addAttachments(IAttachment... attachments) {
             Collections.addAll(this.attachments, attachments);
             return this;
+        }
+
+        /**
+         * 设置邮件正文是否要使用 PAPI 变量
+         */
+        public void setEnablePlaceholders(boolean enablePlaceholders) {
+            this.enablePlaceholders = enablePlaceholders;
         }
 
         /**

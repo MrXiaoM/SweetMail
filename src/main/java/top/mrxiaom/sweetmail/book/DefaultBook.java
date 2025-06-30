@@ -12,14 +12,13 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
+import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.gui.IGui;
 import top.mrxiaom.sweetmail.utils.Util;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DefaultBook extends AbstractPluginHolder implements IBook, Listener {
     private boolean enableReturnWhenMove = false;
@@ -42,7 +41,13 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
     public void openBook(Player player, Draft draft) {
         if (!openForDraft) return;
         IGui gui = plugin.getGuiManager().getOpeningGui(player);
-        Book book = Util.legacyBook(draft.content, player.getName());
+        List<String> content = new ArrayList<>();
+        if (draft.advPlaceholders) {
+            content.addAll(PAPI.setPlaceholders(player, draft.content));
+        } else {
+            content.addAll(draft.content);
+        }
+        Book book = Util.legacyBook(content, player.getName());
         Util.openBook(player, book);
         afterOpenBook(gui);
     }
@@ -51,7 +56,7 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
     public void openBook(Player player, Mail mail) {
         if (!openForMail) return;
         IGui gui = plugin.getGuiManager().getOpeningGui(player);
-        Util.openBook(player, mail.generateBook());
+        Util.openBook(player, mail.generateBook(player));
         afterOpenBook(gui);
     }
 

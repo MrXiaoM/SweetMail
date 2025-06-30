@@ -22,4 +22,18 @@ public class MailWithStatus extends Mail {
     ) {
         super(uuid, sender, senderDisplay, icon, receivers, title, content, attachments, outdateTime);
     }
+    public MailWithStatus(
+            String uuid,
+            String sender,
+            String senderDisplay,
+            String icon,
+            List<String> receivers,
+            String title,
+            List<String> content,
+            List<IAttachment> attachments,
+            boolean enablePlaceholders,
+            long outdateTime
+    ) {
+        super(uuid, sender, senderDisplay, icon, receivers, title, content, attachments, enablePlaceholders, outdateTime);
+    }
 }

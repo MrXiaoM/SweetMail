@@ -41,9 +41,10 @@ public class Template {
     public final String title;
     public final List<String> content;
     public final List<String> rawAttachments;
+    public final boolean enablePlaceholders;
     public final long outdateTimeSeconds;
 
-    public Template(String id, Map<String, MailVariable> variables, String senderDisplay, String icon, String title, List<String> content, List<String> rawAttachments, long outdateTimeSeconds) {
+    public Template(String id, Map<String, MailVariable> variables, String senderDisplay, String icon, String title, List<String> content, List<String> rawAttachments, boolean enablePlaceholders, long outdateTimeSeconds) {
         this.id = id;
         this.variables = variables;
         this.senderDisplay = senderDisplay;
@@ -51,6 +52,7 @@ public class Template {
         this.title = title;
         this.content = content;
         this.rawAttachments = rawAttachments;
+        this.enablePlaceholders = enablePlaceholders;
         this.outdateTimeSeconds = outdateTimeSeconds;
     }
 
@@ -95,7 +97,7 @@ public class Template {
                 ? (Util.toTimestamp(now()) + (this.outdateTimeSeconds * 1000L))
                 : 0L;
 
-        return Result.success(new Mail(uuid, IMail.SERVER_SENDER, senderDisplay, icon, receiverIds, title, content, attachments, outdateTime));
+        return Result.success(new Mail(uuid, IMail.SERVER_SENDER, senderDisplay, icon, receiverIds, title, content, attachments, enablePlaceholders, outdateTime));
     }
 
     public static void save(Player player, Draft draft, String id) {
@@ -135,6 +137,7 @@ public class Template {
         String outdateTime = draft.outdateDays > 0
                 ? (draft.outdateDays + "d")
                 : "infinite";
+        config.set("mail.enable-placeholders", draft.advPlaceholders);
         config.set("mail.outdate-time", outdateTime);
 
         setComments(config, sample, "variables", "mail",
@@ -189,6 +192,7 @@ public class Template {
             content.add(String.join("\n", list));
         }
         List<String> rawAttachments = config.getStringList("mail.attachments");
+        boolean enablePlaceholders = config.getBoolean("mail.enable-placeholders", false);
         String outdateTimeString = config.getString("mail.outdate-time", "0");
         long outdateTimeSeconds;
         if (outdateTimeString.equals("0") || outdateTimeString.equals("infinite")) {
@@ -203,6 +207,6 @@ public class Template {
             }
         }
 
-        return new Template(id, variables, sender, icon, title, content, rawAttachments, outdateTimeSeconds);
+        return new Template(id, variables, sender, icon, title, content, rawAttachments, enablePlaceholders, outdateTimeSeconds);
     }
 }

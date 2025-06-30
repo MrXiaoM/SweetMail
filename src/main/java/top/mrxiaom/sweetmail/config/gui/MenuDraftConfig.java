@@ -427,6 +427,8 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         Pair.of("%hours%", outdateHours),
                         Pair.of("%time%", plugin.text().toStringTips(time))));
             }
+            // TODO: 将启用 PAPI 变量选项加到高级设置
+            draft.advPlaceholders = player.hasPermission("sweetmail.admin");
             draft.lastEditTime = now;
             draft.save();
         }
