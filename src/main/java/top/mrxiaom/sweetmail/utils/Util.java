@@ -5,14 +5,19 @@ import com.google.common.io.ByteArrayDataOutput;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.depend.ItemsAdder;
@@ -135,6 +140,23 @@ public class Util {
     public static void openBook(Player player, Book book) {
         player.closeInventory();
         adventure.player(player).openBook(book);
+    }
+
+    public static void openBookLegacy(Player player, Book book) {
+        player.closeInventory();
+        ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
+        ItemMeta m = bookItem.getItemMeta();
+        if (m instanceof BookMeta) {
+            BookMeta meta = (BookMeta) m;
+            LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+            meta.setTitle(legacy.serialize(book.title()));
+            meta.setAuthor(legacy.serialize(book.author()));
+            for (Component page : book.pages()) {
+                meta.addPage(legacy.serialize(page));
+            }
+            bookItem.setItemMeta(meta);
+            player.openBook(bookItem);
+        }
     }
 
     public static void sendMessage(CommandSender sender, String message) {

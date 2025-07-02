@@ -22,7 +22,7 @@ import java.util.*;
 
 public class DefaultBook extends AbstractPluginHolder implements IBook, Listener {
     private boolean enableReturnWhenMove = false;
-    private boolean openForMail, openForDraft;
+    private boolean openForMail, openForDraft, useLegacyBook;
     public Map<UUID, Listener> listeners = new HashMap<>();
     public DefaultBook(SweetMail plugin) {
         super(plugin);
@@ -35,6 +35,7 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
         enableReturnWhenMove = config.getBoolean("book.return-when-move");
         openForMail = config.getBoolean("book.open-for-mail", true);
         openForDraft = config.getBoolean("book.open-for-draft", true);
+        useLegacyBook = config.getBoolean("book.use-legacy-book", false);
     }
 
     @Override
@@ -48,7 +49,11 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
             content.addAll(draft.content);
         }
         Book book = Util.legacyBook(content, player.getName());
-        Util.openBook(player, book);
+        if (useLegacyBook) {
+            Util.openBookLegacy(player, book);
+        } else {
+            Util.openBook(player, book);
+        }
         afterOpenBook(gui);
     }
 
@@ -56,7 +61,12 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
     public void openBook(Player player, Mail mail) {
         if (!openForMail) return;
         IGui gui = plugin.getGuiManager().getOpeningGui(player);
-        Util.openBook(player, mail.generateBook(player));
+        Book book = mail.generateBook(player);
+        if (useLegacyBook) {
+            Util.openBookLegacy(player, book);
+        } else {
+            Util.openBook(player, book);
+        }
         afterOpenBook(gui);
     }
 

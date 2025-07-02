@@ -137,6 +137,11 @@ book:
   open-for-draft: true
   # 是否允许默认的书本实现，在左键点击收件箱、发件箱的邮件图标时，打开书与笔预览
   open-for-mail: true
+  # 是否使用过时的书本实现
+  # 如果发现书与笔界面无法打开，请开启该选项
+  # - 关闭该选项，则使用 adventure-platform-bukkit 的书本实现，完全支持 MiniMessage
+  # - 开启该选项，则使用服务端自带的书本实现，不完全支持 MiniMessage（点击、悬停显示等不受支持），但相对稳定
+  use-legacy-book: false
 
 # 在 Paper 服务端中，菜单标题 <offset:> 变量的偏移符所用字体
 offset-font: 'mrxiaom:sweetmail'
