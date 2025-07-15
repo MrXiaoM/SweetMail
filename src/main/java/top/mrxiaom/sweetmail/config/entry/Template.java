@@ -75,7 +75,7 @@ public class Template {
         }
 
         String senderDisplay = replace(this.senderDisplay, replacements);
-        String icon = "!" + replace(this.icon, replacements);
+        String icon = replace(this.icon, replacements);
         List<String> receiverIds = new ArrayList<>();
         for (OfflinePlayer receiver : receivers) {
             receiverIds.add(plugin.getPlayerKey(receiver));

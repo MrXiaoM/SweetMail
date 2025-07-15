@@ -458,6 +458,7 @@ public class ItemStackUtil {
     }
 
     public static ItemStack getItem(Player player, String str) {
+        if (str.startsWith("!")) str = str.substring(1);
         for (Map.Entry<String, ItemProvider> entry : itemProviders.entrySet()) {
             if (str.startsWith(entry.getKey())) {
                 String argument = str.substring(entry.getKey().length());
