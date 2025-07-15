@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     java
     `maven-publish`
@@ -42,6 +44,7 @@ allprojects {
 }
 
 val shadowLink = configurations.create("shadowLink")
+val modern = configurations.create("modern")
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     // Minecraft
@@ -77,38 +80,61 @@ dependencies {
     implementation("com.github.technicallycoded:FoliaLib:0.4.4")
     implementation(project(":paper"))
     "shadowLink"(project(":paper:craft-engine"))
+    "modern"(project(":paper:modern"))
 }
 
 tasks {
-    shadowJar {
-        configurations.add(shadowLink)
+    val relocations = mapOf(
+        "org.intellij.lang.annotations" to "annotations.intellij",
+        "org.jetbrains.annotations" to "annotations.jetbrains",
+        "de.tr7zw.changeme.nbtapi" to "nbtapi",
+        "com.zaxxer.hikari" to "hikari",
+        "org.slf4j" to "slf4j",
+        "com.tcoded.folialib" to "folialib",
+    )
+    val shadowLegacy = configureShadow("shadowLegacy") {
+        if (isRelease) {
+            archiveClassifier.set("legacy")
+        } else {
+            archiveClassifier.set("legacy-unstable")
+        }
         mapOf(
-            "org.intellij.lang.annotations" to "annotations.intellij",
-            "org.jetbrains.annotations" to "annotations.jetbrains",
-            "de.tr7zw.changeme.nbtapi" to "nbtapi",
-            "com.zaxxer.hikari" to "hikari",
-            "org.slf4j" to "slf4j",
             "net.kyori" to "kyori",
-            "com.tcoded.folialib" to "folialib",
-        ).forEach { (original, target) ->
+            "com.google.gson" to "gson",
+        ).plus(relocations).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
+        }
+        exclude("plugin.modern.yml")
+        rename {
+            if (it == "plugin.legacy.yml") "plugin.yml" else it
         }
         ignoreRelocations("top/mrxiaom/sweetmail/utils/inventory/PaperInventoryFactory.class")
         ignoreRelocations("top/mrxiaom/sweetmail/utils/items/CraftEngineProviderImpl.class")
     }
-    create("release")
-    withType<Jar> {
+    val shadowModern = configureShadow("shadowModern") {
         if (isRelease) {
-            archiveClassifier.set("")
+            archiveClassifier.set("modern")
         } else {
-            archiveClassifier.set("unstable")
+            archiveClassifier.set("modern-unstable")
         }
+        configurations.add(modern)
+        dependencies {
+            exclude { it.moduleGroup == "net.kyori" }
+            exclude(dependency("com.google.code.gson:gson"))
+        }
+        exclude("plugin.legacy.yml")
+        rename {
+            if (it == "plugin.modern.yml") "plugin.yml" else it
+        }
+        relocations.forEach { (original, target) ->
+            relocate(original, "top.mrxiaom.sweetmail.utils.$target")
+        }
+        ignoreRelocations("top/mrxiaom/sweetmail/utils/items/CraftEngineProviderImpl.class")
     }
-    jar {
-        archiveClassifier.set("api")
-    }
+    create("release")
     build {
-        dependsOn(shadowJar)
+        dependsOn(shadowLegacy)
+        dependsOn(shadowModern)
     }
     processResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -116,6 +142,7 @@ tasks {
         from(sourceSets.main.get().resources.srcDirs) {
             expand("version" to if (isRelease) version else ("$version-unstable"))
             include("plugin.yml")
+            include("plugin.modern.yml")
         }
     }
     javadoc {
@@ -146,4 +173,23 @@ publishing {
             version = project.version.toString()
         }
     }
+}
+fun TaskContainer.configureShadow(
+    name: String,
+    block: ShadowJar.() -> Unit
+): ShadowJar = create<ShadowJar>(name) {
+    group = "shadow"
+    manifest.inheritFrom(project.tasks.jar.get().manifest)
+    from(project.sourceSets.main.get().output)
+    configurations.add(
+        project.configurations.findByName("runtimeClasspath") ?: project.configurations.findByName("runtime")
+    )
+    configurations.add(shadowLink)
+    exclude("META-INF/INDEX.LIST", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA", "module-info.class")
+    dependencies {
+        exclude(dependency(project.dependencies.gradleApi()))
+    }
+    destinationDirectory.set(project.file("out"))
+
+    block()
 }

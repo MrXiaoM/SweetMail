@@ -1,0 +1,31 @@
+name: SweetMail
+version: '${version}'
+main: top.mrxiaom.sweetmail.SweetMail
+paper-plugin-loader: top.mrxiaom.sweetmail.paper.PaperPluginLoader
+api-version: 1.19
+softdepend:
+  - Vault
+  - PlaceholderAPI
+  - MythicMobs
+  - ItemsAdder
+  - LangUtils
+  - CraftEngine
+  - ProtocolLib
+authors: [ MrXiaoM ]
+folia-supported: true
+commands:
+  sweetmail:
+    description: SweetMail main command.
+    aliases: [sm, mail]
+
+permissions:
+  sweetmail.icon.default:
+    default: true
+  sweetmail.price.default:
+    default: true
+  sweetmail.outdate.default:
+    default: true
+  sweetmail.draft.outdate.default:
+    default: true
+  sweetmail.attachment.item:
+    default: true

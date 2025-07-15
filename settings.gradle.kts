@@ -12,6 +12,7 @@ buildscript {
 
 include(":paper")
 include(":paper:craft-engine")
+include(":paper:modern")
 include(":email")
 
 project(":email").name = "SweetMailNotice"

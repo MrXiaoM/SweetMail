@@ -32,5 +32,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SweetMail
-          path: build/libs/*.jar
+          path: |
+            out/*.jar
+            email/build/libs/*.jar
           if-no-files-found: error
