@@ -2,6 +2,7 @@ package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -34,6 +35,8 @@ import java.util.*;
 
 public class Util {
     private static BukkitAudiences adventure;
+    @SuppressWarnings("ConstantValue")
+    private static boolean isModern = Audience.class.getName().startsWith("net.k");
     public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static final Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(SweetMail plugin) {
@@ -116,8 +119,16 @@ public class Util {
         return components;
     }
 
+    public static Audience adventure(CommandSender sender) {
+        // Paper
+        if (isModern && sender instanceof Audience) {
+            return (Audience) sender;
+        }
+        return adventure.sender(sender);
+    }
+
     public static void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
-        adventure.player(player).showTitle(Title.title(
+        adventure(player).showTitle(Title.title(
                 miniMessage(title), miniMessage(subTitle), Title.Times.times(
                         Duration.ofMillis(fadeIn * 50L),
                         Duration.ofMillis(stay * 50L),
@@ -139,7 +150,7 @@ public class Util {
 
     public static void openBook(Player player, Book book) {
         player.closeInventory();
-        adventure.player(player).openBook(book);
+        adventure(player).openBook(book);
     }
 
     public static void openBookLegacy(Player player, Book book) {
@@ -160,15 +171,15 @@ public class Util {
     }
 
     public static void sendMessage(CommandSender sender, String message) {
-        adventure.sender(sender).sendMessage(miniMessage(message));
+        adventure(sender).sendMessage(miniMessage(message));
     }
 
     public static void sendMessage(CommandSender sender, Component message) {
-        adventure.sender(sender).sendMessage(message);
+        adventure(sender).sendMessage(message);
     }
 
     public static void sendActionBar(Player player, String message) {
-        adventure.player(player).sendActionBar(miniMessage(message));
+        adventure(player).sendActionBar(miniMessage(message));
     }
 
     @SuppressWarnings({"UnstableApiUsage"})
