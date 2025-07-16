@@ -535,7 +535,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                         draft.reset();
                         draft.save();
                         for (IAttachment attachment : old) {
-                            if (attachment.canGiveBack(player)) {
+                            if (attachment.isLegal() && attachment.canGiveBack(player)) {
                                 attachment.use(player);
                             }
                         }
@@ -596,7 +596,9 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 if (!player.hasPermission(PERM_ADMIN) || !click.isShiftClick()) {
                                     if (attachment != null) plugin.getScheduler().runNextTick((t_) -> {
                                         if (attachment.isLegal()) {
-                                            attachment.use(player);
+                                            if (attachment.canGiveBack(player)) {
+                                                attachment.use(player);
+                                            }
                                         } else {
                                             IAttachment.Internal.useIllegalDeny(player);
                                         }
