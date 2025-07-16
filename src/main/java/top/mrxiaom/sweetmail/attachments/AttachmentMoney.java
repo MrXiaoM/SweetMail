@@ -6,6 +6,7 @@ import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.gui.MenuAddAttachmentConfig;
 import top.mrxiaom.sweetmail.config.gui.MenuDraftConfig;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
@@ -38,6 +39,14 @@ public class AttachmentMoney implements IAttachment {
     @Override
     public void use(Player player) {
         SweetMail.getInstance().economy().giveMoney(player, money);
+    }
+
+    @Override
+    public void onClaimed(Mail mail, Player player) {
+        String message = Internal.attachmentMoneyClaimedMessage;
+        if (!message.isEmpty()) {
+            Util.sendMessage(player, Pair.replace(message, Pair.of("%money%", money)));
+        }
     }
 
     @Override

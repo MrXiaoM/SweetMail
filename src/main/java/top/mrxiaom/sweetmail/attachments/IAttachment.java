@@ -9,6 +9,7 @@ import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
@@ -28,6 +29,8 @@ public interface IAttachment {
     boolean isLegal();
     default boolean canGiveBack(Player player) {
         return true;
+    }
+    default void onClaimed(Mail mail, Player player) {
     }
     static IAttachment deserialize(String s) {
         for (Internal.AttachmentInfo<?> info : Internal.attachments) {
@@ -97,9 +100,11 @@ public interface IAttachment {
         protected static String attachmentItemMaterial;
         protected static String attachmentItemDisplay;
         protected static List<String> attachmentItemLore;
+        protected static String attachmentItemClaimedMessage;
         protected static String attachmentMoneyMaterial;
         protected static String attachmentMoneyDisplay;
         protected static List<String> attachmentMoneyLore;
+        protected static String attachmentMoneyClaimedMessage;
         protected static String attachmentCommandMaterial;
         protected static String attachmentCommandDisplay;
         protected static List<String> attachmentCommandLore;
@@ -130,9 +135,11 @@ public interface IAttachment {
             attachmentItemMaterial = config.getString("attachments.item.material", "ITEM_FRAME");
             attachmentItemDisplay = config.getString("attachments.item.display", "物品附件");
             attachmentItemLore = config.getStringList("attachments.item.lore");
+            attachmentItemClaimedMessage = config.getString("attachments.item.claimed-message", "");
             attachmentMoneyMaterial = config.getString("attachments.money.material", "GOLD_NUGGET");
             attachmentMoneyDisplay = config.getString("attachments.money.display", "金币附件");
             attachmentMoneyLore = config.getStringList("attachments.money.lore");
+            attachmentMoneyClaimedMessage = config.getString("attachments.money.claimed-message", "");
             attachmentCommandMaterial = config.getString("attachments.command.material", "COMMAND_BLOCK");
             attachmentCommandDisplay = config.getString("attachments.command.display", "控制台命令附件");
             attachmentCommandLore = config.getStringList("attachments.command.lore");

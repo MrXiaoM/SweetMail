@@ -120,10 +120,12 @@ attachments:
       materials: []
       display_name: []
       lore: []
+    claimed-message: '&7[&e&l邮件&7]&a 你通过领取附件获得了&e %item%'
   money:
     material: GOLD_NUGGET
     display: '金币附件'
     lore: []
+    claimed-message: '&7[&e&l邮件&7]&a 你通过领取附件获得了&e %money% &a金币'
   command:
     material: COMMAND_BLOCK
     display: '控制台命令附件'

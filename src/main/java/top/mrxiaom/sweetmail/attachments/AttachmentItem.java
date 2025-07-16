@@ -11,13 +11,17 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.Messages;
+import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.Collection;
 import java.util.List;
+
+import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 
 public class AttachmentItem implements IAttachment {
     public static final String PERM = "sweetmail.attachment.item";
@@ -41,6 +45,14 @@ public class AttachmentItem implements IAttachment {
         Collection<ItemStack> values = player.getInventory().addItem(itemToAdd).values();
         if (!values.isEmpty()) for (ItemStack i : values) {
             player.getWorld().dropItem(player.getLocation(), i);
+        }
+    }
+
+    @Override
+    public void onClaimed(Mail mail, Player player) {
+        String message = Internal.attachmentItemClaimedMessage;
+        if (!message.isEmpty()) {
+            Util.sendMessage(player, Pair.replace(message, Pair.of("%item%", ItemStackUtil.miniTranslate(item))));
         }
     }
 

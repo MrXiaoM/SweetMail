@@ -376,6 +376,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 for (IAttachment attachment : mail.attachments) {
                     if (attachment.isLegal()) {
                         attachment.use(player);
+                        attachment.onClaimed(mail, player);
                     } else {
                         IAttachment.Internal.useIllegalDeny(player);
                     }
