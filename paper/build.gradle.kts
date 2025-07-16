@@ -1,6 +1,13 @@
 plugins {
     java
 }
+
+allprojects {
+    repositories {
+        maven("https://repo.papermc.io/repository/maven-public/")
+    }
+}
+
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
