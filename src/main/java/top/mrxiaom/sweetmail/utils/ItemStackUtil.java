@@ -82,16 +82,14 @@ public class ItemStackUtil {
 
     public static String miniTranslate(@NotNull ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            if (meta.hasDisplayName()) {
-                String nameAdventure = getItemDisplayNameAsMiniMessage(item);
-                if (nameAdventure != null) {
-                    return nameAdventure;
-                }
-                String nameBukkit = meta.getDisplayName();
-                if (!nameBukkit.isEmpty()) {
-                    return MiniMessageConvert.legacyToMiniMessage(nameBukkit);
-                }
+        if (meta != null && meta.hasDisplayName()) {
+            String nameAdventure = getItemDisplayNameAsMiniMessage(item);
+            if (nameAdventure != null) {
+                return nameAdventure;
+            }
+            String nameBukkit = meta.getDisplayName();
+            if (!nameBukkit.isEmpty()) {
+                return MiniMessageConvert.legacyToMiniMessage(nameBukkit);
             }
         }
         if (supportTranslationKey && api.isTextUseComponent()) {
