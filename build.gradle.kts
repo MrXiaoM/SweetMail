@@ -32,6 +32,7 @@ allprojects {
         maven("https://repo.helpch.at/releases/")
         maven("https://jitpack.io")
         maven("https://repo.rosewooddev.io/repository/public/")
+        maven("https://libraries.minecraft.net/")
     }
 
     tasks.withType<JavaCompile>().configureEach {
