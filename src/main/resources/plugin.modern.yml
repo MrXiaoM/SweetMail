@@ -2,7 +2,7 @@ name: SweetMail
 version: '${version}'
 main: top.mrxiaom.sweetmail.SweetMail
 paper-plugin-loader: top.mrxiaom.sweetmail.paper.PaperPluginLoader
-api-version: 1.19
+api-version: 1.17
 softdepend:
   - Vault
   - PlaceholderAPI
@@ -13,6 +13,11 @@ softdepend:
   - ProtocolLib
 authors: [ MrXiaoM ]
 folia-supported: true
+libraries:
+  - "net.kyori:adventure-api:4.22.0"
+  - "net.kyori:adventure-platform-bukkit:4.4.0"
+  - "net.kyori:adventure-text-serializer-gson:4.22.0"
+  - "net.kyori:adventure-text-minimessage:4.22.0"
 commands:
   sweetmail:
     description: SweetMail main command.
