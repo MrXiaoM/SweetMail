@@ -14,14 +14,11 @@ import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.Collection;
 import java.util.List;
-
-import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 
 public class AttachmentItem implements IAttachment {
     public static final String PERM = "sweetmail.attachment.item";
