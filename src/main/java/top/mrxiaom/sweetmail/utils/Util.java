@@ -35,8 +35,6 @@ import java.util.*;
 
 public class Util {
     private static BukkitAudiences adventure;
-    @SuppressWarnings("ConstantValue")
-    private static final boolean modern = Audience.class.getName().startsWith("net.k");
     public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static final Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(SweetMail plugin) {
@@ -61,10 +59,6 @@ public class Util {
         ItemsAdder.init();
         Mythic.load();
         ItemStackUtil.init();
-    }
-
-    public static boolean isModern() {
-        return modern;
     }
 
     public static List<Character> toCharList(String s) {
@@ -125,7 +119,7 @@ public class Util {
 
     public static Audience adventure(CommandSender sender) {
         // Paper
-        if (modern && sender instanceof Audience) {
+        if (sender instanceof Audience) {
             return (Audience) sender;
         }
         return adventure.sender(sender);

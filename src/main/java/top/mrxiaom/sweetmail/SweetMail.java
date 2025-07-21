@@ -19,6 +19,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.pluginbase.resolver.DefaultLibraryResolver;
+import top.mrxiaom.pluginbase.resolver.utils.ClassLoaderWrapper;
 import top.mrxiaom.sweetmail.actions.*;
 import top.mrxiaom.sweetmail.attachments.AttachmentCommand;
 import top.mrxiaom.sweetmail.attachments.AttachmentItem;
@@ -51,16 +53,12 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.reloadAllConfig;
-import static top.mrxiaom.sweetmail.utils.Util.mkdirs;
 
 @SuppressWarnings({"unused"})
 public class SweetMail extends JavaPlugin implements Listener, TabCompleter, PluginMessageListener {
-    private static final String netKyori;
-    static {
-        netKyori = new String(new char[] { 'n', 'e', 't', '.', 'k', 'y', 'o', 'r', 'i' });
-    }
     private static SweetMail instance;
     public static SweetMail getInstance() {
         return instance;
@@ -85,9 +83,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private IBook bookImpl;
     private InventoryFactory inventoryFactory;
     public final FoliaLib foliaLib;
-    public SweetMail() {
+    public SweetMail() throws Exception {
         this.classLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
         this.foliaLib = new FoliaLib(this);
+
         loadLibraries();
     }
 
@@ -107,22 +106,23 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         return foliaLib.getScheduler();
     }
 
-    protected void loadLibraries() {
-        File librariesFolder = new File(getDataFolder(), "libraries");
-        if (!librariesFolder.exists()) {
-            mkdirs(librariesFolder);
-            return;
+    private void loadLibraries() throws Exception {
+        Logger logger = this.getLogger();
+        logger.info("正在检查依赖库状态");
+        File librariesDir = new File(this.getDataFolder(), "libraries");
+        DefaultLibraryResolver resolver = new DefaultLibraryResolver(logger, librariesDir);
+
+        resolver.addLibrary(BuildConstants.LIBRARIES);
+        File databaseConfig = new File(this.getDataFolder(), "database.yml");
+        if (databaseConfig.exists()) {
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(databaseConfig);
+            resolver.addLibraries(config.getStringList("extra-libraries"));
         }
-        File[] files = librariesFolder.listFiles();
-        if (files != null) for (File file : files) {
-            if (file.isDirectory()) continue;
-            try {
-                URL url = file.toURI().toURL();
-                this.classLoader.addURL(url);
-                info("已加载依赖库 " + file.getName());
-            } catch (Throwable t) {
-                warn("无法加载依赖库 " + file.getName(), t);
-            }
+
+        List<URL> libraries = resolver.doResolve();
+        logger.info("正在添加 " + libraries.size() + " 个依赖库到类加载器");
+        for (URL library : libraries) {
+            this.classLoader.addURL(library);
         }
     }
 

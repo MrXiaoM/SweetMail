@@ -56,16 +56,12 @@ public class ItemStackUtil {
     public static String locale = "zh_CN";
     private static final Map<String, ItemProvider> itemProviders = new HashMap<>();
     protected static void init() {
-        supportTranslationKey = Util.isPresent("org.bukkit.Translatable");
-        supportBundle = Util.isPresent("org.bukkit.inventory.meta.BundleMeta");
+        supportTranslationKey = isPresent("org.bukkit.Translatable");
+        supportBundle = isPresent("org.bukkit.inventory.meta.BundleMeta");
         supportLangUtils = isPresent("com.meowj.langutils.lang.LanguageHelper");
-        if (isModern()) {
-            try {
-                api = new PaperItemStack();
-            } catch (Throwable t) {
-                api = new AdventureItemStack();
-            }
-        } else {
+        try {
+            api = new PaperItemStack();
+        } catch (Throwable t) {
             api = new AdventureItemStack();
         }
         SkullsUtil.init();
@@ -293,14 +289,14 @@ public class ItemStackUtil {
         Integer dataValue = null;
         if (str.contains("#")) {
             String customModel = str.substring(str.indexOf("#") + 1);
-            customModelData = Util.parseInt(customModel).orElseThrow(
+            customModelData = parseInt(customModel).orElseThrow(
                     () -> new IllegalStateException("无法解析 " + customModel + " 为整数")
             );
             material = str.replace("#" + customModel, "");
         }
         if (material.contains(":")) {
             String data = material.substring(str.indexOf(":"));
-            dataValue = Util.parseInt(data.substring(1)).orElse(null);
+            dataValue = parseInt(data.substring(1)).orElse(null);
             material = material.replace(data, "");
         }
         ItemStack item = parseMaterial(material.toUpperCase(), dataValue);

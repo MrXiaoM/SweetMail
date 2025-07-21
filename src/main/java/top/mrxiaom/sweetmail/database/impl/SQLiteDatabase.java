@@ -28,8 +28,9 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
         String driver = config.getString("database.driver", "org.sqlite.JDBC");
         if (!Util.isPresent(driver)) {
             plugin.warn("预料中的错误: 未找到 SQLite JDBC: " + driver);
-            plugin.warn("正在卸载插件，请手动下载以下依赖，放到 plugins/SweetMail/libraries/ 文件夹，并重启服务器");
-            plugin.warn("https://mirrors.huaweicloud.com/repository/maven/org/xerial/sqlite-jdbc/3.49.0.0/sqlite-jdbc-3.49.0.0.jar");
+            plugin.warn("正在卸载插件，请在 database.yml 添加以下内容，并重启服务器");
+            plugin.warn("extra-libraries:");
+            plugin.warn("- 'org.xerial:sqlite-jdbc:3.49.0.0'");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return null;
         }

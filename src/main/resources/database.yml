@@ -11,3 +11,6 @@ database:
   database: minecraft
   table_prefix: sweetmail_
   mysql_version: 8
+
+# 添加额外依赖
+extra-libraries: []

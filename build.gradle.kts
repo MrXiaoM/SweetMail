@@ -4,6 +4,7 @@ plugins {
     java
     `maven-publish`
     id("top.mrxiaom.shadow")
+    id("com.github.gmazzo.buildconfig") version "5.6.7"
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -25,6 +26,7 @@ version = "1.0.4"
 allprojects {
     apply(plugin="java")
     repositories {
+        mavenLocal()
         mavenCentral()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
@@ -44,7 +46,14 @@ allprojects {
 }
 
 val shadowLink = configurations.create("shadowLink")
-val modern = configurations.create("modern")
+val legacy = configurations.create("legacy")
+val libraries = arrayListOf<String>()
+fun DependencyHandlerScope.library(dependencyNotation: String) {
+    add("compileOnly", dependencyNotation)
+    add("legacy", dependencyNotation)
+    libraries.add(dependencyNotation)
+}
+
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
     // Minecraft
@@ -68,72 +77,47 @@ dependencies {
 
     compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
 
+    library("com.zaxxer:HikariCP:4.0.3")
+    library("net.kyori:adventure-api:4.22.0")
+    library("net.kyori:adventure-platform-bukkit:4.4.0")
+    library("net.kyori:adventure-text-serializer-gson:4.22.0")
+    library("net.kyori:adventure-text-minimessage:4.22.0")
+    library("org.jetbrains:annotations:24.0.0")
+
     // Shadow Dependency
-    implementation("com.zaxxer:HikariCP:4.0.3")
-    implementation("org.slf4j:slf4j-nop:2.0.16")
-    implementation("org.jetbrains:annotations:24.0.0")
-    implementation("net.kyori:adventure-api:4.22.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.4.0")
-    implementation("net.kyori:adventure-text-serializer-gson:4.22.0")
-    implementation("net.kyori:adventure-text-minimessage:4.22.0")
     implementation("de.tr7zw:item-nbt-api:2.15.2-SNAPSHOT")
-    implementation("com.github.technicallycoded:FoliaLib:0.4.4")
+    implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
+    implementation("top.mrxiaom:LibrariesResolver:1.5.5:all") { isTransitive = false }
     implementation(project(":paper"))
     "shadowLink"(project(":paper:craft-engine"))
-    "modern"(project(":paper:modern"))
+}
+
+buildConfig {
+    className("BuildConstants")
+    packageName("top.mrxiaom.sweetmail")
+
+    val librariesVararg = libraries.joinToString(", ") { "\"$it\"" }
+
+    buildConfigField("String", "VERSION", "\"${project.version}\"")
+    buildConfigField("java.time.Instant", "BUILD_TIME", "java.time.Instant.ofEpochSecond(${System.currentTimeMillis() / 1000L}L)")
+
+    buildConfigField("String[]", "LIBRARIES", "new String[] { $librariesVararg }")
 }
 
 tasks {
     val relocations = mapOf(
-        "org.intellij.lang.annotations" to "annotations.intellij",
-        "org.jetbrains.annotations" to "annotations.jetbrains",
         "de.tr7zw.changeme.nbtapi" to "nbtapi",
-        "com.zaxxer.hikari" to "hikari",
-        "org.slf4j" to "slf4j",
         "com.tcoded.folialib" to "folialib",
     )
-    val shadowLegacy = configureShadow("shadowLegacy") {
-        if (isRelease) {
-            archiveClassifier.set("legacy")
-        } else {
-            archiveClassifier.set("legacy-unstable")
-        }
+    val shadowModern = configureShadow("shadowModern", "plugin") {
         mapOf(
-            "net.kyori" to "kyori",
-            "com.google.gson" to "gson",
+            "top.mrxiaom.pluginbase.resolver" to "resolver"
         ).plus(relocations).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }
-        exclude("plugin.modern.yml")
-        rename {
-            if (it == "plugin.legacy.yml") "plugin.yml" else it
-        }
-        ignoreRelocations("top/mrxiaom/sweetmail/utils/inventory/PaperInventoryFactory.class")
-        ignoreRelocations("top/mrxiaom/sweetmail/utils/items/CraftEngineProviderImpl.class")
-    }
-    val shadowModern = configureShadow("shadowModern") {
-        if (isRelease) {
-            archiveClassifier.set("modern")
-        } else {
-            archiveClassifier.set("modern-unstable")
-        }
-        configurations.add(modern)
-        dependencies {
-            exclude { it.moduleGroup == "net.kyori" }
-            exclude(dependency("com.google.code.gson:gson"))
-        }
-        exclude("plugin.legacy.yml")
-        rename {
-            if (it == "plugin.modern.yml") "plugin.yml" else it
-        }
-        relocations.forEach { (original, target) ->
-            relocate(original, "top.mrxiaom.sweetmail.utils.$target")
-        }
-        ignoreRelocations("top/mrxiaom/sweetmail/utils/items/CraftEngineProviderImpl.class")
     }
     create("release")
     build {
-        dependsOn(shadowLegacy)
         dependsOn(shadowModern)
     }
     processResources {
@@ -142,7 +126,6 @@ tasks {
         from(sourceSets.main.get().resources.srcDirs) {
             expand("version" to if (isRelease) version else ("$version-unstable"))
             include("plugin.yml")
-            include("plugin.modern.yml")
         }
     }
     javadoc {
@@ -176,6 +159,7 @@ publishing {
 }
 fun TaskContainer.configureShadow(
     name: String,
+    classifier: String,
     block: ShadowJar.() -> Unit
 ): ShadowJar = create<ShadowJar>(name) {
     group = "shadow"
@@ -191,5 +175,7 @@ fun TaskContainer.configureShadow(
     }
     destinationDirectory.set(project.file("out"))
 
+    archiveClassifier.set(if (isRelease) classifier else "$classifier-unstable")
+    ignoreRelocations("top/mrxiaom/sweetmail/utils/items/CraftEngineProviderImpl.class")
     block()
 }
