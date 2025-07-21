@@ -46,11 +46,9 @@ allprojects {
 }
 
 val shadowLink = configurations.create("shadowLink")
-val legacy = configurations.create("legacy")
 val libraries = arrayListOf<String>()
 fun DependencyHandlerScope.library(dependencyNotation: String) {
     add("compileOnly", dependencyNotation)
-    add("legacy", dependencyNotation)
     libraries.add(dependencyNotation)
 }
 
@@ -105,14 +103,12 @@ buildConfig {
 }
 
 tasks {
-    val relocations = mapOf(
-        "de.tr7zw.changeme.nbtapi" to "nbtapi",
-        "com.tcoded.folialib" to "folialib",
-    )
     val shadowModern = configureShadow("shadowModern", "plugin") {
         mapOf(
-            "top.mrxiaom.pluginbase.resolver" to "resolver"
-        ).plus(relocations).forEach { (original, target) ->
+            "de.tr7zw.changeme.nbtapi" to "nbtapi",
+            "com.tcoded.folialib" to "folialib",
+            "top.mrxiaom.pluginbase.resolver" to "resolver",
+        ).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }
     }
