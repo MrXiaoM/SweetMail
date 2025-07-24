@@ -42,7 +42,6 @@ public class AttachmentItem implements IAttachment {
         Collection<ItemStack> values = player.getInventory().addItem(itemToAdd).values();
         if (!values.isEmpty()) {
             for (ItemStack i : values) {
-                player.getInventory().addItem(i);
                 player.getWorld().dropItem(player.getLocation(), i, ie-> ie.setOwner(player.getUniqueId()));
             }
         }
