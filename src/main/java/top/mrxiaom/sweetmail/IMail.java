@@ -259,15 +259,40 @@ public abstract class IMail {
         }
 
         /**
+         * @see MailDraft#enablePlaceholders(boolean)
+         */
+        public MailDraft enablePlaceholders() {
+            return enablePlaceholders(true);
+        }
+
+        /**
          * 设置邮件正文是否要使用 PAPI 变量
          */
-        public void setEnablePlaceholders(boolean enablePlaceholders) {
+        public MailDraft enablePlaceholders(boolean enablePlaceholders) {
             this.enablePlaceholders = enablePlaceholders;
+            return this;
         }
 
         /**
          * 设置邮件附件到期时间 (毫秒时间戳)
          */
+        public MailDraft setOutdate(long outdateTime) {
+            this.outdateTime = outdateTime;
+            return this;
+        }
+
+        /**
+         * @see MailDraft#enablePlaceholders(boolean)
+         */
+        @Deprecated
+        public void setEnablePlaceholders(boolean enablePlaceholders) {
+            this.enablePlaceholders = enablePlaceholders;
+        }
+
+        /**
+         * @see MailDraft#setOutdate(long)
+         */
+        @Deprecated
         public void setOutdateTime(long outdateTime) {
             this.outdateTime = outdateTime;
         }
