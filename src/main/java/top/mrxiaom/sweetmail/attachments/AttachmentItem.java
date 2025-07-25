@@ -1,24 +1,17 @@
 package top.mrxiaom.sweetmail.attachments;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import top.mrxiaom.sweetmail.Messages;
-import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
@@ -27,30 +20,22 @@ import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 public class AttachmentItem implements IAttachment {
     public static final String PERM = "sweetmail.attachment.item";
     private final ItemStack item;
-    private static final NamespacedKey ITEM_OWNER_NAMESPACED_KEY = new NamespacedKey(SweetMail.getInstance(), "sweetmailitemowner");
+    private static final boolean hasSetOwnerMethod;
 
     static {
-        Bukkit.getPluginManager().registerEvents(new Listener() {
-            @EventHandler
-            public void onPickupItems(PlayerPickupItemEvent event) {
-                ItemStack itemStack = event.getItem().getItemStack();
-                if (!itemStack.hasItemMeta()) {
-                    return;
-                }
-                ItemMeta meta = itemStack.getItemMeta();
-                if (meta.getPersistentDataContainer().has(ITEM_OWNER_NAMESPACED_KEY, PersistentDataType.STRING)) {
-                    String name = meta.getPersistentDataContainer().get(ITEM_OWNER_NAMESPACED_KEY, PersistentDataType.STRING);
-                    if (!Objects.equals(name, event.getPlayer().getName())) {
-                        event.setCancelled(true);
-                    }
-                }
-            }
-        }, SweetMail.getInstance());
+        boolean supportSetOwner = false;
+        try {
+            Item.class.getDeclaredMethod("setOwner", UUID.class);
+            supportSetOwner = true;
+        } catch (NoSuchMethodException e) {
+            // no-op
+        }
+        hasSetOwnerMethod = supportSetOwner;
     }
 
     private AttachmentItem(ItemStack item) {
@@ -71,11 +56,10 @@ public class AttachmentItem implements IAttachment {
         Collection<ItemStack> values = player.getInventory().addItem(itemToAdd).values();
         if (!values.isEmpty()) {
             for (ItemStack i : values) {
-                ItemMeta meta = i.getItemMeta();
-                PersistentDataContainer pdc = meta.getPersistentDataContainer();
-                pdc.set(ITEM_OWNER_NAMESPACED_KEY, PersistentDataType.STRING, player.getName());
-                i.setItemMeta(meta);
-                player.getWorld().dropItem(player.getLocation(), i);
+                Item item = player.getWorld().dropItem(player.getLocation(), i);
+                if (hasSetOwnerMethod) {
+                    item.setOwner(player.getUniqueId());
+                }
             }
         }
     }
