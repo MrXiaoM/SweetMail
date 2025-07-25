@@ -1,6 +1,7 @@
 package top.mrxiaom.sweetmail.attachments;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -19,10 +20,23 @@ import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class AttachmentItem implements IAttachment {
     public static final String PERM = "sweetmail.attachment.item";
     private final ItemStack item;
+    private static final boolean hasSetOwnerMethod;
+
+    static {
+        boolean supportSetOwner = false;
+        try {
+            Item.class.getDeclaredMethod("setOwner", UUID.class);
+            supportSetOwner = true;
+        } catch (NoSuchMethodException e) {
+            // no-op
+        }
+        hasSetOwnerMethod = supportSetOwner;
+    }
 
     private AttachmentItem(ItemStack item) {
         this.item = item.clone();
@@ -40,8 +54,13 @@ public class AttachmentItem implements IAttachment {
     public void use(Player player) {
         ItemStack itemToAdd = item.clone();
         Collection<ItemStack> values = player.getInventory().addItem(itemToAdd).values();
-        if (!values.isEmpty()) for (ItemStack i : values) {
-            player.getWorld().dropItem(player.getLocation(), i);
+        if (!values.isEmpty()) {
+            for (ItemStack i : values) {
+                Item item = player.getWorld().dropItem(player.getLocation(), i);
+                if (hasSetOwnerMethod) {
+                    item.setOwner(player.getUniqueId());
+                }
+            }
         }
     }
 
