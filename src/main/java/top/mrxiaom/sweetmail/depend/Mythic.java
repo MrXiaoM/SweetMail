@@ -25,4 +25,8 @@ public class Mythic {
     public static Optional<ItemStack> getItem(String name) {
         return Optional.ofNullable(proxy).flatMap(it -> it.getItem(name));
     }
+
+    public static boolean isAvailable() {
+        return proxy != null;
+    }
 }
