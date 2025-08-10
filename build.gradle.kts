@@ -87,7 +87,7 @@ dependencies {
     // Shadow Dependency
     implementation("de.tr7zw:item-nbt-api:2.15.2-SNAPSHOT")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
-    implementation("top.mrxiaom:LibrariesResolver:1.5.7:all") { isTransitive = false }
+    implementation("top.mrxiaom:LibrariesResolver:1.5.8:all")
     implementation(project(":paper"))
     "shadowLink"(project(":paper:craft-engine"))
 }
