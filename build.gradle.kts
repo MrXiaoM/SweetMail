@@ -35,6 +35,7 @@ allprojects {
         maven("https://jitpack.io")
         maven("https://repo.rosewooddev.io/repository/public/")
         maven("https://libraries.minecraft.net/")
+        maven("https://r.irepo.space/maven/")
     }
 
     tasks.withType<JavaCompile>().configureEach {
@@ -65,6 +66,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.MascusJeoraly:LanguageUtils:1.9")
     compileOnly("com.github.dmulloy2:ProtocolLib:5.3.0")
+    compileOnly("pers.neige.neigeitems:NeigeItems:1.21.96")
 
     compileOnly("com.mojang:authlib:2.1.28")
 

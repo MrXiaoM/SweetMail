@@ -33,5 +33,10 @@ public interface ItemProvider {
             }
         } catch (Throwable ignored) {
         }
+        try {
+            Class.forName("pers.neige.neigeitems.manager.ItemManager");
+            map.put("neigeitems-", new NeigeItemsProvider());
+        } catch (Throwable ignored) {
+        }
     }
 }
