@@ -202,13 +202,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             return inBox;
         }
 
-        @Override
-        public Player getPlayer() {
-            return player;
-        }
-
-        @Override
-        public Inventory newInventory() {
+        public void refreshInbox() {
             String targetKey;
             if (plugin.isOnlineMode()) {
                 OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
@@ -219,6 +213,22 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             inBox = targetKey != null
                     ? plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount())
                     : new ListX<>(-1);
+        }
+
+        public void refreshInboxAndInv() {
+            refreshInbox();
+            applyIcons(this, created, player);
+            Util.updateInventory(player);
+        }
+
+        @Override
+        public Player getPlayer() {
+            return player;
+        }
+
+        @Override
+        public Inventory newInventory() {
+            refreshInbox();
             created = createInventory(this, player);
             applyIcons(this, created, player);
             return created;
@@ -310,7 +320,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             plugin.getScheduler().runNextTick((t_) -> useAttachments(mail));
                         }
                         plugin.getMailDatabase().markUsed(dismiss, targetKey);
-                        open();
+                        plugin.getScheduler().runNextTick((t_) -> refreshInboxAndInv());
                     }
                     return;
                 }
@@ -325,22 +335,22 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     } else {
                         targetKey = target;
                     }
-                    plugin.getMailDatabase().markRead(mail.uuid, targetKey);
                     if (click.isLeftClick()) {
+                        plugin.getMailDatabase().markRead(mail.uuid, targetKey); // 标记已读
                         if (click.isShiftClick() && !mail.attachments.isEmpty() && !mail.used) {
                             // Shift+左键 领取附件
                             mail.used = true;
                             plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
                             if (mail.isOutdated()) {
+                                // 已过期 进行提示
                                 t(player, plugin.prefix() + Messages.InBox.attachments_outdated.str());
-                                return;
+                            } else {
+                                // 未过期 领取附件并刷新菜单
+                                plugin.getScheduler().runNextTick((t_) -> {
+                                    useAttachments(mail);
+                                    refreshInboxAndInv();
+                                });
                             }
-                            plugin.getScheduler().runNextTick((t_) -> {
-                                useAttachments(mail);
-                                plugin.getMailDatabase().getInBoxUnused(targetKey);
-                                applyIcons(this, created, player);
-                                Util.updateInventory(player);
-                            });
                             return;
                         }
                         // 左键 查看正文
@@ -348,19 +358,19 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         return;
                     }
                     if (click.isRightClick()) {
-                        if (click.isShiftClick()) { // Shift+右键 标记已读并刷新界面图标
-                            plugin.getScheduler().runNextTick((t_) -> {
-                                plugin.getMailDatabase().getInBoxUnused(targetKey);
-                                applyIcons(this, created, player);
-                                Util.updateInventory(player);
-                            });
+                        if (click.isShiftClick()) {
+                            // Shift+右键 标记已读并刷新界面图标
+                            plugin.getMailDatabase().markRead(mail.uuid, targetKey);
+                            plugin.getScheduler().runNextTick((t_) -> refreshInboxAndInv());
+                            return;
+                        } else {
+                            // 右键 预览附件
+                            plugin.getMailDatabase().markRead(mail.uuid, targetKey);
+                            MenuViewAttachmentsConfig.inst()
+                                    .new Gui(this, player, mail)
+                                    .open();
                             return;
                         }
-                        // 右键 预览附件
-                        MenuViewAttachmentsConfig.inst()
-                                .new Gui(this, player, mail)
-                                .open();
-                        return;
                     }
                     return;
                 }
