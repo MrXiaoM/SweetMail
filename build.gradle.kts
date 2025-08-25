@@ -21,7 +21,7 @@ java {
 }
 
 group = "top.mrxiaom"
-version = "1.1.0"
+version = "1.1.1"
 
 allprojects {
     apply(plugin="java")
@@ -88,7 +88,7 @@ dependencies {
     // Shadow Dependency
     implementation("de.tr7zw:item-nbt-api:2.15.2-SNAPSHOT")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
-    implementation("top.mrxiaom:LibrariesResolver:1.5.8:all")
+    implementation("top.mrxiaom:LibrariesResolver:1.6.2:all")
     implementation(project(":paper"))
     "shadowLink"(project(":paper:craft-engine"))
 }
