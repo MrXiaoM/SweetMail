@@ -2,6 +2,14 @@ package top.mrxiaom.sweetmail.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteArrayDataOutput;
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.NBTContainer;
+import de.tr7zw.changeme.nbtapi.NBTReflectionUtil;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
+import de.tr7zw.changeme.nbtapi.utils.nmsmappings.ReflectionMethod;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -32,6 +40,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Util {
     private static BukkitAudiences adventure;
@@ -297,6 +306,21 @@ public class Util {
             return true;
         } catch (ClassNotFoundException ignored) {
             return false;
+        }
+    }
+
+    public static ItemStack modify(ItemStack item, Consumer<ReadWriteNBT> consumer) {
+        if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_8_R3)) {
+            NBT.modify(item, consumer::accept);
+            return item;
+        } else {
+            Object nmsItem;
+            nmsItem = ReflectionMethod.ITEMSTACK_NMSCOPY.run(null, item);
+            NBTContainer nbt = NBTReflectionUtil.convertNMSItemtoNBTCompound(nmsItem);
+            NBTCompound tag = nbt.getOrCreateCompound("tag");
+            consumer.accept(tag);
+            nmsItem = NBTReflectionUtil.convertNBTCompoundtoNMSItem(nbt);
+            return  (ItemStack) ReflectionMethod.ITEMSTACK_BUKKITMIRROR.run(null, nmsItem);
         }
     }
 

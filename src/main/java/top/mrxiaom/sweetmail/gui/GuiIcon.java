@@ -18,6 +18,7 @@ import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,11 +66,8 @@ public class GuiIcon extends AbstractDraftGui {
                 lore.addAll(PAPI.setPlaceholders(player, Messages.Draft.selected_icon_lore.list()));
                 ItemStackUtil.setItemLore(item, lore);
             }
-            NBT.modify(item, nbt -> {
-                nbt.setBoolean(ItemStackUtil.FLAG, true);
-            });
             iconKeyMap.put(j, pair.getKey());
-            created.setItem(j, item);
+            created.setItem(j, Util.modify(item, nbt -> nbt.setBoolean(ItemStackUtil.FLAG, true)));
             j++;
         }
         return created;

@@ -69,10 +69,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             if (glow) {
                 ItemStackUtil.setGlow(item);
             }
-            NBT.modify(item, nbt -> {
-                nbt.setBoolean(ItemStackUtil.FLAG, true);
-            });
-            return item;
+            return Util.modify(item, nbt -> nbt.setBoolean(ItemStackUtil.FLAG, true));
         }
         @SafeVarargs
         public final ItemStack generateIcon(IGui gui, OfflinePlayer target, Pair<String, Object>... replacements) {

@@ -153,10 +153,7 @@ public class IconSlot {
         if (base.glow) {
             ItemStackUtil.setGlow(icon);
         }
-        NBT.modify(icon, nbt -> {
-            nbt.setBoolean(ItemStackUtil.FLAG, true);
-        });
-        return icon;
+        return Util.modify(icon, nbt -> nbt.setBoolean(ItemStackUtil.FLAG, true));
     }
 
     public static IconSlot loadSlot(ConfigurationSection section, String key, AbstractMenuConfig.Icon base) {
