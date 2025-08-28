@@ -128,7 +128,7 @@ public class Draft {
 
     public static Draft load(DraftManager manager, String player) {
         File file = new File(manager.dataFolder, player + ".yml");
-        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        YamlConfiguration config = Util.load(file);
         Draft draft = loadFromConfig(manager, config, player);
         if (!file.exists()) draft.save();
         return draft;
@@ -157,7 +157,7 @@ public class Draft {
         saveToConfig(config);
         try {
             File file = new File(manager.dataFolder, sender + ".yml");
-            config.save(file);
+            Util.save(config, file);
         } catch (Throwable t) {
             SweetMail.warn(t);
         }

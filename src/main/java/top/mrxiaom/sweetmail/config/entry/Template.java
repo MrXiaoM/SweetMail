@@ -148,7 +148,7 @@ public class Template {
                 "mail.attachments",
                 "mail.outdate-time");
         try {
-            config.save(file);
+            Util.save(config, file);
             plugin.info("已保存玩家 " + player.getName() + " 的草稿为邮件模板 " + id);
         } catch (IOException e) {
             plugin.warn("保存草稿到模板 (" + id + ") 时出现一个异常", e);

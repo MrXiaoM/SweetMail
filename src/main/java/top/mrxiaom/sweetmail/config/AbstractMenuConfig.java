@@ -225,7 +225,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             plugin.saveResource(file, true);
         }
 
-        config = YamlConfiguration.loadConfiguration(configFile);
+        config = Util.load(configFile);
         ConfigurationSection section;
         title = config.getString("title", "菜单标题");
         inventory = String.join("", config.getStringList("inventory")).toCharArray();

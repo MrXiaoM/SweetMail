@@ -118,7 +118,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         resolver.addLibrary(BuildConstants.LIBRARIES);
         File databaseConfig = new File(this.getDataFolder(), "database.yml");
         if (databaseConfig.exists()) {
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(databaseConfig);
+            YamlConfiguration config = Util.load(databaseConfig);
             resolver.addLibraries(config.getStringList("extra-libraries"));
         }
 
@@ -286,7 +286,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             if (plugin instanceof JavaPlugin) {
                 File plugins = getDataFolder().getParentFile();
                 File alias = new File(plugins, "CMI/Settings/Alias.yml");
-                YamlConfiguration config = YamlConfiguration.loadConfiguration(alias);
+                YamlConfiguration config = Util.load(alias);
                 if (config.getBoolean("Alias./mail.Enabled", false)) {
                     warn("============================================================");
                     warn("SweetMail 与 CMI 存在兼容性问题，本插件的 /mail 命令被 CMI 覆盖。");
