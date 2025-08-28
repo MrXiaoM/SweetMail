@@ -186,6 +186,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         private Inventory created;
         int page = 1;
         ListX<MailWithStatus> inBox;
+        private boolean refreshPlaceholdersCacheAfterClose = false;
         public Gui(SweetMail plugin, Player player, @NotNull String target, boolean unread) {
             super(plugin);
             this.player = player;
@@ -336,10 +337,14 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         targetKey = target;
                     }
                     if (click.isLeftClick()) {
-                        plugin.getMailDatabase().markRead(mail.uuid, targetKey); // 标记已读
+                        if (!mail.read) { // 标为已读
+                            refreshPlaceholdersCacheAfterClose = true;
+                            plugin.getMailDatabase().markRead(mail.uuid, targetKey);
+                        }
                         if (click.isShiftClick() && !mail.attachments.isEmpty() && !mail.used) {
                             // Shift+左键 领取附件
                             mail.used = true;
+                            refreshPlaceholdersCacheAfterClose = true;
                             plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
                             if (mail.isOutdated()) {
                                 // 已过期 进行提示
@@ -360,7 +365,10 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     if (click.isRightClick()) {
                         if (click.isShiftClick()) {
                             // Shift+右键 标记已读并刷新界面图标
-                            plugin.getMailDatabase().markRead(mail.uuid, targetKey);
+                            if (!mail.read) {
+                                refreshPlaceholdersCacheAfterClose = true;
+                                plugin.getMailDatabase().markRead(mail.uuid, targetKey);
+                            }
                             plugin.getScheduler().runNextTick((t_) -> refreshInboxAndInv());
                             return;
                         } else {
@@ -378,6 +386,15 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     handleClick(player, click, c);
                     break;
                 }
+            }
+        }
+
+        @Override
+        public void onClose(InventoryView view) {
+            if (refreshPlaceholdersCacheAfterClose) {
+                plugin.getScheduler().runAsync((t) -> {
+                    plugin.getMailDatabase().getInBoxCount(player, true);
+                });
             }
         }
 
