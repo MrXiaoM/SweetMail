@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.entry.Template;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.Config;
 
 import java.io.File;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class TemplateConfig extends AbstractPluginHolder {
             String name = file.getName();
             if (!name.endsWith(".yml")) continue;
             String id = name.substring(0, name.length() - 4);
-            YamlConfiguration config = Util.load(file);
+            YamlConfiguration config = Config.load(file);
             Template loaded = Template.load(this, config, id);
             templates.put(id, loaded);
         }

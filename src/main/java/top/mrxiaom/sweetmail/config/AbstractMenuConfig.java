@@ -18,6 +18,7 @@ import top.mrxiaom.sweetmail.actions.IAction;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.gui.IGui;
+import top.mrxiaom.sweetmail.utils.Config;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
 import top.mrxiaom.sweetmail.utils.Pair;
 import top.mrxiaom.sweetmail.utils.Util;
@@ -225,7 +226,7 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
             plugin.saveResource(file, true);
         }
 
-        config = Util.load(configFile);
+        config = Config.load(configFile);
         ConfigurationSection section;
         title = config.getString("title", "菜单标题");
         inventory = String.join("", config.getStringList("inventory")).toCharArray();

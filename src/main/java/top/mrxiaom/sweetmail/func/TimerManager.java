@@ -8,7 +8,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.TimedDraft;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.Config;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class TimerManager extends AbstractPluginHolder {
 
     @Override
     public void reloadConfig(MemoryConfiguration cfg) {
-        YamlConfiguration config = Util.load(file);
+        YamlConfiguration config = Config.load(file);
         ConfigurationSection queueSection = config.getConfigurationSection("queue");
         if (queueSection != null) for (String id : queueSection.getKeys(false)) {
             TimedDraft temp = TimedDraft.loadFromConfig(queueSection, id);
@@ -80,7 +80,7 @@ public class TimerManager extends AbstractPluginHolder {
             temp.saveToConfig(queueSection);
         }
         try {
-            Util.save(config, file);
+            Config.save(config, file);
         } catch (IOException e) {
             warn(e);
         }

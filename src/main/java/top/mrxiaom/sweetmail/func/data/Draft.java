@@ -10,6 +10,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.utils.Config;
 import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Util;
 
@@ -128,7 +129,7 @@ public class Draft {
 
     public static Draft load(DraftManager manager, String player) {
         File file = new File(manager.dataFolder, player + ".yml");
-        YamlConfiguration config = Util.load(file);
+        YamlConfiguration config = Config.load(file);
         Draft draft = loadFromConfig(manager, config, player);
         if (!file.exists()) draft.save();
         return draft;
@@ -157,7 +158,7 @@ public class Draft {
         saveToConfig(config);
         try {
             File file = new File(manager.dataFolder, sender + ".yml");
-            Util.save(config, file);
+            Config.save(config, file);
         } catch (Throwable t) {
             SweetMail.warn(t);
         }

@@ -42,10 +42,7 @@ import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.func.data.Draft;
-import top.mrxiaom.sweetmail.utils.EconomyHolder;
-import top.mrxiaom.sweetmail.utils.ItemStackUtil;
-import top.mrxiaom.sweetmail.utils.StringHelper;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.*;
 import top.mrxiaom.sweetmail.utils.inventory.BukkitInventoryFactory;
 import top.mrxiaom.sweetmail.utils.inventory.InventoryFactory;
 import top.mrxiaom.sweetmail.utils.inventory.PaperInventoryFactory;
@@ -118,7 +115,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         resolver.addLibrary(BuildConstants.LIBRARIES);
         File databaseConfig = new File(this.getDataFolder(), "database.yml");
         if (databaseConfig.exists()) {
-            YamlConfiguration config = Util.load(databaseConfig);
+            YamlConfiguration config = Config.load(databaseConfig);
             resolver.addLibraries(config.getStringList("extra-libraries"));
         }
 
@@ -286,7 +283,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             if (plugin instanceof JavaPlugin) {
                 File plugins = getDataFolder().getParentFile();
                 File alias = new File(plugins, "CMI/Settings/Alias.yml");
-                YamlConfiguration config = Util.load(alias);
+                YamlConfiguration config = Config.load(alias);
                 if (config.getBoolean("Alias./mail.Enabled", false)) {
                     warn("============================================================");
                     warn("SweetMail 与 CMI 存在兼容性问题，本插件的 /mail 命令被 CMI 覆盖。");

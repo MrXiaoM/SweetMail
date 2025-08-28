@@ -14,10 +14,7 @@ import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
-import top.mrxiaom.sweetmail.utils.Args;
-import top.mrxiaom.sweetmail.utils.Pair;
-import top.mrxiaom.sweetmail.utils.Result;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -148,7 +145,7 @@ public class Template {
                 "mail.attachments",
                 "mail.outdate-time");
         try {
-            Util.save(config, file);
+            Config.save(config, file);
             plugin.info("已保存玩家 " + player.getName() + " 的草稿为邮件模板 " + id);
         } catch (IOException e) {
             plugin.warn("保存草稿到模板 (" + id + ") 时出现一个异常", e);

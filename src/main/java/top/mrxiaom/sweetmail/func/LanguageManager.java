@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.language.AbstractLanguageHolder;
 import top.mrxiaom.sweetmail.func.language.LanguageEnumAutoHolder;
-import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.Config;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,7 +92,7 @@ public class LanguageManager extends AbstractPluginHolder {
     public LanguageManager reload() {
         if (file == null || holders.isEmpty()) return this;
         holderValues.clear();
-        YamlConfiguration config = Util.load(file);
+        YamlConfiguration config = Config.load(file);
 
         YamlConfiguration defaults = new YamlConfiguration(); // 旧版配置兼容
         FileConfiguration pluginConfig = plugin.getConfig();
@@ -118,7 +118,7 @@ public class LanguageManager extends AbstractPluginHolder {
             }
         }
         try {
-            Util.save(config, file);
+            Config.save(config, file);
         } catch (IOException e) {
             warn("更新语言文件时出现异常", e);
         }
