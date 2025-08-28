@@ -48,6 +48,9 @@ import top.mrxiaom.sweetmail.utils.inventory.InventoryFactory;
 import top.mrxiaom.sweetmail.utils.inventory.PaperInventoryFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -82,6 +85,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private final ClassLoaderWrapper classLoader;
     private IBook bookImpl;
     private InventoryFactory inventoryFactory;
+    private FileConfiguration config;
     public final FoliaLib foliaLib;
     public SweetMail() throws Exception {
         this.classLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
@@ -333,11 +337,21 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             AbstractPluginHolder.receiveFromBungee(subChannel, bytes);
         }
     }
+    @Override
+    public @NotNull FileConfiguration getConfig() {
+        if (config == null) {
+            this.reloadConfig();
+        }
+        return config;
+    }
 
     @Override
     public void reloadConfig() {
-        this.saveDefaultConfig();
-        super.reloadConfig();
+        File file = new File(getDataFolder(), "config.yml");
+        if (!file.exists()) {
+            saveResource("config.yml", file);
+        }
+        this.config = Config.load(file);
 
         FileConfiguration config = getConfig();
         String online = config.getString("online-mode", "auto").toLowerCase();
@@ -358,6 +372,29 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         inventoryFactory.setOffsetFont(config.getString("offset-font", "mrxiaom:sweetmail"));
         info("插件当前在 " + (onlineMode ? "在线模式": "离线模式") + " 下运行");
         reloadAllConfig(config);
+    }
+
+    public void saveResource(String path) {
+        saveResource(path, new File(getDataFolder(), path));
+    }
+
+    public void saveResource(String path, File file) {
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            Util.mkdirs(parent);
+        }
+        try (InputStream resource = getResource(path)) {
+            if (resource == null) return;
+            try (FileOutputStream output = new FileOutputStream(file)) {
+                int len;
+                byte[] buffer = new byte[1024];
+                while ((len = resource.read(buffer)) != -1) {
+                    output.write(buffer, 0, len);
+                }
+            }
+        } catch (IOException e) {
+            warn("保存资源文件 " + path + " 时出错", e);
+        }
     }
 
     private class MailAPI extends IMail {
