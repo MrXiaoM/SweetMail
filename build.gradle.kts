@@ -77,6 +77,7 @@ dependencies {
 
     compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
 
+    library("org.slf4j:slf4j-api:2.0.16")
     library("com.zaxxer:HikariCP:4.0.3")
     library("net.kyori:adventure-api:4.22.0")
     library("net.kyori:adventure-platform-bukkit:4.4.0")
