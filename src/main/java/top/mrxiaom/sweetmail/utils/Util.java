@@ -6,7 +6,6 @@ import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.NBTContainer;
 import de.tr7zw.changeme.nbtapi.NBTReflectionUtil;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import de.tr7zw.changeme.nbtapi.utils.nmsmappings.ReflectionMethod;
@@ -173,7 +172,10 @@ public class Util {
                 meta.addPage(legacy.serialize(page));
             }
             bookItem.setItemMeta(meta);
-            player.openBook(bookItem);
+            if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_8_R3)) {
+                player.openBook(bookItem);
+            } else {
+            }
         }
     }
 

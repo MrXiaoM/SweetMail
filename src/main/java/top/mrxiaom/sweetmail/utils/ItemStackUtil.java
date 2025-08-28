@@ -272,7 +272,10 @@ public class ItemStackUtil {
                 meta.addEnchant(enchant, 1, true);
             }
         }
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        try {
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        } catch (LinkageError ignored) {
+        }
         item.setItemMeta(meta);
     }
 
