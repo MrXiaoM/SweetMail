@@ -338,6 +338,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     }
                     if (click.isLeftClick()) {
                         if (!mail.read) { // 标为已读
+                           mail.read = true;
                             refreshPlaceholdersCacheAfterClose = true;
                             plugin.getMailDatabase().markRead(mail.uuid, targetKey);
                         }
@@ -366,6 +367,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         if (click.isShiftClick()) {
                             // Shift+右键 标记已读并刷新界面图标
                             if (!mail.read) {
+                               mail.read = true;
                                 refreshPlaceholdersCacheAfterClose = true;
                                 plugin.getMailDatabase().markRead(mail.uuid, targetKey);
                             }
