@@ -31,6 +31,7 @@ import top.mrxiaom.sweetmail.book.IBook;
 import top.mrxiaom.sweetmail.database.MailDatabase;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.depend.Placeholder;
+import top.mrxiaom.sweetmail.depend.PlaceholderPersist;
 import top.mrxiaom.sweetmail.depend.protocollib.PLComponentTitle;
 import top.mrxiaom.sweetmail.economy.IEconomy;
 import top.mrxiaom.sweetmail.economy.NoEconomy;
@@ -256,7 +257,14 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
             }
         }
         if (Util.isPresent("me.clip.placeholderapi.expansion.PlaceholderExpansion")) {
-            new Placeholder(this).register();
+            Placeholder placeholder;
+            try {
+                placeholder = new PlaceholderPersist(this);
+                placeholder.persist();
+            } catch (Throwable ignored) {
+                placeholder = new Placeholder(this);
+            }
+            placeholder.register();
         }
         if (Util.isPresent("com.comphenix.protocol.ProtocolLibrary")) {
             new PLComponentTitle(this);
