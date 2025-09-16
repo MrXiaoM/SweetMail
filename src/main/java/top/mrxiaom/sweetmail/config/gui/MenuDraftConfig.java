@@ -566,7 +566,10 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 t(player, plugin.prefix() + Messages.Draft.no_receivers.str());
                                 return;
                             }
-                            plugin.economy().takeMoney(player, price);
+                            if (!plugin.economy().takeMoney(player, price)) {
+                                t(player, plugin.prefix() + Messages.Draft.no_money.str().replace("%price%", String.format(Messages.Draft.money_format.str(), price)));
+                                return;
+                            }
                             String uuid = plugin.getMailDatabase().generateMailUUID();
                             if (draft.outdateDays == 0) {
                                 draft.outdateDays = getOutdateDays(player);

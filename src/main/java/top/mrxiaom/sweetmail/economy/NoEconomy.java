@@ -21,7 +21,8 @@ public class NoEconomy implements IEconomy {
     }
 
     @Override
-    public void takeMoney(OfflinePlayer player, double money) {
+    public boolean takeMoney(OfflinePlayer player, double money) {
+        return true;
     }
 
     @Override

@@ -7,6 +7,6 @@ public interface IEconomy {
     String getName();
     boolean has(OfflinePlayer player, double money);
     double get(OfflinePlayer player);
-    void takeMoney(OfflinePlayer player, double money);
+    boolean takeMoney(OfflinePlayer player, double money);
     void giveMoney(OfflinePlayer player, double money);
 }

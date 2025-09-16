@@ -27,8 +27,11 @@ public class VaultEconomy implements IEconomy {
     }
 
     @Override
-    public void takeMoney(OfflinePlayer player, double money) {
-        economy.withdrawPlayer(player, money);
+    public boolean takeMoney(OfflinePlayer player, double money) {
+        if (has(player, money)) {
+            return economy.withdrawPlayer(player, money).transactionSuccess();
+        }
+        return false;
     }
 
     @Override

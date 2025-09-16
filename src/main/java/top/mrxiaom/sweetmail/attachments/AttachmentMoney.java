@@ -109,12 +109,11 @@ public class AttachmentMoney implements IAttachment {
                                     back.run();
                                     return;
                                 }
-                                if (!plugin.economy().has(player, money)) {
+                                if (!plugin.economy().takeMoney(player, money)) {
                                     Messages.Draft.attachments__money__add__not_enough.tm(player);
                                     back.run();
                                     return;
                                 }
-                                plugin.economy().takeMoney(player, money);
                                 AttachmentMoney attachment = AttachmentMoney.build(money);
                                 Draft draft = DraftManager.inst().getDraft(player);
                                 draft.attachments.add(attachment);
