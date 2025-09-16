@@ -71,7 +71,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 }
             }
             if ("admin".equalsIgnoreCase(args[0]) && admin) {
-                if (args.length >= 4 && "inbox".equalsIgnoreCase(args[1])) {
+                if (args.length > 3 && "inbox".equalsIgnoreCase(args[1])) {
                     if (!(sender instanceof Player)) {
                         return true;
                     }
@@ -87,7 +87,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                             .open();
                     return true;
                 }
-                if (args.length >= 3 && "outbox".equalsIgnoreCase(args[1])) {
+                if (args.length > 2 && "outbox".equalsIgnoreCase(args[1])) {
                     if (!(sender instanceof Player)) {
                         return true;
                     }
@@ -99,7 +99,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                             .open();
                     return true;
                 }
-                if (args.length >= 3 && "timed".equalsIgnoreCase(args[1])) {
+                if (args.length > 2 && "timed".equalsIgnoreCase(args[1])) {
                     String id = args[2];
                     TimerManager manager = TimerManager.inst();
                     TimedDraft timedDraft = manager.getQueue(id);
@@ -116,7 +116,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     }
                     return true;
                 }
-                if (args.length >= 3 && "cancel".equalsIgnoreCase(args[1])) {
+                if (args.length > 2 && "cancel".equalsIgnoreCase(args[1])) {
                     String id = args[2];
                     TimerManager manager = TimerManager.inst();
                     boolean result = manager.cancelQueue(id);
@@ -125,8 +125,8 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
                 Player player;
-                if (args.length >= 2 && sender.hasPermission(PERM_DRAFT_OTHER)) {
-                    player = Util.getOnlinePlayer(args[2]).orElse(null);
+                if (args.length > 1 && sender.hasPermission(PERM_DRAFT_OTHER)) {
+                    player = Util.getOnlinePlayer(args[1]).orElse(null);
                     if (player == null) {
                         return true;
                     }
@@ -142,12 +142,12 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 return true;
             }
             if ("inbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
-                String type = args.length >= 2 ? args[1] : "unread";
+                String type = args.length > 1 ? args[1] : "unread";
                 if (!type.equals("unread") && !type.equals("all")) {
                     return true;
                 }
                 Player player;
-                if (args.length >= 3 && sender.hasPermission(PERM_BOX_OTHER)) {
+                if (args.length > 2 && sender.hasPermission(PERM_BOX_OTHER)) {
                     player = Util.getOnlinePlayer(args[2]).orElse(null);
                     if (player == null) {
                         return true;
@@ -165,7 +165,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             }
             if ("outbox".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_BOX)) {
                 Player player;
-                if (args.length >= 2 && sender.hasPermission(PERM_BOX_OTHER)) {
+                if (args.length > 1 && sender.hasPermission(PERM_BOX_OTHER)) {
                     player = Util.getOnlinePlayer(args[1]).orElse(null);
                     if (player == null) {
                         return true;
@@ -194,7 +194,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     return t(sender, "&e只有玩家才能执行该命令");
                 }
             }
-            if ("send".equalsIgnoreCase(args[0]) && args.length >= 2 && admin) {
+            if ("send".equalsIgnoreCase(args[0]) && args.length > 2 && admin) {
                 Template template = TemplateConfig.inst().get(args[1]);
                 if (template == null) {
                     return Messages.Command.send__no_template.tm(sender,
@@ -222,14 +222,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                         Pair.of("%template%", template.id),
                         Pair.of("%parameters%", params));
             }
-            if ("players".equalsIgnoreCase(args[0]) && args.length >= 2 && admin) {
+            if ("players".equalsIgnoreCase(args[0]) && args.length > 1 && admin) {
                 List<OfflinePlayer> players = getPlayers(sender, args[1]);
                 if (players.isEmpty()) {
                     return Messages.Command.players__empty.tm(sender,
                             Pair.of("%formula%", args[1]));
                 }
                 int playersCount = players.size();
-                if (sender instanceof Player && args.length >= 3
+                if (sender instanceof Player && args.length > 2
                         && (args[2].equals("--book") || args[2].equals("-b"))
                 ) {
                     // 通过书与笔展示
