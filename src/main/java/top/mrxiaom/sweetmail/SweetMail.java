@@ -89,7 +89,12 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private FileConfiguration config;
     public final FoliaLib foliaLib;
     public SweetMail() throws Exception {
-        this.classLoader = new ClassLoaderWrapper((URLClassLoader) getClassLoader());
+        URLClassLoader oldLoader = (URLClassLoader) getClassLoader();
+        if (ClassLoaderWrapper.isSupportLibraryLoader) {
+            this.classLoader = new ClassLoaderWrapper(ClassLoaderWrapper.findLibraryLoader(oldLoader));
+        } else {
+            this.classLoader = new ClassLoaderWrapper(oldLoader);
+        }
         this.foliaLib = new FoliaLib(this);
 
         loadLibraries();
@@ -114,7 +119,9 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private void loadLibraries() throws Exception {
         Logger logger = this.getLogger();
         logger.info("正在检查依赖库状态");
-        File librariesDir = new File(this.getDataFolder(), "libraries");
+        File librariesDir = ClassLoaderWrapper.isSupportLibraryLoader
+                ? new File("libraries") // 防止出现依赖版本不同的问题
+                : new File(this.getDataFolder(), "libraries");
         DefaultLibraryResolver resolver = new DefaultLibraryResolver(logger, librariesDir);
 
         resolver.addLibrary(BuildConstants.LIBRARIES);

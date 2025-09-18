@@ -12,6 +12,8 @@ softdepend:
   - ProtocolLib
 authors: [ MrXiaoM ]
 folia-supported: true
+libraries:
+  - "org.jetbrains:annotations:24.0.0"
 commands:
   sweetmail:
     description: SweetMail main command.

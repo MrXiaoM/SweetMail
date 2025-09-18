@@ -87,9 +87,9 @@ dependencies {
     library("org.jetbrains:annotations:24.0.0")
 
     // Shadow Dependency
-    implementation("de.tr7zw:item-nbt-api:2.15.2-SNAPSHOT")
+    implementation("de.tr7zw:item-nbt-api:2.15.2")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
-    implementation("top.mrxiaom:LibrariesResolver:1.6.2:all")
+    implementation("top.mrxiaom:LibrariesResolver:1.6.4:all")
     implementation(project(":paper"))
     "shadowLink"(project(":paper:craft-engine"))
 }
