@@ -291,6 +291,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
         return true;
     }
 
+    @SuppressWarnings({"deprecation"})
     public List<OfflinePlayer> getPlayers(CommandSender sender, String str) {
         List<OfflinePlayer> list = new ArrayList<>();
         if (str.startsWith("@")) {
@@ -354,8 +355,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if (parameters.containsKey("bc")) {
                         List<String> playerNames = DraftManager.inst().getAllPlayers();
                         for (String name : playerNames) {
-                            OfflinePlayer player = Util.getOfflinePlayer(name).orElse(null);
-                            if (player == null || player.getName() == null) continue;
+                            // 玩家存在就获取，不存在就从 mojang 服务端拿 UUID，新建一个
+                            OfflinePlayer player = Util.getOfflinePlayer(name).orElseGet(() -> Bukkit.getOfflinePlayer(name));
+                            if (player.getName() == null) continue;
                             list.add(player);
                         }
                         break;
@@ -368,7 +370,8 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
             }
         } else {
             for (String s : str.split(",")) {
-                Util.getOfflinePlayer(s).ifPresent(list::add);
+                // 玩家存在就获取，不存在就从 mojang 服务端拿 UUID，新建一个
+                list.add(Util.getOfflinePlayer(s).orElseGet(() -> Bukkit.getOfflinePlayer(s)));
             }
         }
         return list;
