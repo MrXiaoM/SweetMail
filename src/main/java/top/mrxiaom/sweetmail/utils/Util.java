@@ -16,6 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.depend.ItemsAdder;
 import top.mrxiaom.sweetmail.depend.Mythic;
@@ -159,6 +161,7 @@ public class Util {
         adventure(player).openBook(book);
     }
 
+    @SuppressWarnings({"deprecation", "ConstantValue"})
     public static void openBookLegacy(Player player, Book book) {
         player.closeInventory();
         ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK);
@@ -175,6 +178,15 @@ public class Util {
             if (MinecraftVersion.isAtLeastVersion(MinecraftVersion.MC1_8_R3)) {
                 player.openBook(bookItem);
             } else {
+                if (player.getGameMode().equals(GameMode.CREATIVE)) {
+                    ItemStack itemInHand = player.getItemInHand();
+                    if (itemInHand != null && !itemInHand.getType().equals(Material.AIR)) {
+                        Messages.legacy__1_7_10__need_empty_hand.tm(player);
+                        return;
+                    }
+                }
+                Util_v1_7_R4.openBook(SweetMail.getInstance(), player, bookItem);
+                Messages.legacy__1_7_10__need_right_click.tm(player);
             }
         }
     }

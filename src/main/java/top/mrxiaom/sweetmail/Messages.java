@@ -31,6 +31,9 @@ public enum Messages implements IHolderAccessor {
             "  &f/mail players <接收者表达式> [--book/-b] &8-- &e计算接收者表达式最终的玩家列表（用于测试）",
             "  &f/mail reload database &8-- &3重载数据库",
             "  &f/mail reload &8-- &3重载配置文件"),
+    legacy__1_7_10__need_empty_hand("&e在创造模式下，为了避免将物品卡掉，需要&b空手&e才能浏览正文"),
+    legacy__1_7_10__need_right_click("&e出于版本限制，你需要按下&b鼠标右键&e来浏览正文"),
+
     ;
 
     Messages(String defaultValue) {

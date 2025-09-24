@@ -10,6 +10,8 @@ buildscript {
     }
 }
 
+include(":v1_7_R4")
+
 include(":paper")
 include(":paper:craft-engine")
 include(":email")
