@@ -31,6 +31,7 @@ public class SQLiteDatabase extends AbstractSQLDatabase {
             plugin.warn("正在卸载插件，请在 database.yml 添加以下内容，并重启服务器");
             plugin.warn("extra-libraries:");
             plugin.warn("- 'org.xerial:sqlite-jdbc:3.49.0.0'");
+            plugin.warn("- 'org.slf4j:slf4j-api:1.7.36'");
             Bukkit.getPluginManager().disablePlugin(plugin);
             return null;
         }

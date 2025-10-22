@@ -35,6 +35,16 @@ public class MySQLDatabase extends AbstractSQLDatabase {
                 plugin.warn("正在卸载插件，请在 database.yml 添加以下内容，并重启服务器");
                 plugin.warn("extra-libraries:");
                 plugin.warn("- 'com.mysql:mysql-connector-j:8.4.0'");
+                plugin.warn("- 'com.google.protobuf:protobuf-java:3.25.1'");
+                plugin.warn("- 'com.oracle.oci.sdk:oci-java-sdk-common:3.29.0'");
+                plugin.warn("- 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.29.0'");
+                plugin.warn("- 'com.fasterxml.jackson.core:jackson-annotations:2.15.2'");
+                plugin.warn("- 'com.fasterxml.jackson.core:jackson-databind:2.13.4.2'");
+                plugin.warn("- 'com.fasterxml.jackson.core:jackson-core:2.13.4'");
+                plugin.warn("- 'jakarta.annotation:jakarta.annotation-api:2.1.1'");
+                plugin.warn("- 'org.bouncycastle:bcpkix-jdk15to18:1.74'");
+                plugin.warn("- 'org.bouncycastle:bcprov-jdk15to18:1.74'");
+                plugin.warn("- 'org.slf4j:slf4j-api:1.7.33'");
                 Bukkit.getPluginManager().disablePlugin(plugin);
                 return null;
             }

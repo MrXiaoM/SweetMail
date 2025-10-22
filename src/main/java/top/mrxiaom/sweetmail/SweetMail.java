@@ -30,8 +30,6 @@ import top.mrxiaom.sweetmail.book.DefaultBook;
 import top.mrxiaom.sweetmail.book.IBook;
 import top.mrxiaom.sweetmail.database.MailDatabase;
 import top.mrxiaom.sweetmail.database.entry.Mail;
-import top.mrxiaom.sweetmail.depend.Placeholder;
-import top.mrxiaom.sweetmail.depend.PlaceholderPersist;
 import top.mrxiaom.sweetmail.depend.PlaceholderRegistry;
 import top.mrxiaom.sweetmail.depend.protocollib.PLComponentTitle;
 import top.mrxiaom.sweetmail.economy.IEconomy;
@@ -90,12 +88,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private FileConfiguration config;
     public final FoliaLib foliaLib;
     public SweetMail() throws Exception {
-        URLClassLoader oldLoader = (URLClassLoader) getClassLoader();
-        if (ClassLoaderWrapper.isSupportLibraryLoader) {
-            this.classLoader = new ClassLoaderWrapper(ClassLoaderWrapper.findLibraryLoader(oldLoader));
-        } else {
-            this.classLoader = new ClassLoaderWrapper(oldLoader);
-        }
+        this.classLoader = ClassLoaderWrapper.resolve((URLClassLoader) getClassLoader());
         this.foliaLib = new FoliaLib(this);
 
         loadLibraries();
@@ -125,11 +118,35 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                 : new File(this.getDataFolder(), "libraries");
         DefaultLibraryResolver resolver = new DefaultLibraryResolver(logger, librariesDir);
 
-        resolver.addLibrary(BuildConstants.LIBRARIES);
+        resolver.addResolvedLibrary(BuildConstants.RESOLVED_LIBRARIES);
         File databaseConfig = new File(this.getDataFolder(), "database.yml");
         if (databaseConfig.exists()) {
             YamlConfiguration config = Config.load(databaseConfig);
-            resolver.addLibraries(config.getStringList("extra-libraries"));
+            for (String dependency : config.getStringList("extra-libraries")) {
+                // 仅进行最低程度兼容，不处理子依赖
+                String[] split;
+                String extension;
+                if (dependency.contains("@")) {
+                    int i = dependency.lastIndexOf('@');
+                    split = dependency.substring(0, i).split(":");
+                    extension = dependency.substring(i + 1);
+                } else {
+                    split = dependency.split(":");
+                    extension = "jar";
+                }
+                if (split.length < 3) continue;
+                StringBuilder sb = new StringBuilder();
+                String group = split[0].replace('.', '/');
+                String name = split[1];
+                String version = split[2];
+                sb.append(group).append('/').append(name).append('/').append(version).append('/');
+                sb.append(name).append('-').append(version);
+                if (split.length > 3) {
+                    sb.append('-').append(split[3]);
+                }
+                sb.append('.').append(extension);
+                resolver.addResolvedLibrary(sb.toString());
+            }
         }
 
         List<URL> libraries = resolver.doResolve();
