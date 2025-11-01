@@ -25,7 +25,7 @@ java {
 }
 
 group = "top.mrxiaom"
-version = "1.1.2"
+version = "1.1.3"
 
 allprojects {
     apply(plugin="java")
