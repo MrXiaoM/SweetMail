@@ -10,6 +10,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
@@ -65,6 +66,7 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
         private final IGui parent;
         private final Player player;
         private final Mail mail;
+        private Inventory created;
 
         public Gui(IGui parent, Player player, Mail mail) {
             this.parent = parent;
@@ -79,9 +81,15 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
 
         @Override
         public Inventory newInventory() {
-            Inventory inv = createInventory(this, player);
-            applyIcons(this, inv, player);
-            return inv;
+            created = createInventory(this, player);
+            applyIcons(this, created, player);
+            return created;
+        }
+
+        @NotNull
+        @Override
+        public Inventory getInventory() {
+            return created;
         }
 
         @Override

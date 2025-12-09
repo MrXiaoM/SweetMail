@@ -184,9 +184,10 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         private final String target;
         private boolean unread;
         private Inventory created;
-        int page = 1;
+        private int page = 1;
         ListX<MailWithStatus> inBox;
         private boolean refreshPlaceholdersCacheAfterClose = false;
+        private boolean loading = false;
         public Gui(SweetMail plugin, Player player, @NotNull String target, boolean unread) {
             super(plugin);
             this.player = player;
@@ -223,21 +224,57 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         }
 
         @Override
+        public void open() {
+            plugin.getScheduler().runNextTick((t_) -> {
+                plugin.getGuiManager().openGui(this);
+                // 打开菜单后，异步调用数据库，再刷新菜单
+                refreshInboxAsync();
+            });
+        }
+
+        public void refreshInboxAsync() {
+            loading = true;
+            plugin.getScheduler().runAsync((t1_) -> {
+                String targetKey;
+                if (plugin.isOnlineMode()) {
+                    OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
+                    targetKey = plugin.getPlayerKey(offline);
+                } else {
+                    targetKey = target;
+                }
+                inBox = targetKey != null
+                        ? plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount())
+                        : new ListX<>(-1);
+                plugin.getScheduler().runNextTick((t2_) -> {
+                    applyIcons(this, created, player);
+                    Util.updateInventory(player);
+                    loading = false;
+                });
+            });
+        }
+
+        @Override
         public Player getPlayer() {
             return player;
         }
 
         @Override
         public Inventory newInventory() {
-            refreshInbox();
             created = createInventory(this, player);
             applyIcons(this, created, player);
+            return created;
+        }
+
+        @NotNull
+        @Override
+        public Inventory getInventory() {
             return created;
         }
 
         @Override
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
             event.setCancelled(true);
+            if (loading) return;
             Character c = getSlotKey(slot);
             if (c != null) switch (String.valueOf(c)) {
                 case "全": {
@@ -321,7 +358,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             plugin.getScheduler().runNextTick((t_) -> useAttachments(mail));
                         }
                         plugin.getMailDatabase().markUsed(dismiss, targetKey);
-                        plugin.getScheduler().runNextTick((t_) -> refreshInboxAndInv());
+                        refreshInboxAsync();
                     }
                     return;
                 }
@@ -352,9 +389,10 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 t(player, plugin.prefix() + Messages.InBox.attachments_outdated.str());
                             } else {
                                 // 未过期 领取附件并刷新菜单
+                                loading = true;
                                 plugin.getScheduler().runNextTick((t_) -> {
                                     useAttachments(mail);
-                                    refreshInboxAndInv();
+                                    refreshInboxAsync();
                                 });
                             }
                             return;
@@ -371,7 +409,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 refreshPlaceholdersCacheAfterClose = true;
                                 plugin.getMailDatabase().markRead(mail.uuid, targetKey);
                             }
-                            plugin.getScheduler().runNextTick((t_) -> refreshInboxAndInv());
+                            refreshInboxAsync();
                             return;
                         } else {
                             // 右键 预览附件

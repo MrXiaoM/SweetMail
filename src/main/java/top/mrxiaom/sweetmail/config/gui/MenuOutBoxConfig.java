@@ -172,8 +172,10 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         private final Player player;
         @NotNull
         private final String target;
-        int page = 1;
-        ListX<MailWithStatus> outBox;
+        private int page = 1;
+        ListX<MailWithStatus> outBox = new ListX<>(0);
+        private Inventory created;
+        private boolean loading = false;
         public Gui(SweetMail plugin, Player player, @NotNull String target) {
             super(plugin);
             this.player = player;
@@ -195,27 +197,54 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         }
 
         @Override
+        public void open() {
+            plugin.getScheduler().runNextTick((t_) -> {
+                plugin.getGuiManager().openGui(this);
+                // 打开菜单后，异步调用数据库，再刷新菜单
+                refreshOutboxAsync();
+            });
+        }
+
+        public void refreshOutboxAsync() {
+            loading = true;
+            plugin.getScheduler().runAsync((t1_) -> {
+                String targetKey;
+                if (target.equalsIgnoreCase("#Server#")) {
+                    targetKey = "#Server#";
+                } else if (plugin.isOnlineMode()) {
+                    OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
+                    targetKey = plugin.getPlayerKey(offline);
+                } else {
+                    targetKey = target;
+                }
+                outBox = targetKey != null
+                        ? plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount())
+                        : new ListX<>(-1);
+                plugin.getScheduler().runNextTick((t2_) -> {
+                    applyIcons(this, created, player);
+                    Util.updateInventory(player);
+                    loading = false;
+                });
+            });
+        }
+
+        @Override
         public Inventory newInventory() {
-            String targetKey;
-            if (target.equalsIgnoreCase("#Server#")) {
-                targetKey = "#Server#";
-            } else if (plugin.isOnlineMode()) {
-                OfflinePlayer offline = Util.getOfflinePlayer(target).orElse(null);
-                targetKey = plugin.getPlayerKey(offline);
-            } else {
-                targetKey = target;
-            }
-            outBox = targetKey != null
-                    ? plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount())
-                    : new ListX<>(-1);
-            Inventory inv = createInventory(this, player);
-            applyIcons(this, inv, player);
-            return inv;
+            created = createInventory(this, player);
+            applyIcons(this, created, player);
+            return created;
+        }
+
+        @NotNull
+        @Override
+        public Inventory getInventory() {
+            return created;
         }
 
         @Override
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
             event.setCancelled(true);
+            if (loading) return;
             Character c = getSlotKey(slot);
             if (c != null) switch (String.valueOf(c)) {
                 case "全": {
