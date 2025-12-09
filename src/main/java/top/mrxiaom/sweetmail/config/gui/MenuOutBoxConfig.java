@@ -221,6 +221,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         ? plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount())
                         : new ListX<>(-1);
                 plugin.getScheduler().runNextTick((t2_) -> {
+                    created.clear();
                     applyIcons(this, created, player);
                     Util.updateInventory(player);
                     loading = false;
@@ -249,6 +250,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
             if (c != null) switch (String.valueOf(c)) {
                 case "全": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
+                        loading = true;
                         MenuInBoxConfig.inst()
                                 .new Gui(plugin, player, target, false)
                                 .open();
@@ -257,6 +259,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 }
                 case "读": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
+                        loading = true;
                         MenuInBoxConfig.inst()
                                 .new Gui(plugin, player, target, true)
                                 .open();
@@ -264,11 +267,13 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                     return;
                 }
                 case "发": {
+                    // 玩家不可能在发件箱界面打开时发送邮件，所以，在发件箱界面点击发件箱图标。不需要执行刷新操作
                     return;
                 }
                 case "上": {
                     if (!click.isShiftClick() && click.isLeftClick()) {
                         if (page <= 1) return;
+                        loading = true;
                         page--;
                         plugin.getGuiManager().openGui(this);
                     }
@@ -278,6 +283,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                     if (!click.isShiftClick() && click.isLeftClick()) {
                         int maxPage = outBox.getMaxPage(getSlotsCount());
                         if (maxPage > 0 && page >= maxPage) return;
+                        loading = true;
                         page++;
                         plugin.getGuiManager().openGui(this);
                     }
@@ -293,20 +299,24 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             return;
                         }
                         if (click.isRightClick()) {
+                            loading = true;
                             MenuViewAttachmentsConfig.inst()
                                     .new Gui(this, player, mail)
                                     .open();
                             return;
                         }
                         if (click.equals(ClickType.DROP) && player.hasPermission("sweetmail.admin")) {
+                            loading = true;
                             player.closeInventory();
-                            plugin.getMailDatabase().deleteMail(mail.uuid);
-                            String sender = mail.senderDisplay.trim().isEmpty()
-                                    ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
-                            t(player, plugin.prefix() + Messages.OutBox.deleted.str()
-                                    .replace("%player%", sender)
-                                    .replace("%title%", mail.title)
-                                    .replace("%uuid%", mail.uuid));
+                            plugin.getScheduler().runAsync((t_) -> {
+                                plugin.getMailDatabase().deleteMail(mail.uuid);
+                                String sender = mail.senderDisplay.trim().isEmpty()
+                                        ? Util.getPlayerName(mail.sender) : mail.senderDisplay;
+                                t(player, plugin.prefix() + Messages.OutBox.deleted.str()
+                                        .replace("%player%", sender)
+                                        .replace("%title%", mail.title)
+                                        .replace("%uuid%", mail.uuid));
+                            });
                             return;
                         }
                     }
