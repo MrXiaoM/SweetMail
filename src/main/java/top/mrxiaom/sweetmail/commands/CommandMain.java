@@ -210,17 +210,21 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                             Pair.of("%error%", result.getError()));
                 }
                 Args params = result.getValue();
-                String uuid = plugin.getMailDatabase().generateMailUUID();
-                Result<Mail> mail = template.createMail(uuid, players, params);
-                if (mail.getError() != null) {
-                    return Messages.Command.send__failed.tm(sender,
-                            Pair.of("%error%", mail.getError()));
-                }
-                plugin.getMailDatabase().sendMail(mail.getValue());
-                return Messages.Command.send__success.tm(sender,
-                        Pair.of("%players_count%", players.size()),
-                        Pair.of("%template%", template.id),
-                        Pair.of("%parameters%", params));
+                plugin.getScheduler().runAsync((t_) -> {
+                    String uuid = plugin.getMailDatabase().generateMailUUID();
+                    Result<Mail> mail = template.createMail(uuid, players, params);
+                    if (mail.getError() != null) {
+                        Messages.Command.send__failed.tm(sender,
+                                Pair.of("%error%", mail.getError()));
+                        return;
+                    }
+                    plugin.getMailDatabase().sendMail(mail.getValue());
+                    Messages.Command.send__success.tm(sender,
+                            Pair.of("%players_count%", players.size()),
+                            Pair.of("%template%", template.id),
+                            Pair.of("%parameters%", params));
+                });
+                return true;
             }
             if ("players".equalsIgnoreCase(args[0]) && args.length > 1 && admin) {
                 List<OfflinePlayer> players = getPlayers(sender, args[1]);
