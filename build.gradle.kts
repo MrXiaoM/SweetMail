@@ -87,7 +87,7 @@ dependencies {
     base.library("net.kyori:adventure-text-minimessage:4.22.0")
 
     // Shadow Dependency
-    implementation("de.tr7zw:item-nbt-api:2.15.3")
+    implementation("de.tr7zw:item-nbt-api:2.15.5")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
     implementation("top.mrxiaom:LibrariesResolver-Lite:1.6.7")
     implementation(project(":v1_7_R4"))
