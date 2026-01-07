@@ -48,8 +48,14 @@ public class Util {
     public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static final Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static void init(SweetMail plugin) {
-        adventure = BukkitAudiences.builder(plugin).build();
-        MiniMessageConvert.init();
+        try {
+            adventure = BukkitAudiences.builder(plugin).build();
+            MiniMessageConvert.init();
+        } catch (LinkageError e) {
+            plugin.warn(plugin.getName() + " 的 adventure 相关库似乎出现了依赖冲突问题，请参考以下链接进行解决");
+            plugin.warn("https://plugins.mcio.dev/elopers/base/resolver-override");
+            throw e;
+        }
         plugin.getScheduler().runAsync((t_) -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {

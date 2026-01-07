@@ -118,6 +118,11 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                 : new File(this.getDataFolder(), "libraries");
         DefaultLibraryResolver resolver = new DefaultLibraryResolver(logger, librariesDir);
 
+        File overrideFile = new File(getDataFolder(), ".override-libraries.yml");
+        YamlConfiguration overrideLibraries = YamlConfiguration.loadConfiguration(overrideFile);
+        for (String key : overrideLibraries.getKeys(false)) {
+            resolver.getStartsReplacer().put(key, overrideLibraries.getString(key));
+        }
         resolver.addResolvedLibrary(BuildConstants.RESOLVED_LIBRARIES);
         File databaseConfig = new File(this.getDataFolder(), "database.yml");
         if (databaseConfig.exists()) {

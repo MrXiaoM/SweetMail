@@ -8,7 +8,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.6.7")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.3")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -89,7 +89,7 @@ dependencies {
     // Shadow Dependency
     implementation("de.tr7zw:item-nbt-api:2.15.5")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
-    implementation("top.mrxiaom:LibrariesResolver-Lite:1.6.7")
+    implementation(base.resolver.lite)
     implementation(project(":v1_7_R4"))
     implementation(project(":paper"))
     "shadowLink"(project(":paper:craft-engine"))
