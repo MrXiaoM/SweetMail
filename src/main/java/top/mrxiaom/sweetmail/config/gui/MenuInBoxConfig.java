@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
@@ -226,19 +227,19 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         @Override
         public void open() {
             loading = true;
-            plugin.getScheduler().runNextTick((t_) -> {
-                plugin.getGuiManager().openGui(this);
-                // 打开菜单后，异步调用数据库，再刷新菜单
-                refreshInboxAsync();
-            });
+            // 异步调用数据库，完成后再打开菜单
+            refreshInboxAsync(() -> plugin.getGuiManager().openGui(this));
         }
 
         public void refreshInboxAsync() {
+            refreshInboxAsync(null);
+        }
+        public void refreshInboxAsync(@Nullable Runnable post) {
             loading = true;
-            plugin.getScheduler().runAsync((t1_) -> refreshInboxImpl());
+            plugin.getScheduler().runAsync((t1_) -> refreshInboxImpl(post));
         }
 
-        private void refreshInboxImpl() {
+        private void refreshInboxImpl(@Nullable Runnable post) {
             loading = true;
             String targetKey;
             if (plugin.isOnlineMode()) {
@@ -255,6 +256,9 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                 applyIcons(this, created, player);
                 Util.updateInventory(player);
                 loading = false;
+                if (post != null) {
+                    post.run();
+                }
             });
         }
 
@@ -438,7 +442,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     refreshPlaceholdersCacheAfterClose = true;
                                     plugin.getMailDatabase().markRead(mail.uuid, targetKey);
                                 }
-                                refreshInboxImpl();
+                                refreshInboxImpl(null);
                             });
                         } else {
                             // 右键 预览附件

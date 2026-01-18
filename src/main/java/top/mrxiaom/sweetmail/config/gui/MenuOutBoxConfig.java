@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
@@ -198,14 +199,15 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
 
         @Override
         public void open() {
-            plugin.getScheduler().runNextTick((t_) -> {
-                plugin.getGuiManager().openGui(this);
-                // 打开菜单后，异步调用数据库，再刷新菜单
-                refreshOutboxAsync();
-            });
+            loading = true;
+            // 异步调用数据库，完成后再打开菜单
+            refreshOutboxAsync(() -> plugin.getGuiManager().openGui(this));
         }
 
         public void refreshOutboxAsync() {
+            refreshOutboxAsync(null);
+        }
+        public void refreshOutboxAsync(@Nullable Runnable post) {
             loading = true;
             plugin.getScheduler().runAsync((t1_) -> {
                 String targetKey;
@@ -225,6 +227,9 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                     applyIcons(this, created, player);
                     Util.updateInventory(player);
                     loading = false;
+                    if (post != null) {
+                        post.run();
+                    }
                 });
             });
         }
