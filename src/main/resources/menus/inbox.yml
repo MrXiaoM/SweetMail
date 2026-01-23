@@ -127,7 +127,7 @@ items:
 other-items:
   黑:
     material: BLACK_STAINED_GLASS_PANE
-    custom-model: 10000
+    #custom-model: 10000
     display: '&0'
   无:
     material: AIR

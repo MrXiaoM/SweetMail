@@ -102,7 +102,7 @@ items:
 other-items:
   黑:
     material: BLACK_STAINED_GLASS_PANE
-    custom-model: 10000
+    #custom-model: 10000
     display: '&0'
   例:
     # 必选，物品材质，可以用原版，也可以
@@ -112,6 +112,8 @@ other-items:
     # head-base64- 开头使用 base64 材质头颅，你可以从网站 https://minecraft-heads.com/ 获取头颅
     # craftengine- 开头使用 CraftEngine 物品
     material: 'STONE#10000'
+    # 添加一个 CustomModelData，会覆盖 material 指定的数值
+    custom-model: 10001
     # 可选，添加一个耐久1附魔与隐藏附魔flag，使得物品具有附魔光泽
     glow: true
     # 可选，物品名
