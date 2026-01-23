@@ -252,9 +252,11 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                     ? plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount())
                     : new ListX<>(-1);
             plugin.getScheduler().runNextTick((t2_) -> {
-                created.clear();
-                applyIcons(this, created, player);
-                Util.updateInventory(player);
+                if (created != null) {
+                    created.clear();
+                    applyIcons(this, created, player);
+                    Util.updateInventory(player);
+                }
                 loading = false;
                 if (post != null) {
                     post.run();

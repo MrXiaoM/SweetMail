@@ -223,9 +223,11 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         ? plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount())
                         : new ListX<>(-1);
                 plugin.getScheduler().runNextTick((t2_) -> {
-                    created.clear();
-                    applyIcons(this, created, player);
-                    Util.updateInventory(player);
+                    if (created != null) {
+                        created.clear();
+                        applyIcons(this, created, player);
+                        Util.updateInventory(player);
+                    }
                     loading = false;
                     if (post != null) {
                         post.run();
