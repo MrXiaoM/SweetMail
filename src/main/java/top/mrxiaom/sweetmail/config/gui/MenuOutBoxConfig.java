@@ -282,7 +282,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         if (page <= 1) return;
                         loading = true;
                         page--;
-                        plugin.getGuiManager().openGui(this);
+                        open();
                     }
                     return;
                 }
@@ -292,7 +292,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         if (maxPage > 0 && page >= maxPage) return;
                         loading = true;
                         page++;
-                        plugin.getGuiManager().openGui(this);
+                        open();
                     }
                     return;
                 }

@@ -293,7 +293,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         if (!unread) return;
                         unread = false;
                         loading = true;
-                        plugin.getGuiManager().openGui(this);
+                        open();
                     }
                     return;
                 }
@@ -303,7 +303,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             if (unread) return;
                             unread = true;
                             loading = true;
-                            plugin.getGuiManager().openGui(this);
+                            open();
                             return;
                         }
                         if (click.isRightClick()) {
@@ -317,7 +317,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             }
                             plugin.getMailDatabase().markAllRead(targetKey);
                             t(player, plugin.prefix() + Messages.InBox.read_all.str());
-                            plugin.getGuiManager().openGui(this);
+                            open();
                             return;
                         }
                     }
@@ -337,7 +337,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         if (page <= 1) return;
                         loading = true;
                         page--;
-                        plugin.getGuiManager().openGui(this);
+                        open();
                     }
                     return;
                 }
@@ -347,7 +347,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         if (maxPage > 0 && page >= maxPage) return;
                         loading = true;
                         page++;
-                        plugin.getGuiManager().openGui(this);
+                        open();
                     }
                     return;
                 }
