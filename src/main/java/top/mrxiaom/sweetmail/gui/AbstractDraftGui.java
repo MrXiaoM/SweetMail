@@ -11,7 +11,7 @@ import top.mrxiaom.sweetmail.func.data.Draft;
 public abstract class AbstractDraftGui extends AbstractPluginHolder implements IGui {
     protected final Player player;
     protected final Draft draft;
-    protected final Runnable reopen = () -> plugin.getScheduler().runNextTick((t_) -> open());
+    protected final Runnable reopen = () -> plugin.getScheduler().runTask(this::open);
     protected Inventory created;
     public AbstractDraftGui(SweetMail plugin, Player player) {
         super(plugin);

@@ -27,7 +27,7 @@ public class TimerManager extends AbstractPluginHolder {
     public TimerManager(SweetMail plugin) {
         super(plugin);
         file = new File(plugin.getDataFolder(), "timed_draft.yml");
-        plugin.getScheduler().runTimer(this::everySecond, 20L, 20L);
+        plugin.getScheduler().runTaskTimer(this::everySecond, 20L, 20L);
         register();
     }
 
@@ -88,7 +88,7 @@ public class TimerManager extends AbstractPluginHolder {
 
     private void everySecond() {
         if (queue.isEmpty()) return;
-        plugin.getScheduler().runAsync((t_) -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             boolean flag = false;
             long time = toTimestamp(LocalDateTime.now());
             DraftManager manager = DraftManager.inst();

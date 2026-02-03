@@ -24,6 +24,8 @@ import static top.mrxiaom.sweetmail.func.AbstractPluginHolder.t;
 
 public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
     protected String TABLE_BOX, TABLE_STATUS;
+    protected final SweetMail plugin = SweetMail.getInstance();
+
     protected abstract Connection getConnection() throws SQLException;
     protected abstract IStatementSchema schema();
 
@@ -61,7 +63,7 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
 
     @Override
     public void sendMail(Mail mail) {
-        SweetMail.getInstance().getScheduler().runAsync((t_) -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             boolean success = false;
             try (Connection conn = getConnection()) {
                 try (PreparedStatement ps = conn.prepareStatement(
@@ -259,7 +261,6 @@ public abstract class AbstractSQLDatabase implements IMailDatabaseReloadable {
 
     public void handleException(Exception e) {
         String message = e.getMessage();
-        SweetMail plugin = SweetMail.getInstance();
         if (e instanceof SQLException && message.contains("[SQLITE_ERROR]") && message.contains("near ")) {
             ConsoleCommandSender sender = Bukkit.getConsoleSender();
             t(sender, "&7[&d&lSweetMail&7]&c " + message);

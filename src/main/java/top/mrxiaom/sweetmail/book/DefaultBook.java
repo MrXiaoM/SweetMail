@@ -110,7 +110,7 @@ public class DefaultBook extends AbstractPluginHolder implements IBook, Listener
                 }
             }
         };
-        plugin.getScheduler().runLater(() -> {
+        plugin.getScheduler().runTaskLater(() -> {
             Bukkit.getPluginManager().registerEvents(listener, plugin);
             listeners.put(uuid, listener);
         }, 10L);

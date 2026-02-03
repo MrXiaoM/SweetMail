@@ -56,7 +56,7 @@ public class Util {
             plugin.warn("https://plugins.mcio.dev/elopers/base/resolver-override");
             throw e;
         }
-        plugin.getScheduler().runAsync((t_) -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
                 if (player.getName() != null) {
                     players.put(player.getName(), player);

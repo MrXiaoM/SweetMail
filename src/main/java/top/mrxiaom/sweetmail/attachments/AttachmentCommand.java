@@ -42,7 +42,7 @@ public class AttachmentCommand implements IAttachment {
 
     @Override
     public void use(Player player) {
-        SweetMail.getInstance().getScheduler().runNextTick((t_) -> {
+        SweetMail.getInstance().getScheduler().runTask(() -> {
             String cmd = PAPI.setPlaceholders(player, command);
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), miniMessageToLegacy(cmd));
         });

@@ -209,7 +209,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
         }
         public void refreshOutboxAsync(@Nullable Runnable post) {
             loading = true;
-            plugin.getScheduler().runAsync((t1_) -> {
+            plugin.getScheduler().runTaskAsync(() -> {
                 String targetKey;
                 if (target.equalsIgnoreCase("#Server#")) {
                     targetKey = "#Server#";
@@ -222,7 +222,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                 outBox = targetKey != null
                         ? plugin.getMailDatabase().getOutBox(targetKey, page, getSlotsCount())
                         : new ListX<>(-1);
-                plugin.getScheduler().runNextTick((t2_) -> {
+                plugin.getScheduler().runTask(() -> {
                     if (created != null) {
                         created.clear();
                         applyIcons(this, created, player);
@@ -315,7 +315,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                         if (click.equals(ClickType.DROP) && player.hasPermission("sweetmail.admin")) {
                             loading = true;
                             player.closeInventory();
-                            plugin.getScheduler().runAsync((t_) -> {
+                            plugin.getScheduler().runTaskAsync(() -> {
                                 plugin.getMailDatabase().deleteMail(mail.uuid);
                                 String sender = mail.senderDisplay.trim().isEmpty()
                                         ? Util.getPlayerName(mail.sender) : mail.senderDisplay;

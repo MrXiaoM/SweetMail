@@ -27,6 +27,6 @@ public interface IGui {
 
     default void open() {
         SweetMail plugin = SweetMail.getInstance();
-        plugin.getScheduler().runNextTick((t_) -> plugin.getGuiManager().openGui(this));
+        plugin.getScheduler().runTask(() -> plugin.getGuiManager().openGui(this));
     }
 }

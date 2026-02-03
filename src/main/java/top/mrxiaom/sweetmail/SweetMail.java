@@ -2,8 +2,6 @@ package top.mrxiaom.sweetmail;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import com.tcoded.folialib.FoliaLib;
-import com.tcoded.folialib.impl.PlatformScheduler;
 import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -46,6 +44,8 @@ import top.mrxiaom.sweetmail.utils.*;
 import top.mrxiaom.sweetmail.utils.inventory.BukkitInventoryFactory;
 import top.mrxiaom.sweetmail.utils.inventory.InventoryFactory;
 import top.mrxiaom.sweetmail.utils.inventory.PaperInventoryFactory;
+import top.mrxiaom.sweetmail.utils.scheduler.FoliaLibScheduler;
+import top.mrxiaom.sweetmail.utils.scheduler.IScheduler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,10 +86,10 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private IBook bookImpl;
     private InventoryFactory inventoryFactory;
     private FileConfiguration config;
-    public final FoliaLib foliaLib;
+    private final IScheduler scheduler;
     public SweetMail() throws Exception {
         this.classLoader = ClassLoaderWrapper.resolve((URLClassLoader) getClassLoader());
-        this.foliaLib = new FoliaLib(this);
+        this.scheduler = new FoliaLibScheduler(this);
 
         loadLibraries();
     }
@@ -106,8 +106,8 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         this.bookImpl = bookImpl;
     }
 
-    public PlatformScheduler getScheduler() {
-        return foliaLib.getScheduler();
+    public IScheduler getScheduler() {
+        return scheduler;
     }
 
     private void loadLibraries() throws Exception {
@@ -349,7 +349,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this);
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this);
         HandlerList.unregisterAll((Plugin) this);
-        getScheduler().cancelAllTasks();
+        getScheduler().cancelTasks();
         Util.onDisable();
     }
 

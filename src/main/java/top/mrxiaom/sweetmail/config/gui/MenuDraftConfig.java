@@ -559,7 +559,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             t(player, plugin.prefix() + Messages.Draft.send_with_adv_receivers.str());
                         }
                         player.closeInventory();
-                        plugin.getScheduler().runAsync((t_) -> {
+                        plugin.getScheduler().runTaskAsync(() -> {
                             List<String> receivers = DraftManager.inst().generateReceivers(draft);
                             if (!canSendToYourself) receivers.remove(player.getName());
                             if (receivers.isEmpty()) {
@@ -576,7 +576,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             }
                             Mail mail = draft.createMail(uuid, receivers);
                             plugin.getMailDatabase().sendMail(mail);
-                            if (draft.advSenderDisplay == null) plugin.getScheduler().runNextTick((t__) -> {
+                            if (draft.advSenderDisplay == null) plugin.getScheduler().runTask(() -> {
                                 PlayerMailSentEvent e = new PlayerMailSentEvent(player, draft.deepClone(), mail);
                                 Bukkit.getPluginManager().callEvent(e);
                             });
@@ -597,7 +597,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                                 draft.save();
                                 updateAttachmentSlots(view);
                                 if (!player.hasPermission(PERM_ADMIN) || !click.isShiftClick()) {
-                                    if (attachment != null) plugin.getScheduler().runNextTick((t_) -> {
+                                    if (attachment != null) plugin.getScheduler().runTask(() -> {
                                         if (attachment.isLegal()) {
                                             if (attachment.canGiveBack(player)) {
                                                 attachment.use(player);

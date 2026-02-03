@@ -236,7 +236,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         }
         public void refreshInboxAsync(@Nullable Runnable post) {
             loading = true;
-            plugin.getScheduler().runAsync((t1_) -> refreshInboxImpl(post));
+            plugin.getScheduler().runTaskAsync(() -> refreshInboxImpl(post));
         }
 
         private void refreshInboxImpl(@Nullable Runnable post) {
@@ -251,7 +251,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
             inBox = targetKey != null
                     ? plugin.getMailDatabase().getInBox(unread, targetKey, page, getSlotsCount())
                     : new ListX<>(-1);
-            plugin.getScheduler().runNextTick((t2_) -> {
+            plugin.getScheduler().runTask(() -> {
                 if (created != null) {
                     created.clear();
                     applyIcons(this, created, player);
@@ -356,7 +356,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         if (!player.getName().equals(target)) return; // 不可代领
                         if (inBox.isEmpty() || inBox.get(0).used) return;
                         loading = true;
-                        plugin.getScheduler().runAsync((t_) -> {
+                        plugin.getScheduler().runTaskAsync(() -> {
                             // 需要等待“读取所有未使用附件的邮件”、“附件已使用”标记完成，再刷新菜单，故将这些逻辑都放在一个 runAsync 内
                             String targetKey;
                             if (plugin.isOnlineMode()) {
@@ -379,7 +379,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                     t(player, plugin.prefix() + Messages.InBox.attachments_outdated.str());
                                     continue;
                                 }
-                                plugin.getScheduler().runNextTick((t1_) -> useAttachments(mail));
+                                plugin.getScheduler().runTask(() -> useAttachments(mail));
                             }
                             plugin.getMailDatabase().markUsed(dismiss, targetKey);
                             refreshInboxAsync();
@@ -404,12 +404,12 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             mail.read = true;
                             refreshPlaceholdersCacheAfterClose = true;
                             // 不需要等待标记已读完成，直接异步调用即可
-                            plugin.getScheduler().runAsync((t_) -> plugin.getMailDatabase().markRead(mail.uuid, targetKey));
+                            plugin.getScheduler().runTaskAsync(() -> plugin.getMailDatabase().markRead(mail.uuid, targetKey));
                         }
                         if (click.isShiftClick() && !mail.attachments.isEmpty() && !mail.used) {
                             // Shift+左键 领取附件
                             mail.used = true;
-                            plugin.getScheduler().runAsync((t_) -> {
+                            plugin.getScheduler().runTaskAsync(() -> {
                                 // 需要等待“附件已使用”标记完成，再刷新菜单，故将这些逻辑都放在一个 runAsync 内
                                 refreshPlaceholdersCacheAfterClose = true;
                                 plugin.getMailDatabase().markUsed(Lists.newArrayList(mail.uuid), targetKey);
@@ -420,7 +420,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                                 } else {
                                     // 未过期 领取附件并刷新菜单
                                     loading = true;
-                                    plugin.getScheduler().runNextTick((t1_) -> {
+                                    plugin.getScheduler().runTask(() -> {
                                         useAttachments(mail);
                                         refreshInboxAsync();
                                     });
@@ -437,7 +437,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                         loading = true;
                         if (click.isShiftClick()) {
                             // Shift+右键 标记已读并刷新界面图标
-                            plugin.getScheduler().runAsync((t_) -> {
+                            plugin.getScheduler().runTaskAsync(() -> {
                                 // 需要等待“邮件已读”标记完成，再刷新菜单，故将这些逻辑都放在一个 runAsync 内
                                 if (!mail.read) {
                                     mail.read = true;
@@ -450,7 +450,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
                             // 右键 预览附件
 
                             // 不需要等待标记已读完成，直接异步调用即可
-                            plugin.getScheduler().runAsync((t_) -> plugin.getMailDatabase().markRead(mail.uuid, targetKey));
+                            plugin.getScheduler().runTaskAsync(() -> plugin.getMailDatabase().markRead(mail.uuid, targetKey));
                             // 打开附件浏览菜单
                             MenuViewAttachmentsConfig.inst()
                                     .new Gui(this, player, mail)
@@ -469,7 +469,7 @@ public class MenuInBoxConfig extends AbstractMenuConfig<MenuInBoxConfig.Gui> {
         @Override
         public void onClose(InventoryView view) {
             if (refreshPlaceholdersCacheAfterClose) {
-                plugin.getScheduler().runAsync((t) -> {
+                plugin.getScheduler().runTaskAsync(() -> {
                     plugin.getMailDatabase().getInBoxCount(player, true);
                 });
             }

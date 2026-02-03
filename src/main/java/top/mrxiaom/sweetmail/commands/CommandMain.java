@@ -210,7 +210,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                             Pair.of("%error%", result.getError()));
                 }
                 Args params = result.getValue();
-                plugin.getScheduler().runAsync((t_) -> {
+                plugin.getScheduler().runTaskAsync(() -> {
                     String uuid = plugin.getMailDatabase().generateMailUUID();
                     Result<Mail> mail = template.createMail(uuid, players, params);
                     if (mail.getError() != null) {

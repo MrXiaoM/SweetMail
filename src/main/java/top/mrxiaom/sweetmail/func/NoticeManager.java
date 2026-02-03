@@ -42,7 +42,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         if (!player.hasPermission("sweetmail.notice")) return;
-        plugin.getScheduler().runAsync((t_) -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             MailCountInfo mailCountInfo = plugin.getMailDatabase().getInBoxCount(player, true);
             if (mailCountInfo.unreadCount > 0) {
                 notice(player, Messages.Join.text.str(), mailCountInfo.unreadCount);
@@ -60,7 +60,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
             for (int i = 0; i < length; i++) {
                 Util.getOnlinePlayerByNameOrUUID(in.readUTF()).ifPresent(noticePlayers::add);
             }
-            plugin.getScheduler().runAsync((t_) -> {
+            plugin.getScheduler().runTaskAsync(() -> {
                 for (Player player : noticePlayers) {
                     plugin.getMailDatabase().getInBoxCount(player, true);
                     notice(player, Messages.Join.text_online.str(), 1);
@@ -88,7 +88,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
         if (!noticeBungee || players.isEmpty()) return;
         Player player = Util.getAnyPlayerOrNull();
         if (player == null) return;
-        plugin.getScheduler().runAsync((t_) -> {
+        plugin.getScheduler().runTaskAsync(() -> {
             ByteArrayDataOutput out = Util.newDataOutput();
             out.writeUTF("Forward");
             out.writeUTF("ALL");

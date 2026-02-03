@@ -13,6 +13,7 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.MailIcon;
 import top.mrxiaom.sweetmail.utils.Util;
+import top.mrxiaom.sweetmail.utils.scheduler.IRunTask;
 
 import java.io.File;
 import java.util.*;
@@ -27,7 +28,7 @@ public class DraftManager extends AbstractPluginHolder {
     private String defaultTitle;
     private final Set<String> advReceiversBlackList = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     private final List<String> allPlayers = new ArrayList<>();
-    private WrappedTask bungeeTimer;
+    private IRunTask bungeeTimer;
     public DraftManager(SweetMail plugin) {
         super(plugin);
         dataFolder = new File(plugin.getDataFolder(), "draft");
@@ -88,7 +89,7 @@ public class DraftManager extends AbstractPluginHolder {
 
         onDisable();
         if (Bukkit.spigot().getConfig().getBoolean("settings.bungeecord", false)) {
-            bungeeTimer = plugin.getScheduler().runTimer(() -> {
+            bungeeTimer = plugin.getScheduler().runTaskTimer(() -> {
                 Player player = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
                 if (player == null) return;
                 ByteArrayDataOutput out = Util.newDataOutput();

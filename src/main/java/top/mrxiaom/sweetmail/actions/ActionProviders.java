@@ -59,7 +59,7 @@ public class ActionProviders {
             long delay = action.delayAfterRun();
             if (delay > 0) {
                 int index = i + 1;
-                plugin.getScheduler().runLater(() -> run0(plugin, player, actions, replacements, index), delay);
+                plugin.getScheduler().runTaskLater(() -> run0(plugin, player, actions, replacements, index), delay);
                 return;
             }
         }
