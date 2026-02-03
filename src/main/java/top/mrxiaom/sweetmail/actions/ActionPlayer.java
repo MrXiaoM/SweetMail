@@ -1,10 +1,10 @@
 package top.mrxiaom.sweetmail.actions;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.depend.PAPI;
 import top.mrxiaom.sweetmail.utils.Pair;
+import top.mrxiaom.sweetmail.utils.Util;
 
 import java.util.List;
 
@@ -26,6 +26,6 @@ public class ActionPlayer implements IAction {
     @Override
     public void run(Player player, @Nullable List<Pair<String, Object>> replacements) {
         String s = Pair.replace(command, replacements);
-        Bukkit.dispatchCommand(player, PAPI.setPlaceholders(player, s));
+        Util.dispatchCommand(player, PAPI.setPlaceholders(player, s));
     }
 }

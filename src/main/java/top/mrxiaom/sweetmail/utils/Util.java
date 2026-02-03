@@ -33,6 +33,9 @@ import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.depend.ItemsAdder;
 import top.mrxiaom.sweetmail.depend.Mythic;
 import top.mrxiaom.sweetmail.depend.PAPI;
+import top.mrxiaom.sweetmail.utils.diapatcher.BukkitDispatcher;
+import top.mrxiaom.sweetmail.utils.diapatcher.FoliaDispatcher;
+import top.mrxiaom.sweetmail.utils.diapatcher.ICommandDispatcher;
 
 import java.io.*;
 import java.time.Duration;
@@ -47,7 +50,15 @@ public class Util {
     private static BukkitAudiences adventure;
     public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static final Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private static ICommandDispatcher dispatcher;
+
     public static void init(SweetMail plugin) {
+        try {
+            Bukkit.getServer().getClass().getDeclaredMethod("dispatchCmdAsync", CommandSender.class, String.class);
+            dispatcher = new FoliaDispatcher(plugin.getScheduler());
+        } catch (ReflectiveOperationException e) {
+            dispatcher = BukkitDispatcher.INSTANCE;
+        }
         try {
             adventure = BukkitAudiences.builder(plugin).build();
             MiniMessageConvert.init();
@@ -75,6 +86,10 @@ public class Util {
         ItemsAdder.init();
         Mythic.load();
         ItemStackUtil.init();
+    }
+
+    public static void dispatchCommand(@NotNull CommandSender sender, @NotNull String commandLine) {
+        dispatcher.dispatchCommand(sender, commandLine);
     }
 
     public static List<Character> toCharList(String s) {
