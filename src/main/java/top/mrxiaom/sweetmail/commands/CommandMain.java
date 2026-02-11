@@ -103,7 +103,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     String id = args[2];
                     TimerManager manager = TimerManager.inst();
                     TimedDraft timedDraft = manager.getQueue(id);
-                    if (timedDraft == null) return t(sender, plugin.prefix() + Messages.Command.timed__info__not_found.str());
+                    if (timedDraft == null) return t(sender, plugin.prefix() + Messages.Command.timed__info__not_found.str(Pair.of("%id%", id)));
                     String senderDisplay = timedDraft.draft.advSenderDisplay == null ? "" : timedDraft.draft.advSenderDisplay;
                     String mailSender = senderDisplay.isEmpty() ? timedDraft.draft.sender : IMail.SERVER_SENDER;
                     for (String s : Messages.Command.timed__info__display.list(
@@ -120,7 +120,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     String id = args[2];
                     TimerManager manager = TimerManager.inst();
                     boolean result = manager.cancelQueue(id);
-                    return t(sender, plugin.prefix() + (result ? Messages.Command.timed__cancel__success : Messages.Command.timed__cancel__fail).str());
+                    return t(sender, plugin.prefix() + (result ? Messages.Command.timed__cancel__success : Messages.Command.timed__cancel__fail).str(Pair.of("%id%", id)));
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
