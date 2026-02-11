@@ -119,8 +119,12 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                 if (args.length > 2 && "cancel".equalsIgnoreCase(args[1])) {
                     String id = args[2];
                     TimerManager manager = TimerManager.inst();
-                    boolean result = manager.cancelQueue(id);
-                    return t(sender, plugin.prefix() + (result ? Messages.Command.timed__cancel__success : Messages.Command.timed__cancel__fail).str(Pair.of("%id%", id)));
+                    if (manager.cancelQueue(id)) {
+                        manager.save();
+                        return t(sender, plugin.prefix() + Messages.Command.timed__cancel__success.str(Pair.of("%id%", id)));
+                    } else {
+                        return t(sender, plugin.prefix() + Messages.Command.timed__cancel__fail.str(Pair.of("%id%", id)));
+                    }
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
