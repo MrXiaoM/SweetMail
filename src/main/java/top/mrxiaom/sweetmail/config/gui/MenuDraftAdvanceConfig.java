@@ -25,7 +25,6 @@ import top.mrxiaom.sweetmail.utils.Util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -333,18 +332,12 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                     ChatPrompter.prompt(plugin, player,
                             iconTimedPromptTips, iconTimedPromptCancel,
                             receive -> {
-                                String[] split = receive.split(" ", 2);
-                                LocalDateTime localDateTime;
-                                try {
-                                    LocalDate date = LocalDate.parse(split[0]);
-                                    LocalTime time = split.length > 1 ? LocalTime.parse(split[1]) : LocalTime.of(0, 0, 0);
-                                    localDateTime = date.atTime(time);
-                                } catch (DateTimeParseException ignored) {
+                                Long time = parseTime(receive);
+                                if (time == null) {
                                     t(player, iconTimedPromptWrongFormat);
                                     reopen.run();
                                     return;
                                 }
-                                long time = toTimestamp(localDateTime);
                                 TimerManager.inst().sendInTime(draft, time);
                                 draft.reset();
                                 draft.save();
