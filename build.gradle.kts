@@ -150,10 +150,13 @@ tasks {
 publishing {
     publications {
         create<MavenPublication>("mavenRelease") {
-            from(components.getByName("java"))
             groupId = project.group.toString()
             artifactId = project.name
             version = project.version.toString()
+
+            artifact(tasks["shadowJar"]).classifier = null
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
         }
     }
 }
