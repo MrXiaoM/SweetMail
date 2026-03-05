@@ -1,6 +1,8 @@
 package top.mrxiaom.sweetmail.attachments;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -12,6 +14,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import top.mrxiaom.sweetmail.Messages;
+import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.gui.AbstractAddAttachmentGui;
 import top.mrxiaom.sweetmail.utils.ItemStackUtil;
@@ -53,15 +56,23 @@ public class AttachmentItem implements IAttachment {
     @Override
     public void use(Player player) {
         ItemStack itemToAdd = item.clone();
-        Collection<ItemStack> values = player.getInventory().addItem(itemToAdd).values();
-        if (!values.isEmpty()) {
-            for (ItemStack i : values) {
-                Item item = player.getWorld().dropItem(player.getLocation(), i);
+        Collection<ItemStack> last = player.getInventory().addItem(itemToAdd).values();
+        if (last.isEmpty()) return;
+
+        World world = player.getWorld();
+        Location location = player.getLocation();
+        Location loc = new Location(world, location.getBlockX() + 0.5, location.getY() + 1.0, location.getBlockZ() + 0.5);
+        SweetMail.getInstance().getScheduler().runAtLocation(loc, () -> {
+            for (ItemStack i : last) {
+                if (i == null || i.getType().equals(Material.AIR) || i.getAmount() <= 0) {
+                    continue;
+                }
+                Item item = world.dropItem(location, i);
                 if (hasSetOwnerMethod) {
                     item.setOwner(player.getUniqueId());
                 }
             }
-        }
+        });
     }
 
     @Override
