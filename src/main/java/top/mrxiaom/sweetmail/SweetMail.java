@@ -158,6 +158,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private void registerBuiltInPlayerList() {
         registerPlayerList(new ProviderBungeeOnline());
         registerPlayerList(new ProviderCurrentOnline());
+        registerPlayerList(new ProviderExpression());
         registerPlayerList(new ProviderInTime());
         registerPlayerList(new ProviderRaw());
     }

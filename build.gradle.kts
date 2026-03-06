@@ -89,6 +89,7 @@ dependencies {
     // Shadow Dependency
     implementation("de.tr7zw:item-nbt-api:2.15.5")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
+    implementation("top.mrxiaom:EvalEx-j8:3.4.0")
     implementation(base.resolver.lite)
     implementation(project(":v1_7_R4"))
     implementation(project(":paper"))
@@ -111,6 +112,7 @@ tasks {
         mapOf(
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "com.tcoded.folialib" to "folialib",
+            "com.ezylang.evalex" to "evalex",
             "top.mrxiaom.pluginbase.resolver" to "resolver",
         ).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
