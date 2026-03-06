@@ -1,10 +1,12 @@
 package top.mrxiaom.sweetmail.database.entry;
 
+import org.jetbrains.annotations.ApiStatus;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@ApiStatus.Internal
 public class MailWithStatus extends Mail {
     public LocalDateTime time;
     public boolean read = false;

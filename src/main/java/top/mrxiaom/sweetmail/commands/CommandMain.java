@@ -111,7 +111,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                             Pair.of("%sender%", mailSender),
                             Pair.of("%senderDisplay%", senderDisplay),
                             Pair.of("%receiver%", timedDraft.draft.receiver),
-                            Pair.of("%advReceivers%", timedDraft.draft.advReceivers))) {
+                            Pair.of("%advReceivers%", timedDraft.draft.extensiveReceivers.toLegacyString()))) {
                         t(sender, plugin.prefix() + s);
                     }
                     return true;

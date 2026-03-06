@@ -555,7 +555,7 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
                             return;
                         }
                         // 提醒发送人，计算泛接收人列表的时间可能会很长
-                        if (draft.advReceivers != null && draft.advReceivers.startsWith("last ")) {
+                        if (draft.extensiveReceivers != null && draft.extensiveReceivers.isLagTask()) {
                             t(player, plugin.prefix() + Messages.Draft.send_with_adv_receivers.str());
                         }
                         player.closeInventory();

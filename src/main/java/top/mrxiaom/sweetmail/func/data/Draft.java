@@ -3,13 +3,16 @@ package top.mrxiaom.sweetmail.func.data;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import top.mrxiaom.sweetmail.IMail;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.players.IPlayerList;
 import top.mrxiaom.sweetmail.utils.Config;
 import top.mrxiaom.sweetmail.utils.MiniMessageConvert;
 import top.mrxiaom.sweetmail.utils.Util;
@@ -19,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@ApiStatus.Internal
 public class Draft {
     /**
      * 邮件发送者
@@ -51,7 +55,7 @@ public class Draft {
     /**
      * 高级设置 泛收件人设置
      */
-    public String advReceivers = null;
+    public IPlayerList extensiveReceivers = null;
     /**
      * 高级设置 是否在正文启用PAPI变量
      */
@@ -78,7 +82,7 @@ public class Draft {
         content = new ArrayList<>();
         attachments = new ArrayList<>();
         advSenderDisplay = null;
-        advReceivers = null;
+        extensiveReceivers = null;
         advPlaceholders = false;
         outdateDays = 0;
         lastEditTime = null;
@@ -97,7 +101,7 @@ public class Draft {
             draft.attachments.add(deserialize);
         }
         draft.advSenderDisplay = advSenderDisplay;
-        draft.advReceivers = advReceivers;
+        draft.extensiveReceivers = extensiveReceivers;
         draft.advPlaceholders = advPlaceholders;
         draft.outdateDays = outdateDays;
         draft.lastEditTime = lastEditTime;
@@ -120,7 +124,12 @@ public class Draft {
         }
         draft.attachments = attachments;
         draft.advSenderDisplay = config.getString("advance.sender_display", null);
-        draft.advReceivers = config.getString("advance.receivers", null);
+        if (config.isConfigurationSection("advance.receivers")) {
+            draft.extensiveReceivers = manager.plugin.parsePlayerList(config.getConfigurationSection("advance.receivers"));
+        } else {
+            // 兼容旧的数据配置
+            draft.extensiveReceivers = manager.plugin.parsePlayerList(config.getString("advance.receivers", null));
+        }
         draft.advPlaceholders = config.getBoolean("advance.placeholders", false);
         draft.outdateDays = config.getInt("advance.outdate_days", 0);
         draft.lastEditTime = config.contains("last-edit") ? config.getLong("last-edit") : null;
@@ -147,7 +156,11 @@ public class Draft {
         }
         config.set("attachments", attachmentsList);
         if (advSenderDisplay != null) config.set("advance.sender_display", advSenderDisplay);
-        if (advReceivers != null) config.set("advance.receivers", advReceivers);
+        if (extensiveReceivers != null) {
+            ConfigurationSection section = new MemoryConfiguration();
+            extensiveReceivers.toConfig(section);
+            config.set("advance.receivers", section);
+        }
         config.set("advance.placeholders", advPlaceholders);
         config.set("advance.outdate_days", outdateDays);
         if (lastEditTime != null) config.set("last-edit", lastEditTime);
@@ -165,7 +178,16 @@ public class Draft {
     }
 
     public List<String> advReceivers() {
-        return generateReceivers(advReceivers);
+        if (extensiveReceivers == null) {
+            return new ArrayList<>();
+        }
+        SweetMail plugin = SweetMail.getInstance();
+        List<String> receivers = new ArrayList<>();
+        List<OfflinePlayer> list = extensiveReceivers.getPlayers();
+        for (OfflinePlayer player : list) {
+            receivers.add(plugin.getPlayerKey(player));
+        }
+        return receivers;
     }
 
     public Mail createMail(String uuid, List<String> realReceivers) {
@@ -182,6 +204,7 @@ public class Draft {
     /**
      * 解析 advance receivers
      */
+    @Deprecated
     public static List<String> generateReceivers(String advReceivers) {
         if (advReceivers == null) return new ArrayList<>();
         SweetMail plugin = SweetMail.getInstance();

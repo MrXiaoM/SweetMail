@@ -1,5 +1,8 @@
 package top.mrxiaom.sweetmail.database.entry;
 
+import org.jetbrains.annotations.ApiStatus;
+
+@ApiStatus.Internal
 public class MailCountInfo {
     public static final MailCountInfo ZERO = new MailCountInfo(0, 0, 0);
     public final int unreadCount;

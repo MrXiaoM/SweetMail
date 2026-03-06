@@ -4,6 +4,7 @@ import com.google.gson.*;
 import net.kyori.adventure.inventory.Book;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.depend.PAPI;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+@ApiStatus.Internal
 public class Mail {
     public final String uuid;
     public final String sender;

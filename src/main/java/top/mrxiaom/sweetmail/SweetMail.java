@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.pluginbase.resolver.DefaultLibraryResolver;
 import top.mrxiaom.pluginbase.resolver.utils.ClassLoaderWrapper;
 import top.mrxiaom.sweetmail.actions.*;
@@ -40,6 +42,9 @@ import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.basic.GuiManager;
 import top.mrxiaom.sweetmail.func.basic.TextHelper;
 import top.mrxiaom.sweetmail.func.data.Draft;
+import top.mrxiaom.sweetmail.players.AbstractPlayerListProvider;
+import top.mrxiaom.sweetmail.players.IPlayerList;
+import top.mrxiaom.sweetmail.players.providers.*;
 import top.mrxiaom.sweetmail.utils.*;
 import top.mrxiaom.sweetmail.utils.inventory.BukkitInventoryFactory;
 import top.mrxiaom.sweetmail.utils.inventory.InventoryFactory;
@@ -54,6 +59,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,6 +93,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private InventoryFactory inventoryFactory;
     private FileConfiguration config;
     private final IScheduler scheduler;
+    private final List<AbstractPlayerListProvider> playerListProviders = new ArrayList<>();
     public SweetMail() throws Exception {
         this.classLoader = ClassLoaderWrapper.resolve((URLClassLoader) getClassLoader());
         this.scheduler = new FoliaLibScheduler(this);
@@ -108,6 +115,51 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
 
     public IScheduler getScheduler() {
         return scheduler;
+    }
+
+    public void registerPlayerList(AbstractPlayerListProvider provider) {
+        playerListProviders.add(provider);
+        playerListProviders.sort(Comparator.comparingInt(AbstractPlayerListProvider::priority));
+    }
+
+    public void unregisterPlayerList(AbstractPlayerListProvider provider) {
+        playerListProviders.remove(provider);
+        playerListProviders.sort(Comparator.comparingInt(AbstractPlayerListProvider::priority));
+    }
+
+    @Nullable
+    public IPlayerList parsePlayerList(@Nullable String str) {
+        if (str == null) {
+            return null;
+        }
+        for (AbstractPlayerListProvider provider : playerListProviders) {
+            IPlayerList inst = provider.fromString(str);
+            if (inst != null) {
+                return inst;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public IPlayerList parsePlayerList(@Nullable ConfigurationSection config) {
+        if (config == null) {
+            return null;
+        }
+        for (AbstractPlayerListProvider provider : playerListProviders) {
+            IPlayerList inst = provider.fromConfig(config);
+            if (inst != null) {
+                return inst;
+            }
+        }
+        return null;
+    }
+
+    private void registerBuiltInPlayerList() {
+        registerPlayerList(new ProviderBungeeOnline());
+        registerPlayerList(new ProviderCurrentOnline());
+        registerPlayerList(new ProviderInTime());
+        registerPlayerList(new ProviderRaw());
     }
 
     private void loadLibraries() throws Exception {
@@ -216,6 +268,7 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         } catch (Throwable ignored) {
             inventoryFactory = new BukkitInventoryFactory();
         }
+        registerBuiltInPlayerList();
     }
 
     @Override
@@ -433,7 +486,17 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
         }
         @Override
         protected Status send(MailDraft draft) {
-            List<String> receivers = draft.getReceivers();
+            IPlayerList extensiveReceivers = draft.getExtensiveReceivers();
+            List<String> receivers;
+            if (extensiveReceivers != null) {
+                receivers = new ArrayList<>();
+                List<OfflinePlayer> players = extensiveReceivers.getPlayers();
+                for (OfflinePlayer player : players) {
+                    receivers.add(getPlayerKey(player));
+                }
+            } else {
+                receivers = draft.getReceivers();
+            }
             if (receivers.isEmpty()) {
                 return Status.EMPTY_RECEIVER;
             }
@@ -473,11 +536,9 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
                 }
             }
             if (draft.getReceivers().isEmpty()) return null;
-            if (draft.getReceivers().size() > 1) {
-                if (!draft.getReceivers().get(0).equals("#advance#")) {
-                    throw new IllegalArgumentException("定时发送不支持多个 receivers 的用法，请将第一个元素设为 #advance#，第二个元素设为泛接收者表达式");
-                }
-                generated.advReceivers = draft.getReceivers().get(1);
+            IPlayerList extensiveReceivers = draft.getExtensiveReceivers();
+            if (extensiveReceivers != null) {
+                generated.extensiveReceivers = extensiveReceivers;
             } else {
                 generated.receiver = draft.getReceivers().get(0);
             }

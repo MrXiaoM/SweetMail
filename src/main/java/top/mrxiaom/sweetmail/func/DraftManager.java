@@ -133,7 +133,7 @@ public class DraftManager extends AbstractPluginHolder {
 
     public List<String> generateReceivers(Draft draft) {
         List<String> receivers = new ArrayList<>();
-        if (draft.advReceivers != null && !draft.advReceivers.isEmpty()) {
+        if (draft.extensiveReceivers != null) {
             receivers.addAll(draft.advReceivers());
             receivers.removeIf(draft.manager::isInAdvanceReceiversBlackList);
         } else if (!draft.receiver.isEmpty()) {

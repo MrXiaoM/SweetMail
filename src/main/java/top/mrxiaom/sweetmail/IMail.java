@@ -1,8 +1,11 @@
 package top.mrxiaom.sweetmail;
 
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.attachments.IAttachment;
+import top.mrxiaom.sweetmail.players.IPlayerList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,10 +62,11 @@ public abstract class IMail {
         private final String sender;
         private String senderDisplay;
         private String icon = "PAPER";
-        private List<String> receivers = new ArrayList<>();
+        private final List<String> receivers = new ArrayList<>();
+        private IPlayerList extensiveReceivers;
         private String title = "";
-        private List<String> content = new ArrayList<>();
-        private List<IAttachment> attachments = new ArrayList<>();
+        private final List<String> content = new ArrayList<>();
+        private final List<IAttachment> attachments = new ArrayList<>();
         private boolean enablePlaceholders = false;
         private long outdateTime = 0L;
         private MailDraft(String sender) {
@@ -142,7 +146,7 @@ public abstract class IMail {
         }
 
         /**
-         * 设置邮件接收者
+         * 设置邮件接收者 ID
          */
         public MailDraft setReceiver(String receiver) {
             this.receivers.clear();
@@ -151,12 +155,19 @@ public abstract class IMail {
         }
 
         /**
-         * @see IMail.MailDraft#setReceiver(String)
+         * 设置邮件接收者
+         * @see IMail.MailDraft#setReceiver(OfflinePlayer)
          */
         public MailDraft setReceiverFromPlayer(OfflinePlayer receiver) {
-            String s = SweetMail.getInstance().isOnlineMode()
-                    ? receiver.getUniqueId().toString()
-                    : receiver.getName();
+            return setReceiver(receiver);
+        }
+
+        /**
+         * 设置邮件接收者
+         * @see IMail.MailDraft#setReceiver(String)
+         */
+        public MailDraft setReceiver(OfflinePlayer receiver) {
+            String s = SweetMail.getInstance().getPlayerKey(receiver);
             if (s != null) {
                 setReceiver(s);
             }
@@ -164,17 +175,50 @@ public abstract class IMail {
         }
 
         /**
-         * 设置邮件接收者列表。<br>
-         * 定时发送不支持该选项输入多个接收者，请将第一个元素设为 #advance#，第二个元素设为泛接收者表达式。<br>
-         * 表达式具体语法详见 Draft 源码。
-         * @see top.mrxiaom.sweetmail.func.data.Draft#generateReceivers
+         * 设置邮件接收者列表
+         * <p>
+         * 定时发送不支持该选项输入多个接收者，如有需要多个接收者，详见使用 IPlayerList 参数的选项
+         * @see MailDraft#setReceivers(IPlayerList)
          */
         public MailDraft setReceivers(List<String> receivers) {
-            this.receivers = receivers;
+            this.receivers.clear();
+            this.receivers.addAll(receivers);
+            if (receivers.size() > 1) {
+                // 兼容旧功能
+                if ("#advance#".equalsIgnoreCase(receivers.get(0))) {
+                    String str = receivers.get(1);
+                    IPlayerList inst = SweetMail.getInstance().parsePlayerList(str);
+                    if (inst != null) {
+                        this.extensiveReceivers = inst;
+                    } else {
+                        this.receivers.clear();
+                    }
+                }
+            }
             return this;
         }
 
         /**
+         * 按泛收件人方式发送邮件
+         * @param receivers 泛收件人计算逻辑
+         * @see top.mrxiaom.sweetmail.players.builtin.PlayerListRaw
+         */
+        public MailDraft setReceivers(IPlayerList receivers) {
+            this.receivers.clear();
+            this.extensiveReceivers = receivers;
+            return this;
+        }
+
+        /**
+         * 获取泛收件人计算逻辑
+         */
+        @Nullable
+        public IPlayerList getExtensiveReceivers() {
+            return extensiveReceivers;
+        }
+
+        /**
+         * 设置邮件接收者列表
          * @see IMail.MailDraft#setReceivers(List)
          */
         public MailDraft setReceiversFromPlayers(List<OfflinePlayer> receivers) {
@@ -189,11 +233,23 @@ public abstract class IMail {
         }
 
         /**
-         * 设置图标，格式如下<br>
+         * 设置图标
+         * @see MailDraft#setIcon(String)
+         * @param material 图片
+         */
+        public MailDraft setIcon(Material material) {
+            return setIcon(material.name());
+        }
+
+        /**
+         * 设置图标，格式如下
          * <ul>
-         *     <li>物品ID#CustomModelData - 原版物品，不输入 # 则不添加 CMD</li>
-         *     <li>itemsadder-物品ID - ItemsAdder物品</li>
-         *     <li>mythic-物品ID - MythicMobs物品</li>
+         *     <li><code>物品ID#CustomModelData</code> - 原版物品，不输入 <code>#</code> 则不添加 CMD</li>
+         *     <li><code>itemsadder-物品ID</code> - ItemsAdder物品</li>
+         *     <li><code>mythic-物品ID</code> - MythicMobs物品</li>
+         *     <li><code>head-base64-数据值</code> - Base64格式头颅</li>
+         *     <li><code>craftengine-命名空间:物品ID</code> - CraftEngine物品</li>
+         *     <li><code>neigeitems-物品ID;数据值</code> - NeigeItems物品，可不添加数据值</li>
          * </ul>
          */
         public MailDraft setIcon(String icon) {
@@ -214,7 +270,8 @@ public abstract class IMail {
          * @param content 书与笔中的每页内容
          */
         public MailDraft setContent(List<String> content) {
-            this.content = content;
+            this.content.clear();
+            this.content.addAll(content);
             return this;
         }
 
@@ -238,7 +295,8 @@ public abstract class IMail {
          * 设置邮件附件
          */
         public MailDraft setAttachments(List<IAttachment> attachments) {
-            this.attachments = attachments;
+            this.attachments.clear();
+            this.attachments.addAll(attachments);
             return this;
         }
 
