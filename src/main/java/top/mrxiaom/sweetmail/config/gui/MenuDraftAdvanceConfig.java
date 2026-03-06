@@ -93,7 +93,7 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                 iconReceiversPrompts4Cancel = section.getString(key + ".prompts.4.cancel", "cancel");
                 iconReceiversPrompts5Tips = section.getString(key + ".prompts.5.tips", "&7[&e&l邮件&7] &b请在聊天栏发送玩家列表，使用逗号分隔 &7(输入&c cancel &7取消设置)");
                 iconReceiversPrompts5Cancel = section.getString(key + ".prompts.5.cancel", "cancel");
-                iconReceiversPrompts6Tips = section.getString(key + ".prompts.6.tips", "&7[&e&l邮件&7] &b请在聊天栏发送变量表达式 &7(输入&c cancel &7取消设置)");
+                iconReceiversPrompts6Tips = section.getString(key + ".prompts.6.tips", "&7[&e&l邮件&7] &b请在聊天栏发送变量表达式，如&e %player_level% >= 30 &7(输入&c cancel &7取消设置)");
                 iconReceiversPrompts6Cancel = section.getString(key + ".prompts.6.cancel", "cancel");
                 iconReceiversUnset = section.getString(key + ".unset", "&7未设置");
                 iconReceiversBadTimeFormat = section.getString(key + ".bad-time-format", "&7[&e&l邮件&7] &f你输入的时间格式不正确!");
