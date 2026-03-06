@@ -72,11 +72,18 @@ public enum Messages implements IHolderAccessor {
         send__failed("&e邮件发送失败: %error%"),
         send__success("&a成功向 %players_count% 位玩家发送模板邮件 %template% %parameters%"),
 
+        extensive__not_set("你还没有设置泛收件人"),
+        extensive__calculating("正在计算泛收件人列表，请稍等…"),
+        extensive__empty("&a泛收件人表达式&e %formula% &e共计算出&c 0 &e名玩家"),
+        extensive__chat_header("&a泛收件人表达式&e %formula% &e共计算出&e %players_count% &e名玩家，前&e %count% &a位名单如下:"),
+        extensive__chat_entry("&7-&f %player_name%"),
+
         players__empty("&a接收者表达式&e %formula% &e共计算出&c 0 &e名玩家"),
         players__chat_header("&a接收者表达式&e %formula% &e共计算出&e %players_count% &e名玩家，前&e %count% &a位名单如下:"),
         players__chat_entry("&7-&f <hover:show_text:%player_uuid%>%player_name%</hover>"),
         players__book_header("共 %players_count% 名玩家"),
         players__book_entry("- <hover:show_text:%player_uuid%>%player_name%</hover>"),
+
         ;
 
         Command(String defaultValue) {

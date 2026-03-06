@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.config.gui;
 
-import com.google.common.collect.Lists;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -12,12 +11,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.config.AbstractMenuConfig;
 import top.mrxiaom.sweetmail.func.DraftManager;
 import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.gui.AbstractDraftGui;
+import top.mrxiaom.sweetmail.players.IPlayerList;
 import top.mrxiaom.sweetmail.players.builtin.*;
 import top.mrxiaom.sweetmail.utils.ChatPrompter;
 import top.mrxiaom.sweetmail.utils.Pair;
@@ -214,16 +215,25 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
                             return;
                         }
                         if (click.equals(ClickType.DROP)) {
-                            t(player, "正在计算泛接收人列表，请稍等…");
+                            IPlayerList extensiveReceivers = draft.extensiveReceivers;
+                            if (extensiveReceivers == null) {
+                                Messages.Command.extensive__not_set.tm(player);
+                                return;
+                            }
+                            Messages.Command.extensive__calculating.tm(player);
                             plugin.getScheduler().runTaskAsync(() -> {
                                 List<String> receivers = draft.advReceivers();
-                                if (receivers.isEmpty()) {
-                                    t(player, "(空)");
-                                } else if (receivers.size() < 16) {
-                                    t(player, String.join(", ", receivers));
-                                } else {
-                                    List<String> list = Lists.partition(receivers, 16).get(0);
-                                    t(player, String.join(", ", list) + "... (" + receivers.size() + ")");
+                                int playersCount = receivers.size();
+                                int count = Math.min(16, playersCount);
+                                Messages.Command.extensive__chat_header.tm(player,
+                                        Pair.of("%formula%", extensiveReceivers.toLegacyString()),
+                                        Pair.of("%players_count%", playersCount),
+                                        Pair.of("%count%", count));
+                                for (int i = 0; i < count; i++) {
+                                    String name = receivers.get(i);
+                                    Messages.Command.extensive__chat_entry.tm(player,
+                                            Pair.of("%player_name%", name)
+                                    );
                                 }
                             });
                             player.closeInventory();
