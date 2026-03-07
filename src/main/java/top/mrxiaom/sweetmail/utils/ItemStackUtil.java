@@ -29,6 +29,7 @@ import top.mrxiaom.sweetmail.attachments.IAttachment;
 import top.mrxiaom.sweetmail.utils.inventory.item.AdventureItemStack;
 import top.mrxiaom.sweetmail.utils.inventory.item.ItemStackAPI;
 import top.mrxiaom.sweetmail.utils.inventory.item.PaperItemStack;
+import top.mrxiaom.sweetmail.utils.items.CraftEngineProvider;
 import top.mrxiaom.sweetmail.utils.items.ItemProvider;
 
 import java.io.ByteArrayInputStream;
@@ -40,6 +41,10 @@ import static top.mrxiaom.sweetmail.utils.Util.*;
 @SuppressWarnings({"deprecation", "unused"})
 public class ItemStackUtil {
     public static final String FLAG = "SWEETMAIL_MENU_ICON";
+    /**
+     * 服务端是否安装了 CraftEngine
+     */
+    private static boolean supportCraftEngine;
     /**
      * 服务端是否原生支持获取物品的翻译键
      */
@@ -56,6 +61,7 @@ public class ItemStackUtil {
     public static String locale = "zh_CN";
     private static final Map<String, ItemProvider> itemProviders = new HashMap<>();
     protected static void init() {
+        supportCraftEngine = isPresent("net.momirealms.craftengine.bukkit.api.CraftEngineItems");
         supportTranslationKey = isPresent("org.bukkit.Translatable");
         supportBundle = isPresent("org.bukkit.inventory.meta.BundleMeta");
         supportLangUtils = isPresent("com.meowj.langutils.lang.LanguageHelper");
@@ -86,6 +92,12 @@ public class ItemStackUtil {
             String nameBukkit = meta.getDisplayName();
             if (!nameBukkit.isEmpty()) {
                 return MiniMessageConvert.legacyToMiniMessage(nameBukkit);
+            }
+        }
+        if (supportCraftEngine && api.isTextUseComponent()) {
+            String key = CraftEngineProvider.getTranslationKey(item);
+            if (key != null) {
+                return "<translate:" + key + ">";
             }
         }
         if (supportTranslationKey && api.isTextUseComponent()) {
