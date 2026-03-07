@@ -16,6 +16,7 @@ var isRelease = gradle.startParameter.taskNames.run {
 }
 val targetJavaVersion = 8
 java {
+    disableAutoTargetJvm()
     val javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
         toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
@@ -40,6 +41,7 @@ allprojects {
         maven("https://repo.rosewooddev.io/repository/public/")
         maven("https://libraries.minecraft.net/")
         maven("https://r.irepo.space/maven/")
+        maven("https://repo.momirealms.net/releases/")
     }
 
     tasks.withType<JavaCompile>().configureEach {
@@ -75,6 +77,10 @@ dependencies {
     compileOnly("io.lumine:Mythic:5.6.2")
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
+    // CraftEngine
+    compileOnly("net.momirealms:craft-engine-core:0.0.67")
+    compileOnly("net.momirealms:craft-engine-bukkit:0.0.67")
+
     compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
     compileOnly("org.jetbrains:annotations:24.0.0")
 
@@ -93,7 +99,6 @@ dependencies {
     implementation(base.resolver.lite)
     implementation(project(":v1_7_R4"))
     implementation(project(":paper"))
-    "shadowLink"(project(":paper:craft-engine"))
 }
 
 buildConfig {
