@@ -8,7 +8,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.8")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.9")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -26,7 +26,7 @@ java {
 }
 
 group = "top.mrxiaom"
-version = "1.1.6"
+version = "1.1.7"
 
 allprojects {
     apply(plugin="java")
