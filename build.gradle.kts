@@ -138,7 +138,6 @@ tasks {
     javadoc {
         (options as? StandardJavadocDocletOptions)?.apply {
             links("https://hub.spigotmc.org/javadocs/spigot/")
-            links("https://ci.md-5.net/job/BungeeCord/ws/chat/target/apidocs/")
 
             locale("zh_CN")
             charset("UTF-8")
