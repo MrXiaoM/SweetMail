@@ -30,6 +30,14 @@ bungeecord:
   # 子服2的接收方标识码为 'server3,' 则它不接收消息
   receiver-key: 'default'
 
+notice:
+  # 是否在玩家进入服务器时检查是否有未读邮件？
+  # 依然需要玩家拥有 sweetmail.notice 权限才能收到通知
+  # 如果你有登录插件，或者像掌握检查未读邮件时机，可以关掉该选项，
+  # 然后在该检查是否有未读邮件时，执行控制台命令:
+  # sweetmail admin check 玩家名
+  check-on-join: true
+
 # 是否检查插件兼容性
 check-compatible:
   cmi: true

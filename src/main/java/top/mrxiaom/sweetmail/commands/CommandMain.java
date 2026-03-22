@@ -24,6 +24,7 @@ import top.mrxiaom.sweetmail.config.gui.MenuOutBoxConfig;
 import top.mrxiaom.sweetmail.database.entry.Mail;
 import top.mrxiaom.sweetmail.func.AbstractPluginHolder;
 import top.mrxiaom.sweetmail.func.DraftManager;
+import top.mrxiaom.sweetmail.func.NoticeManager;
 import top.mrxiaom.sweetmail.func.TimerManager;
 import top.mrxiaom.sweetmail.func.data.Draft;
 import top.mrxiaom.sweetmail.func.data.TimedDraft;
@@ -125,6 +126,14 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     } else {
                         return t(sender, plugin.prefix() + Messages.Command.timed__cancel__fail.str(Pair.of("%id%", id)));
                     }
+                }
+                if (args.length > 2 && "check".equalsIgnoreCase(args[1])) {
+                    Player player = Util.getOnlinePlayer(args[2]).orElse(null);
+                    if (player == null) {
+                        return t(sender, plugin.prefix() +  Messages.Command.player__not_online.str());
+                    }
+                    NoticeManager.inst().checkUnreadAsync(player);
+                    return true;
                 }
             }
             if ("draft".equalsIgnoreCase(args[0]) && sender.hasPermission(PERM_DRAFT)) {
@@ -444,7 +453,7 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
     private static final List<String> emptyList = Collections.emptyList();
     private static final List<String> listArg0 = Lists.newArrayList("draft", "inbox", "outbox");
     private static final List<String> listAdminArg0 = Lists.newArrayList("draft", "inbox", "outbox", "admin", "save", "send", "players", "reload");
-    private static final List<String> listArg1Admin = Lists.newArrayList("inbox", "outbox");
+    private static final List<String> listArg1Admin = Lists.newArrayList("inbox", "outbox", "timed", "cancel", "check");
     private static final List<String> listArgInBox = Lists.newArrayList("all", "unread");
     private static final List<String> listArgPlayers = Lists.newArrayList("@all", "@all[ts=]", "@all[from=,to=]", "@self", "@me", "@online", "@online[bc]");
     private static final List<String> listVarArgSend = Lists.newArrayList("键=值");
@@ -497,6 +506,9 @@ public class CommandMain extends AbstractPluginHolder implements CommandExecutor
                     if ("timed".equalsIgnoreCase(args[1])
                             || "cancel".equalsIgnoreCase(args[1])) {
                         return startsWith(TimerManager.inst().getQueueIds(), args[2]);
+                    }
+                    if ("check".equalsIgnoreCase(args[1])) {
+                        return null;
                     }
                 }
                 if ("send".equalsIgnoreCase(args[0])) {

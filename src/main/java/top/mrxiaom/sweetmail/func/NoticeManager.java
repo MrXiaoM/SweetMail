@@ -24,6 +24,7 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
     boolean noticeBungee;
     String noticeSenderKey;
     String noticeReceiverKey;
+    boolean noticeCheckOnJoin;
     public NoticeManager(SweetMail plugin) {
         super(plugin);
         registerEvents(this);
@@ -36,12 +37,19 @@ public class NoticeManager extends AbstractPluginHolder implements Listener {
         noticeBungee = config.getBoolean("bungeecord.enable", true);
         noticeSenderKey = config.getString("bungeecord.sender-key", "");
         noticeReceiverKey = config.getString("bungeecord.receiver-key", "");
+
+        noticeCheckOnJoin = config.getBoolean("notice.check-on-join", true);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        if (!player.hasPermission("sweetmail.notice")) return;
+        if (noticeCheckOnJoin && player.hasPermission("sweetmail.notice")) {
+            checkUnreadAsync(player);
+        }
+    }
+
+    public void checkUnreadAsync(Player player) {
         plugin.getScheduler().runTaskAsync(() -> {
             MailCountInfo mailCountInfo = plugin.getMailDatabase().getInBoxCount(player, true);
             if (mailCountInfo.unreadCount > 0) {

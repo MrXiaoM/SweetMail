@@ -55,6 +55,8 @@ public enum Messages implements IHolderAccessor {
         reload("&a配置文件已重载 &7(如需重载数据库，请使用 &f/mail reload database&7)"),
         reload_database("&a数据库配置已重载，已重新连接数据库"),
 
+        player__not_online("&e玩家不在线 &7(或不存在)"),
+
         timed__info__display(
                 "&f定时发送序列: &e%id%",
                 "&f发送人: &e%sender%",
