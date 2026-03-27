@@ -13,7 +13,7 @@ softdepend:
 authors: [ MrXiaoM ]
 folia-supported: true
 libraries:
-  - "org.jetbrains:annotations:24.0.0"
+  - "${libraries}"
 commands:
   sweetmail:
     description: SweetMail main command.

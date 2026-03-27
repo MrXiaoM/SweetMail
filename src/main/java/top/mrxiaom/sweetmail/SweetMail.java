@@ -97,8 +97,12 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     public SweetMail() throws Exception {
         this.classLoader = ClassLoaderWrapper.resolve((URLClassLoader) getClassLoader());
         this.scheduler = new FoliaLibScheduler(this);
-
-        loadLibraries();
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            getDescription().getLibraries();
+        } catch (LinkageError e) {
+            loadLibraries();
+        }
     }
 
     public IBook getBookImpl() {

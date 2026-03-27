@@ -6,7 +6,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.12")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.13")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -137,7 +137,10 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         from("LICENSE")
         from(sourceSets.main.get().resources.srcDirs) {
-            expand("version" to if (isRelease) version else ("$version-unstable"))
+            expand(
+                "version" to if (isRelease) version else ("$version-unstable"),
+                "libraries" to base.addedLibraries.joinToString("\"\n  - \""),
+            )
             include("plugin.yml")
         }
     }
