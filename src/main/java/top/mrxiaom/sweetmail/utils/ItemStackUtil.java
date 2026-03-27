@@ -95,6 +95,10 @@ public class ItemStackUtil {
             }
         }
         if (supportCraftEngine && api.isTextUseComponent()) {
+            String itemName = CraftEngineProvider.getItemName(item);
+            if (itemName != null) {
+                return itemName;
+            }
             String key = CraftEngineProvider.getTranslationKey(item);
             if (key != null) {
                 return "<translate:" + key + ">";
