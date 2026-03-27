@@ -1,9 +1,7 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 plugins {
     java
     `maven-publish`
-    id("top.mrxiaom.shadow")
+    id("com.gradleup.shadow") version "9.3.0"
     id("com.github.gmazzo.buildconfig") version "5.6.7"
 }
 buildscript {
@@ -113,7 +111,9 @@ buildConfig {
 }
 
 tasks {
-    val shadowModern = configureShadow("shadowModern", "plugin") {
+    shadowJar {
+        configurations.add(project.configurations["runtimeClasspath"])
+        configurations.add(shadowLink)
         mapOf(
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "com.tcoded.folialib" to "folialib",
@@ -123,9 +123,15 @@ tasks {
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
         }
     }
-    create("release")
+    this.register("release")
+    val copyTask = this.register<Copy>("copyBuildArtifact") {
+        dependsOn(shadowJar)
+        from(shadowJar.get().outputs)
+        rename { "${project.name}-$version-plugin.jar" }
+        into(rootProject.file("out"))
+    }
     build {
-        dependsOn(shadowModern)
+        dependsOn(copyTask)
     }
     processResources {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -165,26 +171,4 @@ publishing {
             artifact(tasks["javadocJar"])
         }
     }
-}
-fun TaskContainer.configureShadow(
-    name: String,
-    classifier: String,
-    block: ShadowJar.() -> Unit
-): ShadowJar = create<ShadowJar>(name) {
-    group = "shadow"
-    manifest.inheritFrom(project.tasks.jar.get().manifest)
-    from(project.sourceSets.main.get().output)
-    configurations.add(
-        project.configurations.findByName("runtimeClasspath") ?: project.configurations.findByName("runtime")
-    )
-    configurations.add(shadowLink)
-    exclude("META-INF/INDEX.LIST", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA", "module-info.class")
-    dependencies {
-        exclude(dependency(project.dependencies.gradleApi()))
-    }
-    destinationDirectory.set(project.file("out"))
-
-    archiveClassifier.set(if (isRelease) classifier else "$classifier-unstable")
-    ignoreRelocations("top/mrxiaom/sweetmail/utils/items/CraftEngineProviderImpl.class")
-    block()
 }

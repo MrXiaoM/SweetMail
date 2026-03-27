@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
       - name: Setup Gradle
@@ -21,12 +21,11 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
+          java-version: '25'
           distribution: 'adopt'
       - name: Build Plugin
         run: |
           ./gradlew clean build
-          cp email/build/libs/*.jar build/libs
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
