@@ -11,6 +11,7 @@ import top.mrxiaom.sweetmail.utils.Util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+imoort java.util.ArrayList;
 import java.util.List;
 
 public class PlayerListInTime implements IPlayerList {
@@ -27,9 +28,9 @@ public class PlayerListInTime implements IPlayerList {
     @Override
     @SuppressWarnings("RedundantIfStatement")
     public @NonNull List<OfflinePlayer> getPlayers() {
-        List<OfflinePlayer> list = Util.getOfflinePlayers();
+        List<OfflinePlayer> list = new ArrayList<>(Util.getOfflinePlayers());
         if (from != null || to != null) {
-            getPlayers().removeIf(player -> {
+            list.removeIf(player -> {
                 if (player == null || player.getName() == null) return true;
                 long lastPlayed = player.getLastPlayed();
                 if (from != null && lastPlayed < from) return true;
