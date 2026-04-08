@@ -6,7 +6,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.13")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.17")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -91,7 +91,7 @@ dependencies {
     base.library("net.kyori:adventure-text-minimessage:4.22.0")
 
     // Shadow Dependency
-    implementation("de.tr7zw:item-nbt-api:2.15.6")
+    implementation("de.tr7zw:item-nbt-api:2.15.7")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
     implementation("top.mrxiaom:EvalEx-j8:3.4.0")
     implementation(base.resolver.lite)
