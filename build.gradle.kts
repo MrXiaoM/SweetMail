@@ -1,3 +1,5 @@
+import java.util.Locale
+
 plugins {
     java
     `maven-publish`
@@ -6,7 +8,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.17")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.20")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -29,7 +31,9 @@ version = "1.1.8"
 allprojects {
     apply(plugin="java")
     repositories {
-        mavenLocal()
+        if (Locale.getDefault().country == "CN") {
+            maven("https://mirrors.huaweicloud.com/repository/maven/")
+        }
         mavenCentral()
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
         maven("https://mvn.lumine.io/repository/maven/")
@@ -40,6 +44,7 @@ allprojects {
         maven("https://libraries.minecraft.net/")
         maven("https://r.irepo.space/maven/")
         maven("https://repo.momirealms.net/releases/")
+        maven("https://maven.devs.beer/")
     }
 
     tasks.withType<JavaCompile>().configureEach {
@@ -50,7 +55,6 @@ allprojects {
     }
 }
 
-val shadowLink = configurations.create("shadowLink")
 val base = top.mrxiaom.gradle.LibraryHelper(project)
 
 @Suppress("VulnerableLibrariesLocal")
@@ -60,10 +64,10 @@ dependencies {
 
     // API
     compileOnly("net.milkbowl.vault:VaultAPI:1.7")
-    compileOnly("com.github.LoneDev6:api-itemsadder:3.6.1")
+    compileOnly("dev.lone:api-itemsadder:4.0.10")
 
     // Dependency Plugins
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("me.clip:placeholderapi:2.12.2")
     compileOnly("com.github.MascusJeoraly:LanguageUtils:1.9")
     compileOnly("com.github.dmulloy2:ProtocolLib:5.3.0")
     compileOnly("pers.neige.neigeitems:NeigeItems:1.21.96")
@@ -113,7 +117,6 @@ buildConfig {
 tasks {
     shadowJar {
         configurations.add(project.configurations["runtimeClasspath"])
-        configurations.add(shadowLink)
         mapOf(
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "com.tcoded.folialib" to "folialib",
@@ -124,10 +127,11 @@ tasks {
         }
     }
     this.register("release")
-    val copyTask = this.register<Copy>("copyBuildArtifact") {
+    val jarName = "${project.name}-$version-plugin.jar"
+    val copyTask = register<Copy>("copyBuildArtifact") {
         dependsOn(shadowJar)
         from(shadowJar.get().outputs)
-        rename { "${project.name}-$version-plugin.jar" }
+        rename { jarName }
         into(rootProject.file("out"))
     }
     build {
@@ -139,7 +143,7 @@ tasks {
         from(sourceSets.main.get().resources.srcDirs) {
             expand(
                 "version" to if (isRelease) version else ("$version-unstable"),
-                "libraries" to base.addedLibraries.joinToString("\"\n  - \""),
+                "libraries" to base.addedLibrariesYAML.joinToString("\n"),
             )
             include("plugin.yml")
         }

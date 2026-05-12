@@ -12,8 +12,7 @@ softdepend:
   - ProtocolLib
 authors: [ MrXiaoM ]
 folia-supported: true
-libraries:
-  - "${libraries}"
+# Dependecy artifacts ${libraries}
 commands:
   sweetmail:
     description: SweetMail main command.
