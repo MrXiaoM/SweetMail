@@ -8,7 +8,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.20")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.21")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -80,8 +80,8 @@ dependencies {
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
     // CraftEngine
-    compileOnly("net.momirealms:craft-engine-core:0.0.67")
-    compileOnly("net.momirealms:craft-engine-bukkit:0.0.67")
+    compileOnly("net.momirealms:craft-engine-core:26.5")
+    compileOnly("net.momirealms:craft-engine-bukkit:26.5")
 
     compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
     compileOnly("org.jetbrains:annotations:24.0.0")
@@ -97,7 +97,7 @@ dependencies {
     // Shadow Dependency
     implementation("de.tr7zw:item-nbt-api:2.15.7")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
-    implementation("top.mrxiaom:EvalEx-j8:3.4.0")
+    implementation("top.mrxiaom:EvalEx-j8:3.6.1")
     implementation(base.resolver.lite)
     implementation(project(":v1_7_R4"))
     implementation(project(":paper"))

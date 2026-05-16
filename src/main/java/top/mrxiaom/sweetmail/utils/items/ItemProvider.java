@@ -25,7 +25,7 @@ public interface ItemProvider {
         }
         map.put("head-base64-", new HeadBase64Provider());
         try {
-            Class.forName("net.momirealms.craftengine.bukkit.api.CraftEngineItems");
+            Class.forName("net.momirealms.craftengine.bukkit.item.BukkitItemDefinition");
             String major = System.getProperty("java.version").split("\\.")[0];
             int javaVersion = Util.parseInt(major).orElse(0);
             if (javaVersion >= 21) {
