@@ -25,8 +25,8 @@ java {
     withJavadocJar()
 }
 
-group = "top.mrxiaom"
-version = "1.1.9"
+println("Group:   $group")
+println("Version: $version")
 
 allprojects {
     apply(plugin="java")
