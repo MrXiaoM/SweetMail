@@ -25,7 +25,9 @@ public class ActionMessage implements IAction {
 
     @Override
     public void run(Player player, @Nullable List<Pair<String, Object>> replacements) {
-        String s = Pair.replace(message, replacements);
-        Util.sendMessage(player, PAPI.setPlaceholders(player, s));
+        if (player != null) {
+            String s = PAPI.setPlaceholders(player, message);
+            Util.sendMessage(player, Pair.replace(s, replacements));
+        }
     }
 }

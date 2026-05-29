@@ -1,6 +1,5 @@
 package top.mrxiaom.sweetmail.config.gui.entry;
 
-import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -137,13 +136,13 @@ public class IconSlot {
             }
         }
 
-        return PAPI.setPlaceholders(target, replace(lore, replacements));
+        return replace(PAPI.setPlaceholders(target, lore), replacements);
     }
 
     @SafeVarargs
     public final ItemStack generateIcon(Player target, MailWithStatus mail, ItemStack icon, Pair<String, Object>... replacements) {
         if (base.display != null) {
-            ItemStackUtil.setItemDisplayName(icon, PAPI.setPlaceholders(target, replace(base.display, replacements)));
+            ItemStackUtil.setItemDisplayName(icon, replace(PAPI.setPlaceholders(target, base.display), replacements));
         }
         List<String> lore = getIconLore(target, mail, replacements);
 

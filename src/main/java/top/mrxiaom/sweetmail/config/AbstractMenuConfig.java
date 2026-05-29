@@ -58,13 +58,13 @@ public abstract class AbstractMenuConfig<T extends IGui> extends AbstractPluginH
         public final ItemStack generateIcon(OfflinePlayer target, ItemStack item, Pair<String, Object>... replacements) {
             if (item.getType().equals(Material.AIR)) return item;
             if (display != null) {
-                ItemStackUtil.setItemDisplayName(item, PAPI.setPlaceholders(target, replace(display, replacements)));
+                ItemStackUtil.setItemDisplayName(item, replace(PAPI.setPlaceholders(target, display), replacements));
             }
             if (customModel != null) {
                 ItemStackUtil.setCustomModelData(item, customModel);
             }
             if (!lore.isEmpty()) {
-                ItemStackUtil.setItemLore(item, PAPI.setPlaceholders(target, replace(lore, replacements)));
+                ItemStackUtil.setItemLore(item, replace(PAPI.setPlaceholders(target, lore), replacements));
             }
             if (glow) {
                 ItemStackUtil.setGlow(item);

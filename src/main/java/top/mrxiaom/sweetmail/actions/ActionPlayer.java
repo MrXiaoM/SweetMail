@@ -25,7 +25,9 @@ public class ActionPlayer implements IAction {
 
     @Override
     public void run(Player player, @Nullable List<Pair<String, Object>> replacements) {
-        String s = Pair.replace(command, replacements);
-        Util.dispatchCommand(player, PAPI.setPlaceholders(player, s));
+        if (player != null) {
+            String s =  PAPI.setPlaceholders(player, command);
+            Util.dispatchCommand(player, Pair.replace(s, replacements));
+        }
     }
 }
