@@ -86,12 +86,10 @@ dependencies {
     compileOnly(base.depend.annotations)
 
     base.library("org.slf4j:slf4j-api:2.0.16")
-    base.library("net.kyori:adventure-api:4.22.0")
-    base.library("net.kyori:adventure-platform-bukkit:4.4.0")
-    base.library("net.kyori:adventure-text-serializer-gson:4.22.0")
-    base.library("net.kyori:adventure-text-serializer-plain:4.22.0")
-    base.library("net.kyori:adventure-text-minimessage:4.22.0")
     base.library(base.depend.HikariCP)
+    base.library("net.kyori:adventure-api:4.25.0")
+    base.library("net.kyori:adventure-text-serializer-gson:4.25.0")
+    base.library("net.kyori:adventure-text-minimessage:4.25.0")
 
     // Shadow Dependency
     implementation(base.depend.nbtapi)

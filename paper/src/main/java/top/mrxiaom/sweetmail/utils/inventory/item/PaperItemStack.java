@@ -13,6 +13,7 @@ public class PaperItemStack implements ItemStackAPI {
     public PaperItemStack() throws Throwable {
         ItemMeta.class.getDeclaredMethod("displayName", Component.class);
         ItemStack item = new ItemStack(Material.PAPER);
+        setItemDisplayName(item, Component.text("test"));
         getItemDisplayName(item);
     }
 

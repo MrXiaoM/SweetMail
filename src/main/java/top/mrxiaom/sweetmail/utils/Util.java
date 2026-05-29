@@ -11,9 +11,7 @@ import de.tr7zw.changeme.nbtapi.utils.MinecraftVersion;
 import de.tr7zw.changeme.nbtapi.utils.nmsmappings.ReflectionMethod;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.inventory.Book;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -30,9 +28,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
+import top.mrxiaom.sweetmail.api.IAdventureHandler;
 import top.mrxiaom.sweetmail.depend.ItemsAdder;
 import top.mrxiaom.sweetmail.depend.Mythic;
 import top.mrxiaom.sweetmail.depend.PAPI;
+import top.mrxiaom.sweetmail.utils.adventure.DefaultAdventureHandler;
+import top.mrxiaom.sweetmail.utils.adventure.serializer.legacy.LegacyComponentSerializer;
 import top.mrxiaom.sweetmail.utils.diapatcher.BukkitDispatcher;
 import top.mrxiaom.sweetmail.utils.diapatcher.FoliaDispatcher;
 import top.mrxiaom.sweetmail.utils.diapatcher.ICommandDispatcher;
@@ -47,7 +48,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class Util {
-    private static BukkitAudiences adventure;
+    private static IAdventureHandler handler;
     public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     public static final Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private static ICommandDispatcher dispatcher;
@@ -60,8 +61,8 @@ public class Util {
             dispatcher = BukkitDispatcher.INSTANCE;
         }
         try {
-            adventure = BukkitAudiences.builder(plugin).build();
-            MiniMessageConvert.init();
+            handler = new DefaultAdventureHandler(plugin);
+            MiniMessageConvert.init(plugin, handler);
         } catch (LinkageError e) {
             plugin.warn(plugin.getName() + " 的 adventure 相关库似乎出现了依赖冲突问题，请参考以下链接进行解决");
             plugin.warn("https://plugins.mcio.dev/elopers/base/resolver-override");
@@ -126,10 +127,6 @@ public class Util {
     }
 
     public static void onDisable() {
-        if (adventure != null) {
-            adventure.close();
-            adventure = null;
-        }
     }
 
     public static Component miniMessage(String s) {
@@ -153,7 +150,7 @@ public class Util {
         if (sender instanceof Audience) {
             return (Audience) sender;
         }
-        return adventure.sender(sender);
+        return handler.of(sender);
     }
 
     public static void sendTitle(Player player, String title, String subTitle, int fadeIn, int stay, int fadeOut) {
