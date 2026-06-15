@@ -22,10 +22,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import top.mrxiaom.sweetmail.Messages;
 import top.mrxiaom.sweetmail.SweetMail;
 import top.mrxiaom.sweetmail.api.IAdventureHandler;
@@ -91,6 +94,25 @@ public class Util {
 
     public static void dispatchCommand(@NotNull CommandSender sender, @NotNull String commandLine) {
         dispatcher.dispatchCommand(sender, commandLine);
+    }
+
+    /**
+     * 获取 Inventory 的 InventoryHolder 实例
+     * @return 在 Folia 服务端，如果是 BlockInventoryHolder，会因为异步调用方块而报错。该报错会被捕捉，返回 <code>null</code>。
+     */
+    @Nullable
+    public static InventoryHolder getHolder(@NotNull Inventory inv) {
+        // 因为 Folia 非要找存在感，把日志打出来，所以需要增加额外判定
+        try {
+            // 这个 getLocation() 在 1.9 加入，所以只要这里报错，也可以放心调用 .getHolder()
+            if (inv.getLocation() != null) return null;
+        } catch (Throwable ignored) {
+        }
+        try {
+            return inv.getHolder();
+        } catch (Throwable ignored) { // fuck folia
+            return null;
+        }
     }
 
     public static List<Character> toCharList(String s) {

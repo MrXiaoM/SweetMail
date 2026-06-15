@@ -46,7 +46,7 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
         Player player = gui.getPlayer();
         if (player == null) return;
         Inventory inv = gui.newInventory();
-        if (inv != null && inv.getHolder() instanceof BaseHolder) {
+        if (inv != null && Util.getHolder(inv) instanceof BaseHolder) {
             player.openInventory(inv);
         } else {
             player.closeInventory();
@@ -58,8 +58,9 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
         HandlerList.unregisterAll(this);
         for (Player player : Bukkit.getOnlinePlayers()) {
             InventoryView view = player.getOpenInventory();
-            if (view.getTopInventory().getHolder() instanceof BaseHolder) {
-                IGui opened = ((BaseHolder) view.getTopInventory().getHolder()).getGui();
+            InventoryHolder holder = Util.getHolder(view.getTopInventory());
+            if (holder instanceof BaseHolder) {
+                IGui opened = ((BaseHolder) holder).getGui();
                 opened.onClose(view);
                 player.closeInventory();
                 Util.sendTitle(player, "§e请等等", "§f管理员正在热更新插件", 10, 30, 10);
@@ -77,8 +78,9 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
     @Nullable
     public IGui getOpeningGui(Player player) {
         InventoryView view = player.getOpenInventory();
-        if (view.getTopInventory().getHolder() instanceof BaseHolder) {
-            return ((BaseHolder) view.getTopInventory().getHolder()).getGui();
+        InventoryHolder holder = Util.getHolder(view.getTopInventory());
+        if (holder instanceof BaseHolder) {
+            return ((BaseHolder) holder).getGui();
         }
         return null;
     }
@@ -141,7 +143,7 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
         if (event.getWhoClicked().hasMetadata("NPC")) return;
 
         InventoryView view = event.getView();
-        InventoryHolder holder = view.getTopInventory().getHolder();
+        InventoryHolder holder = Util.getHolder(view.getTopInventory());
         if (holder instanceof BaseHolder) {
             ((BaseHolder) holder).getGui().onClick(
                     event.getAction(), event.getClick(), event.getSlotType(),
@@ -158,7 +160,7 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
         if (event.getWhoClicked().hasMetadata("NPC")) return;
 
         InventoryView view = event.getView();
-        InventoryHolder holder = view.getTopInventory().getHolder();
+        InventoryHolder holder = Util.getHolder(view.getTopInventory());
         if (holder instanceof BaseHolder) {
             ((BaseHolder) holder).getGui().onDrag(view, event);
         }
@@ -170,7 +172,7 @@ public class GuiManager extends AbstractPluginHolder implements Listener {
         if (event.getPlayer().hasMetadata("NPC")) return;
 
         InventoryView view = event.getView();
-        InventoryHolder holder = view.getTopInventory().getHolder();
+        InventoryHolder holder = Util.getHolder(view.getTopInventory());
         if (holder instanceof BaseHolder) {
             ((BaseHolder) holder).getGui().onClose(view);
         }
