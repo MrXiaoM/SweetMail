@@ -51,7 +51,7 @@ public class FoliaLibScheduler implements IScheduler {
 
     @Override
     public @NotNull IRunTask runTaskAsync(@NotNull Runnable runnable) {
-        scheduler.runNextTick((t) -> runnable.run());
+        scheduler.runAsync((t) -> runnable.run());
         return DummyTask.INSTANCE;
     }
 
