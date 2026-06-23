@@ -1,3 +1,4 @@
+import top.mrxiaom.gradle.LibraryHelper
 import java.util.Locale
 
 plugins {
@@ -8,7 +9,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.23")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.27")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -55,7 +56,7 @@ allprojects {
     }
 }
 
-val base = top.mrxiaom.gradle.LibraryHelper(project)
+val base = LibraryHelper(project)
 
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
@@ -87,9 +88,7 @@ dependencies {
 
     base.library("org.slf4j:slf4j-api:2.0.16")
     base.library(base.depend.HikariCP)
-    base.library("net.kyori:adventure-api:4.25.0")
-    base.library("net.kyori:adventure-text-serializer-gson:4.25.0")
-    base.library("net.kyori:adventure-text-minimessage:4.25.0")
+    base.library(LibraryHelper.adventure("4.25.0"))
 
     // Shadow Dependency
     implementation(base.depend.nbtapi)
@@ -113,7 +112,7 @@ buildConfig {
 
 tasks {
     shadowJar {
-        configurations.add(project.configurations["runtimeClasspath"])
+        configurations.add(project.configurations.runtimeClasspath.get())
         mapOf(
             "de.tr7zw.changeme.nbtapi" to "nbtapi",
             "com.tcoded.folialib" to "folialib",

@@ -19,9 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -52,9 +49,8 @@ import java.util.function.Consumer;
 
 public class Util {
     private static IAdventureHandler handler;
-    public static final Map<String, OfflinePlayer> players = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    public static final Map<String, OfflinePlayer> playersByUUID = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private static ICommandDispatcher dispatcher;
+    private static PlayerNameCache playerNameCache;
 
     public static void init(SweetMail plugin) {
         try {
@@ -71,21 +67,7 @@ public class Util {
             plugin.warn("https://plugins.mcio.dev/elopers/base/resolver-override");
             throw e;
         }
-        plugin.getScheduler().runTaskAsync(() -> {
-            for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-                if (player.getName() != null) {
-                    players.put(player.getName(), player);
-                    playersByUUID.put(player.getUniqueId().toString().replace("-", ""), player);
-                }
-            }
-        });
-        Bukkit.getPluginManager().registerEvents(new Listener() {
-            @EventHandler
-            public void onJoin(PlayerJoinEvent e) {
-                players.put(e.getPlayer().getName(), e.getPlayer());
-                playersByUUID.put(e.getPlayer().getUniqueId().toString().replace("-", ""), e.getPlayer());
-            }
-        }, plugin);
+        playerNameCache = new PlayerNameCache(plugin);
         PAPI.init();
         ItemsAdder.init();
         Mythic.load();
@@ -266,33 +248,49 @@ public class Util {
 
     public static String getPlayerName(String s) {
         if (SweetMail.getInstance().isOnlineMode()) {
-            OfflinePlayer offline = playersByUUID.get(s);
+            OfflinePlayer offline = getOfflinePlayer(s).orElse(null);
             return offline == null || offline.getName() == null ? s : offline.getName();
         }
         return s;
     }
 
+    private static Set<String> offlineNameCache;
     public static List<String> getOfflinePlayers(String input) {
-        List<String> list = new ArrayList<>();
-        String s = input.toLowerCase();
-        for (String player : players.keySet()) {
-            if (player.toLowerCase().startsWith(s)) {
-                list.add(player);
-            }
-        }
-        return list;
+        return playerNameCache.getOfflinePlayerNames(input.toLowerCase(), 32);
     }
 
     public static List<OfflinePlayer> getOfflinePlayers() {
-        return Lists.newArrayList(players.values());
+        return Lists.newArrayList(Bukkit.getOfflinePlayers());
     }
 
     public static Optional<OfflinePlayer> getOfflinePlayer(String name) {
-        return Optional.ofNullable(players.get(name));
+        //noinspection deprecation
+        OfflinePlayer p = Bukkit.getOfflinePlayer(name);
+        return Optional.of(p);
+    }
+
+    public static Optional<OfflinePlayer> getOfflinePlayer(UUID uuid) {
+        OfflinePlayer p = Bukkit.getOfflinePlayer(uuid);
+        String name = p.getName();
+        if (name == null || name.isEmpty()) {
+            // 名字为空代表未加载
+            return Optional.empty();
+        } else {
+            return Optional.of(p);
+        }
     }
 
     public static Optional<OfflinePlayer> getOfflinePlayerByNameOrUUID(String s) {
-        return Optional.ofNullable((SweetMail.getInstance().isOnlineMode() ? playersByUUID : players).get(s));
+        if (SweetMail.getInstance().isOnlineMode()) {
+            try {
+                UUID uuid = UUID.fromString(s);
+                return getOfflinePlayer(uuid);
+            } catch (IllegalArgumentException e) {
+                return Optional.empty();
+            }
+        } else {
+            return getOfflinePlayer(s);
+        }
     }
 
     public static Optional<Player> getOnlinePlayer(String name) {
