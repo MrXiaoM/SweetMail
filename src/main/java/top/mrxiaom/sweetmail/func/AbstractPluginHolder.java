@@ -45,7 +45,7 @@ public abstract class AbstractPluginHolder {
                 MenuInBoxConfig.class, MenuOutBoxConfig.class, MenuViewAttachmentsConfig.class,
                 MenuAddAttachmentConfig.class,
                 DraftManager.class, NoticeManager.class, IAttachment.Internal.class,
-                TimerManager.class, LanguageManager.class
+                TimerManager.class, LanguageManager.class, LeakManager.class
         );
         for (Class<?> clazz : classes) {
             try {

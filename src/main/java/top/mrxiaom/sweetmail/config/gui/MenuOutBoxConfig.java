@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
@@ -144,7 +145,7 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             : iconSlot.getReceiverAndSoOnMessage()
                             .replace("%player%", gui.getTarget())
                             .replace("%count%", String.valueOf(mail.receivers.size()));
-                    return iconSlot.generateIcon(target, mail, icon,
+                    ItemStack item = iconSlot.generateIcon(target, mail, icon,
                             Pair.of("%title%", mail.title),
                             Pair.of("%sender%", sender),
                             Pair.of("%pages%", String.valueOf(mail.content.size())),
@@ -153,6 +154,10 @@ public class MenuOutBoxConfig extends AbstractMenuConfig<MenuOutBoxConfig.Gui> {
                             Pair.of("%receiver%", mail),
                             Pair.of("%time%", plugin.text().toString(mail.time))
                     );
+                    NBT.modify(item, nbt -> {
+                        nbt.setBoolean("SWEETMAIL_LEAK", true);
+                    });
+                    return item;
                 } else {
                     Icon icon = otherIcon.get(iconSlot.getRedirect());
                     if (icon != null) {

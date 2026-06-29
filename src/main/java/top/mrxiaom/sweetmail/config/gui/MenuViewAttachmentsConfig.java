@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -49,7 +50,11 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
             case "附": {
                 if (iconIndex < 0 || iconIndex >= mail.attachments.size()) return null;
                 IAttachment attachment = mail.attachments.get(iconIndex);
-                return attachment.generateIcon(target);
+                ItemStack item = attachment.generateIcon(target);
+                NBT.modify(item, nbt -> {
+                    nbt.setBoolean("SWEETMAIL_LEAK", true);
+                });
+                return item;
             }
             case "返": {
                 return iconBack.generateIcon(gui, target);
