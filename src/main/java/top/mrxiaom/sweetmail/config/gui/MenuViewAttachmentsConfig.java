@@ -94,9 +94,9 @@ public class MenuViewAttachmentsConfig extends AbstractMenuConfig<MenuViewAttach
 
         @Override
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
+            event.setCancelled(true);
             Character c = getSlotKey(slot);
             if (c == null) return;
-            event.setCancelled(true);
 
             switch (String.valueOf(c)) {
                 case "返": {

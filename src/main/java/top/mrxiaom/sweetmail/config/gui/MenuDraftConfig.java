@@ -440,9 +440,17 @@ public class MenuDraftConfig extends AbstractMenuConfig<MenuDraftConfig.Gui> {
             return created;
         }
 
+        private final List<InventoryAction> bannedActions = Lists.newArrayList(
+                InventoryAction.COLLECT_TO_CURSOR,
+                InventoryAction.HOTBAR_MOVE_AND_READD
+        );
+
         @Override
         @SuppressWarnings({"deprecation"})
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
+            if (bannedActions.contains(event.getAction())) {
+                event.setCancelled(true);
+            }
             Character c = getSlotKey(slot);
             if (c == null) return;
             event.setCancelled(true);

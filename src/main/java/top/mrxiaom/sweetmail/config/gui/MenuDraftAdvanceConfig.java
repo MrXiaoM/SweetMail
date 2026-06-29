@@ -1,5 +1,6 @@
 package top.mrxiaom.sweetmail.config.gui;
 
+import com.google.common.collect.Lists;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
@@ -175,8 +176,16 @@ public class MenuDraftAdvanceConfig extends AbstractMenuConfig<MenuDraftAdvanceC
             return created;
         }
 
+        private final List<InventoryAction> bannedActions = Lists.newArrayList(
+                InventoryAction.COLLECT_TO_CURSOR,
+                InventoryAction.HOTBAR_MOVE_AND_READD
+        );
+
         @Override
         public void onClick(InventoryAction action, ClickType click, InventoryType.SlotType slotType, int slot, ItemStack currentItem, ItemStack cursor, InventoryView view, InventoryClickEvent event) {
+            if (bannedActions.contains(event.getAction())) {
+                event.setCancelled(true);
+            }
             Character c = getSlotKey(slot);
             if (c == null) return;
             event.setCancelled(true);
