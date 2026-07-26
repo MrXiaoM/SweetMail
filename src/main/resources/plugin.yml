@@ -1,6 +1,6 @@
 name: SweetMail
 version: '${version}'
-main: top.mrxiaom.sweetmail.SweetMail
+main: top.mrxiaom.sweet.mail.SweetMail
 api-version: 1.13
 softdepend:
   - Vault

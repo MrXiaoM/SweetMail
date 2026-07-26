@@ -1,5 +1,17 @@
+import java.util.Locale
+
 plugins {
     java
+}
+
+repositories {
+    if (Locale.getDefault().country == "CN") {
+        maven("https://mirrors.huaweicloud.com/repository/maven/")
+    }
+    mavenCentral()
+    maven("https://repo.codemc.io/repository/maven-public/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://jitpack.io")
 }
 
 group = "top.mrxiaom"

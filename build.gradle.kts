@@ -7,56 +7,36 @@ plugins {
     id("com.gradleup.shadow") version "9.3.0"
     id("com.github.gmazzo.buildconfig") version "5.6.7"
 }
+
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.27")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.29")
 }
+val base = LibraryHelper(project)
 
-var isRelease = gradle.startParameter.taskNames.run {
-    contains("release") || contains("publishToMavenLocal")
-}
 val targetJavaVersion = 8
-java {
-    disableAutoTargetJvm()
-    val javaVersion = JavaVersion.toVersion(targetJavaVersion)
-    if (JavaVersion.current() < javaVersion) {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(targetJavaVersion))
-    }
-    withSourcesJar()
-    withJavadocJar()
-}
+val pluginBaseModules = base.modules.run { listOf(library, paper, gui, actions, l10n, misc) }
+val shadowGroup = "top.mrxiaom.sweet.mail.libs"
 
 println("Group:   $group")
 println("Version: $version")
 
-allprojects {
-    apply(plugin="java")
-    repositories {
-        if (Locale.getDefault().country == "CN") {
-            maven("https://mirrors.huaweicloud.com/repository/maven/")
-        }
-        mavenCentral()
-        maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-        maven("https://mvn.lumine.io/repository/maven/")
-        maven("https://repo.codemc.io/repository/maven-public/")
-        maven("https://repo.helpch.at/releases/")
-        maven("https://jitpack.io")
-        maven("https://repo.rosewooddev.io/repository/public/")
-        maven("https://libraries.minecraft.net/")
-        maven("https://r.irepo.space/maven/")
-        maven("https://repo.momirealms.net/releases/")
-        maven("https://maven.devs.beer/")
+repositories {
+    if (Locale.getDefault().country == "CN") {
+        maven("https://mirrors.huaweicloud.com/repository/maven/")
     }
-
-    tasks.withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible) {
-            options.release.set(targetJavaVersion)
-        }
-    }
+    mavenCentral()
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://mvn.lumine.io/repository/maven/")
+    maven("https://repo.codemc.io/repository/maven-public/")
+    maven("https://repo.helpch.at/releases/")
+    maven("https://jitpack.io")
+    maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://libraries.minecraft.net/")
+    maven("https://r.irepo.space/maven/")
+    maven("https://repo.momirealms.net/releases/")
+    maven("https://maven.devs.beer/")
 }
-
-val base = LibraryHelper(project)
 
 @Suppress("VulnerableLibrariesLocal")
 dependencies {
@@ -80,8 +60,8 @@ dependencies {
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
     // CraftEngine
-    compileOnly("net.momirealms:craft-engine-core:26.5.3")
-    compileOnly("net.momirealms:craft-engine-bukkit:26.5.3")
+    compileOnly("net.momirealms:craft-engine-core:26.7.4")
+    compileOnly("net.momirealms:craft-engine-bukkit:26.7.4")
 
     compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
     compileOnly(base.depend.annotations)
@@ -89,19 +69,28 @@ dependencies {
     base.library("org.slf4j:slf4j-api:2.0.16")
     base.library(base.depend.HikariCP)
     base.library(LibraryHelper.adventure("4.25.0"))
+    base.collectPluginHolders()
 
     // Shadow Dependency
     implementation(base.depend.nbtapi)
-    implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
     implementation(base.depend.EvalEx)
+    implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
+    for (artifact in pluginBaseModules) {
+        implementation(artifact)
+    }
     implementation(base.resolver.lite)
     implementation(project(":v1_7_R4"))
     implementation(project(":paper"))
 }
 
+configurations.forEach {
+    // 去除 jspecify，免得总是跟 jetbrains annotations 打架
+    it.exclude(group="org.jspecify", module="jspecify")
+}
+
 buildConfig {
     className("BuildConstants")
-    packageName("top.mrxiaom.sweetmail")
+    packageName("top.mrxiaom.sweet.mail")
 
     base.doResolveLibraries()
     buildConfigField("String", "VERSION", "\"${project.version}\"")
@@ -109,6 +98,9 @@ buildConfig {
 
     buildConfigField("String[]", "RESOLVED_LIBRARIES", base.join())
 }
+
+LibraryHelper.initJava(project, base, targetJavaVersion, true)
+LibraryHelper.initPublishing(project)
 
 tasks {
     shadowJar {
@@ -120,58 +112,6 @@ tasks {
             "top.mrxiaom.pluginbase.resolver" to "resolver",
         ).forEach { (original, target) ->
             relocate(original, "top.mrxiaom.sweetmail.utils.$target")
-        }
-    }
-    this.register("release")
-    val jarName = "${project.name}-$version-plugin.jar"
-    val copyTask = register<Copy>("copyBuildArtifact") {
-        dependsOn(shadowJar)
-        from(shadowJar.get().outputs)
-        rename { jarName }
-        into(rootProject.file("out"))
-    }
-    build {
-        dependsOn(copyTask)
-    }
-    processResources {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        from("LICENSE")
-        from(sourceSets.main.get().resources.srcDirs) {
-            expand(
-                "version" to if (isRelease) version else ("$version-unstable"),
-                "libraries" to base.addedLibrariesYAML.joinToString("\n"),
-            )
-            include("plugin.yml")
-        }
-    }
-    javadoc {
-        (options as? StandardJavadocDocletOptions)?.apply {
-            links("https://hub.spigotmc.org/javadocs/spigot/")
-
-            locale("zh_CN")
-            charset("UTF-8")
-            encoding("UTF-8")
-            docEncoding("UTF-8")
-            addBooleanOption("keywords", true)
-            addBooleanOption("Xdoclint:none", true)
-
-            val currentJavaVersion = JavaVersion.current()
-            if (currentJavaVersion > JavaVersion.VERSION_1_9) {
-                addBooleanOption("html5", true)
-            }
-        }
-    }
-}
-publishing {
-    publications {
-        create<MavenPublication>("mavenRelease") {
-            groupId = project.group.toString()
-            artifactId = project.name
-            version = project.version.toString()
-
-            artifact(tasks["shadowJar"]).classifier = null
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
         }
     }
 }

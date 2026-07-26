@@ -1,3 +1,5 @@
+import java.util.Locale
+
 plugins {
     java
 }
@@ -6,6 +8,14 @@ allprojects {
     repositories {
         maven("https://repo.papermc.io/repository/maven-public/")
     }
+}
+
+repositories {
+    if (Locale.getDefault().country == "CN") {
+        maven("https://mirrors.huaweicloud.com/repository/maven/")
+    }
+    mavenCentral()
+    maven("https://repo.codemc.io/repository/maven-public/")
 }
 
 java {
