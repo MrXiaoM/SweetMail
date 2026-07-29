@@ -94,15 +94,20 @@ public class SweetMail extends JavaPlugin implements Listener, TabCompleter, Plu
     private FileConfiguration config;
     private final IScheduler scheduler;
     private final List<AbstractPlayerListProvider> playerListProviders = new ArrayList<>();
+    private boolean folia;
     public SweetMail() throws Exception {
         this.classLoader = ClassLoaderWrapper.resolve((URLClassLoader) getClassLoader());
-        this.scheduler = new FoliaLibScheduler(this);
+        this.scheduler = new FoliaLibScheduler(this, lib -> folia = lib.isFolia());
         try {
             //noinspection ResultOfMethodCallIgnored
             getDescription().getLibraries();
         } catch (LinkageError e) {
             loadLibraries();
         }
+    }
+
+    public boolean isFolia() {
+        return folia;
     }
 
     public IBook getBookImpl() {

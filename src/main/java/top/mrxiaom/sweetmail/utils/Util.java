@@ -53,10 +53,9 @@ public class Util {
     private static PlayerNameCache playerNameCache;
 
     public static void init(SweetMail plugin) {
-        try {
-            Bukkit.getServer().getClass().getDeclaredMethod("dispatchCmdAsync", CommandSender.class, String.class);
+        if (plugin.isFolia()) {
             dispatcher = new FoliaDispatcher(plugin.getScheduler());
-        } catch (ReflectiveOperationException e) {
+        } else {
             dispatcher = BukkitDispatcher.INSTANCE;
         }
         try {
