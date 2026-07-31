@@ -9,7 +9,7 @@ plugins {
 }
 buildscript {
     repositories.mavenCentral()
-    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.27")
+    dependencies.classpath("top.mrxiaom:LibrariesResolver-Gradle:1.7.32")
 }
 
 var isRelease = gradle.startParameter.taskNames.run {
@@ -93,7 +93,7 @@ dependencies {
     )))
 
     // Shadow Dependency
-    implementation(base.depend.nbtapi)
+    implementation("de.tr7zw:item-nbt-api:2.16.0")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
     implementation(base.depend.EvalEx)
     implementation(base.resolver.lite)
