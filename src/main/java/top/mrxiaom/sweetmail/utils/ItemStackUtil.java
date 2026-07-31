@@ -50,6 +50,10 @@ public class ItemStackUtil {
      */
     private static boolean supportTranslationKey;
     /**
+     * 服务端是否原生支持获取物品的翻译键
+     */
+    private static boolean supportAdventureTranslationKey;
+    /**
      * 版本是否支持收纳袋
      */
     private static boolean supportBundle;
@@ -63,6 +67,7 @@ public class ItemStackUtil {
     protected static void init() {
         supportCraftEngine = isPresent("net.momirealms.craftengine.bukkit.api.CraftEngineItems");
         supportTranslationKey = isPresent("org.bukkit.Translatable");
+        supportAdventureTranslationKey = isPresent("net.kyori.adventure.translation.Translatable");
         supportBundle = isPresent("org.bukkit.inventory.meta.BundleMeta");
         supportLangUtils = isPresent("com.meowj.langutils.lang.LanguageHelper");
         try {
@@ -101,6 +106,12 @@ public class ItemStackUtil {
             }
             String key = CraftEngineProvider.getTranslationKey(item);
             if (key != null) {
+                return "<translate:" + key + ">";
+            }
+        }
+        if (supportAdventureTranslationKey && api.isTextUseComponent()) {
+            if (item instanceof net.kyori.adventure.translation.Translatable) {
+                String key = ((net.kyori.adventure.translation.Translatable) item).translationKey();
                 return "<translate:" + key + ">";
             }
         }
