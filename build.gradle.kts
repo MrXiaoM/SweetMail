@@ -80,8 +80,8 @@ dependencies {
     compileOnly("io.lumine:LumineUtils:1.20-SNAPSHOT")
 
     // CraftEngine
-    compileOnly("net.momirealms:craft-engine-core:26.5.3")
-    compileOnly("net.momirealms:craft-engine-bukkit:26.5.3")
+    compileOnly("net.momirealms:craft-engine-core:26.9.1")
+    compileOnly("net.momirealms:craft-engine-bukkit:26.9.1")
 
     compileOnly(files("gradle/wrapper/stub-rt.jar")) // sun.misc.Unsafe
     compileOnly(base.depend.annotations)
@@ -93,7 +93,7 @@ dependencies {
     )))
 
     // Shadow Dependency
-    implementation("de.tr7zw:item-nbt-api:2.16.0")
+    implementation("de.tr7zw:item-nbt-api:2.16.1")
     implementation("com.github.technicallycoded:FoliaLib:0.4.4") { isTransitive = false }
     implementation(base.depend.EvalEx)
     implementation(base.resolver.lite)
